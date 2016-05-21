@@ -1,0 +1,31 @@
+name: "Stats_R_website"
+output_dir: "."
+navbar:
+  title: "Stats in R"
+  left:
+    - text: "CI"
+      href: CI.html
+    - text: "T-test"
+      href: z_t_tests.html
+    - text: "F-test"
+      href: F_test.html
+    - text: "ChiSquare"
+      href: ChiSquare_test.html
+    - text: "Regression"
+      href: regression.html
+    - text: "ANOVA"
+      href: ANOVA.html
+    - text: "Logistic"
+      href: Logistic.html
+output:
+  bookdown::html_document2:
+    css: libs/style2.css
+    includes:
+      after_body: include/license-footer.html
+    theme: yeti
+    toc: yes
+    toc_depth: 3
+    toc_float: true
+    number_sections: yes
+    highlight: haddock
+

@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>ANOVA</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #0000ff; } /* Keyword */
+code > span.ch { color: #008080; } /* Char */
+code > span.st { color: #008080; } /* String */
+code > span.co { color: #008000; } /* Comment */
+code > span.ot { color: #ff4000; } /* Other */
+code > span.al { color: #ff0000; } /* Alert */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #008000; font-weight: bold; } /* Warning */
+code > span.cn { } /* Constant */
+code > span.sc { color: #008080; } /* SpecialChar */
+code > span.vs { color: #008080; } /* VerbatimString */
+code > span.ss { color: #008080; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { } /* Variable */
+code > span.cf { color: #0000ff; } /* ControlFlow */
+code > span.op { } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #ff4000; } /* Preprocessor */
+code > span.do { color: #008000; } /* Documentation */
+code > span.an { color: #008000; } /* Annotation */
+code > span.cv { color: #008000; } /* CommentVar */
+code > span.at { } /* Attribute */
+code > span.in { color: #008000; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="libs\style2.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 45px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+
+.section h2 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+.section h3 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+.section h4 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+.section h5 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+.section h6 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.9em;
+  padding-left: 5px;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Stats in R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="CI.html">CI</a>
+</li>
+<li>
+  <a href="z_t_tests.html">T-test</a>
+</li>
+<li>
+  <a href="F_test.html">F-test</a>
+</li>
+<li>
+  <a href="ChiSquare_test.html">ChiSquare</a>
+</li>
+<li>
+  <a href="regression.html">Regression</a>
+</li>
+<li>
+  <a href="ANOVA.html">ANOVA</a>
+</li>
+<li>
+  <a href="Logistic.html">Logistic</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">ANOVA</h1>
+
+</div>
+
+
+<p><em>Last modified on 2016-05-21</em></p>
+<hr />
+<div id="introduction" class="section level1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<p>Analysis of Variance (ANOVA) seeks to compare the means between two or more batches of numbers. You can think of an ANOVA as an extension of the t-test where three or more batches need to be compared. The name may seem misleading since it suggests that we are comparing variances and not some central value, but in fact, we compare the variances (spreads) between batches to assess if the central values are significantly different from one another. For example, let’s compare the following batches of numbers:</p>
+<p><img src="ANOVA_files/figure-html/unnamed-chunk-2-1.png" width="480" /></p>
+<p>Given the very small overlap in spread between batch 2 and the two other batches, it’s obvious that batch 2 is significantly different from batches 1 and 3, but can we say with a similar level of certainty that batch 1 is significantly different from batch 3? Probably not, the slight offset in spread between batch 1 and 3 may be due to chance alone.</p>
+<p>A one-way ANOVA compares measurement means between a single group of levels or batches. ANOVAs can be extended to include multiple groups (each having different levels). An ANOVA that compares means between two groups (each having their own set of levels) is referred to a two-way ANOVA.</p>
+</div>
+<div id="how-a-one-way-anova-is-calculated" class="section level1">
+<h1><span class="header-section-number">2</span> How a one-way ANOVA is calculated</h1>
+<p>This section focuses on one group of levels (hence a one-way ANOVA).</p>
+<div id="the-variance-ratio-method" class="section level2">
+<h2><span class="header-section-number">2.1</span> The variance-ratio method</h2>
+<p>An ANOVA test seeks to compare the spread between the batches (technically referred to as <em>levels</em>).</p>
+<p>The first step is to sum the square of the <em>distances</em> between each value (from all levels) to the <em>grand</em> mean computed from <em>all</em> values (plotted as a dark dashed line in the following graphic). We’ll call this value the <em>total sum of squares</em> for the mean (<span class="math inline">\(SSE_{mean}\)</span>). It’s calculated as follows:</p>
+<p><span class="math display">\[
+SSE_{mean} = \sum (y - \bar{\bar y})^2 
+\]</span></p>
+<p>where <span class="math inline">\(\bar{\bar{y}}\)</span> is the mean for <em>all</em> values. In this example, <span class="math inline">\(\bar{\bar y}\)</span> equals 24.7. In the following plot, we spread out the values in each level (for clarity) and measure their distances to the grand mean. Each level is assigned a unique color to distinguish the different batches.</p>
+<p><img src="ANOVA_files/figure-html/unnamed-chunk-4-1.png" width="480" /></p>
+<p>Next, we compare the values in each level to their respective level means. Similar to the way we compute the <span class="math inline">\(SSE_{mean}\)</span>, we sum the squared differences for each level as follows:</p>
+<p><span class="math display">\[
+SSE = \sum (y_{batch1} - \bar y_{batch1})^2 + \sum (y_{batch2} - \bar y_{batch2})^2 + \sum (y_{batch3} - \bar y_{batch3})^2
+\]</span></p>
+<p>Where <span class="math inline">\(SSE\)</span> is the <strong>error sum of squares</strong>.</p>
+<p><img src="ANOVA_files/figure-html/unnamed-chunk-5-1.png" width="480" /></p>
+<p>If the mean values of all three levels are the same, their horizontal lines should line up with the grand mean and both <span class="math inline">\(SSE_{mean}\)</span> and <span class="math inline">\(SSE\)</span> should be equal, if not, <span class="math inline">\(SSE\)</span> will be less than <span class="math inline">\(SSE_{mean}\)</span> (the distance between the points and their respective level mean will always be equal or shorter than their distances to the overall mean). The difference between <span class="math inline">\(SSE_{mean}\)</span> and <span class="math inline">\(SSE\)</span> is called the <strong>treatment sum of squares</strong> (also referred to as the <strong>model sum of squares</strong>):</p>
+<p><span class="math display">\[
+SSR = SSE_{mean} - SSE
+\]</span></p>
+<p>If SSR is close to 0, then the differences between the levels is small, if SSR is large, then two or more of the levels are significantly different from one another. SSR is, in fact, the squared difference between each group’s mean and the grand mean. Think of two competing models to predict the observed values: the grand mean, and each level’s mean. If the level means are close to the grand mean, then both the level means and grand mean will generate the same expected values. If they are different, then they will generate different expected values. So the greater the SSR, the more different the predicted values (and therefore the more different the means).</p>
+<p><img src="ANOVA_files/figure-html/unnamed-chunk-6-1.png" width="480" /></p>
+<p>The goal is to compare the variability in <span class="math inline">\(SSE\)</span> to that in <span class="math inline">\(SSR\)</span>, however, <span class="math inline">\(SSR\)</span> can take on much larger values than <span class="math inline">\(SSA\)</span> (because <span class="math inline">\(SSR\)</span> is measuring from the group means and not the individual values). To remedy this bias, we compute the <strong>mean squares</strong> from both values by dividing the sum of squares by the <strong>degrees of freedom</strong>. For <span class="math inline">\(SSR\)</span>, this gives us: <span class="math display">\[
+MSR = \frac{SSR}{p-1}
+\]</span></p>
+<p>where <span class="math inline">\(MSR\)</span> is the <strong>mean square for treatments</strong> (or <strong>mean square for model</strong>), and <span class="math inline">\(p\)</span> is the number of levels (3 in this example).</p>
+<p>Likewise, we can compute the <strong>mean square for error</strong> as:</p>
+<p><span class="math display">\[
+MSE = \frac{SSE}{n-p}
+\]</span></p>
+<p>where <span class="math inline">\(n\)</span> is the total number of observations.</p>
+<p>Next, we compute the <span class="math inline">\(F\)</span>-statistic (or <span class="math inline">\(F\)</span>-ratio) as:</p>
+<p><span class="math display">\[
+F = \frac{MSR}{MSE}
+\]</span></p>
+<p><span class="math inline">\(F\)</span> gives us the proportion of the overall spread in the measurements that can be explained by the levels vs. the proportion of the overall spread in the measurements <em>not</em> explained by the levels. A value of <span class="math inline">\(F\)</span> that approaches <span class="math inline">\(1\)</span> indicates that little to none of the variability in the measurements can be explained by the levels suggesting that differences in their mean may be due to random noise only. If <span class="math inline">\(F\)</span> is much larger than one, then the spreads between levels are quite different (meaning that these differences are large contributors to the overall spread) suggesting that the observed differences in mean values are significant too.</p>
+<p>The following graphic shows the spread for <em>all</em> values in the data (right-side plot) and its spread broken down by levels (left-side plot). In this case, it seems that a good chunk of the overall spread can be explained by the differences in spread between levels. If this is still unclear, picture the plots with the measurements for batch 2 removed; what you would note is that the overall spread will be noticeably reduced suggesting that the measurements in level two alone were an important contributor to the overall spread.</p>
+<p><img src="ANOVA_files/figure-html/unnamed-chunk-7-1.png" width="864" /></p>
+<p>Contrast this last example with the following dataset where the differences in spread (and mean) between levels are negligible. Removing anyone of the batches from the dataset would have a negligible impact on the overall spread in the measurements. We would say that little of the spread (variability) in the overall measurements can be explained by differences in measurements between levels; this would result in an <span class="math inline">\(F\)</span>-ratio close to <span class="math inline">\(1\)</span>.</p>
+<p><img src="ANOVA_files/figure-html/unnamed-chunk-8-1.png" width="864" /></p>
+<p>To assess whether a value of <span class="math inline">\(F\)</span> is significantly greater than 1, we must compare our observed <span class="math inline">\(F\)</span> to a distribution of <span class="math inline">\(F\)</span>’s we would expect to get if the means between levels were <em>not</em> different (we refer to the hypothesized <span class="math inline">\(F\)</span> values as <span class="math inline">\(F_{Ho}\)</span>).</p>
+<p>In the following plot, a hypothetical <span class="math inline">\(F\)</span> ratio (plotted as a vertical red line) is located to the right of the distribution of <span class="math inline">\(F_{Ho}\)</span> values (delineated in a black line in the following plot). The shaded pink area to the right of the hypothetical <span class="math inline">\(F\)</span> represents the fraction of <span class="math inline">\(F_{Ho}\)</span> that would be more extreme than our observed <span class="math inline">\(F\)</span>. The goal is to assess whether or not we feel comfortable in concluding that our observed <span class="math inline">\(F\)</span> is significantly different from an <span class="math inline">\(F\)</span> we would expect to get if the means between batches were all the same.</p>
+<p><img src="ANOVA_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+</div>
+<div id="an-example-in-r" class="section level2">
+<h2><span class="header-section-number">2.2</span> An example in R</h2>
+<p>In this working example, we compare fecal coliform counts (represented as the log10 of organisms per 100 ml) in the Illinois River between seasons (summer, fall, winter and spring) across six years (data from Millard and Neerchal, 2001).</p>
+<table>
+<thead>
+<tr class="header">
+<th>Year</th>
+<th>Summer</th>
+<th>Fall</th>
+<th>Winter</th>
+<th>Spring</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1971</td>
+<td>2.00</td>
+<td>1.45</td>
+<td>1.45</td>
+<td>1.34</td>
+</tr>
+<tr class="even">
+<td>1972</td>
+<td>2.34</td>
+<td>2.08</td>
+<td>1.76</td>
+<td>1.72</td>
+</tr>
+<tr class="odd">
+<td>1973</td>
+<td>2.48</td>
+<td>2.32</td>
+<td>2.08</td>
+<td>2.04</td>
+</tr>
+<tr class="even">
+<td>1974</td>
+<td>2.63</td>
+<td>2.45</td>
+<td>2.36</td>
+<td>2.15</td>
+</tr>
+<tr class="odd">
+<td>1975</td>
+<td>2.81</td>
+<td>2.70</td>
+<td>2.49</td>
+<td>2.51</td>
+</tr>
+<tr class="even">
+<td>1976</td>
+<td>3.20</td>
+<td>3.04</td>
+<td>2.70</td>
+<td>3.11</td>
+</tr>
+</tbody>
+</table>
+<p>Let’s first generate the data. We will create two data frames of the same data. One will be in a wide format, the other in a long format. We will use the former to generate a plot and the latter will be used in the ANOVA analysis.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create a data frame</span>
+dat &lt;-<span class="st"> </span><span class="kw">data.frame</span>( <span class="dt">Year =</span> <span class="kw">c</span>(<span class="dv">1971</span>,<span class="dv">1972</span>,<span class="dv">1973</span>,<span class="dv">1974</span>,<span class="dv">1975</span>,<span class="dv">1976</span>),
+                   <span class="dt">Summer =</span> <span class="kw">c</span>(<span class="fl">2.00</span>, <span class="fl">2.34</span>, <span class="fl">2.48</span>, <span class="fl">2.63</span>, <span class="fl">2.81</span>, <span class="fl">3.20</span>),
+                   <span class="dt">Fall =</span> <span class="kw">c</span>(<span class="fl">1.45</span>, <span class="fl">2.08</span>, <span class="fl">2.32</span>, <span class="fl">2.45</span>, <span class="fl">2.70</span>, <span class="fl">3.04</span>),
+                   <span class="dt">Winter =</span> <span class="kw">c</span>(<span class="fl">1.45</span>, <span class="fl">1.76</span>, <span class="fl">2.08</span>, <span class="fl">2.36</span>, <span class="fl">2.49</span>, <span class="fl">2.70</span>),
+                   <span class="dt">Spring =</span> <span class="kw">c</span>(<span class="fl">1.34</span>, <span class="fl">1.72</span>, <span class="fl">2.04</span>, <span class="fl">2.15</span>, <span class="fl">2.51</span>, <span class="fl">3.11</span>))
+
+<span class="co"># However, to run an ANOVA, the data needs to be in a long form</span>
+<span class="kw">library</span>(tidyr)
+dat.long &lt;-<span class="st"> </span><span class="kw">gather</span>(dat, <span class="dt">key =</span> <span class="st">&quot;Season&quot;</span>, <span class="dt">value=</span><span class="st">&quot;Value&quot;</span>, -Year)</code></pre></div>
+<p>Next, let’s plot the points then add the grand mean (black line) and each season’s mean (red lines) to the plot.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create an empty plot</span>
+<span class="kw">plot</span>( <span class="ot">NULL</span>, <span class="dt">xlim=</span> <span class="kw">c</span>(<span class="fl">0.5</span>,<span class="fl">4.5</span>), <span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">1</span>, <span class="fl">3.5</span>), <span class="dt">axes=</span><span class="ot">FALSE</span>, <span class="dt">xlab=</span><span class="ot">NA</span>,<span class="dt">ylab=</span><span class="st">&quot;Fecal Coliform&quot;</span>)
+<span class="kw">box</span>()
+<span class="kw">axis</span>(<span class="dv">1</span>, <span class="dt">labels =</span> <span class="kw">names</span>(dat)[-<span class="dv">1</span>], <span class="dt">at=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>))
+<span class="kw">axis</span>(<span class="dv">2</span>, <span class="dt">las=</span><span class="dv">2</span>, )
+<span class="kw">points</span>(<span class="kw">rep</span>(<span class="dv">1</span>,<span class="kw">nrow</span>(dat)), dat$Summer, <span class="dt">pch=</span><span class="dv">1</span>)
+<span class="kw">points</span>(<span class="kw">rep</span>(<span class="dv">2</span>,<span class="kw">nrow</span>(dat)), dat$Fall, <span class="dt">pch=</span><span class="dv">2</span>)
+<span class="kw">points</span>(<span class="kw">rep</span>(<span class="dv">3</span>,<span class="kw">nrow</span>(dat)), dat$Winter, <span class="dt">pch=</span><span class="dv">3</span>)
+<span class="kw">points</span>(<span class="kw">rep</span>(<span class="dv">4</span>,<span class="kw">nrow</span>(dat)), dat$Spring, <span class="dt">pch=</span><span class="dv">4</span>)
+
+<span class="co"># Add the grand mean</span>
+<span class="kw">abline</span>(<span class="dt">h =</span> <span class="kw">mean</span>(dat.long$Value), <span class="dt">lty=</span><span class="dv">3</span>)
+
+<span class="co"># Add each group&#39;s mean</span>
+<span class="kw">lines</span>(<span class="kw">c</span>(.<span class="dv">8</span>,<span class="fl">1.2</span>), <span class="kw">rep</span>(<span class="kw">mean</span>(dat$Summer),<span class="dv">2</span>), <span class="dt">col=</span><span class="st">&quot;red&quot;</span> )
+<span class="kw">lines</span>(<span class="kw">c</span>(<span class="fl">1.8</span>,<span class="fl">2.2</span>), <span class="kw">rep</span>(<span class="kw">mean</span>(dat$Fall),<span class="dv">2</span>), <span class="dt">col=</span><span class="st">&quot;red&quot;</span> )
+<span class="kw">lines</span>(<span class="kw">c</span>(<span class="fl">2.8</span>,<span class="fl">3.2</span>), <span class="kw">rep</span>(<span class="kw">mean</span>(dat$Winter),<span class="dv">2</span>), <span class="dt">col=</span><span class="st">&quot;red&quot;</span> )
+<span class="kw">lines</span>(<span class="kw">c</span>(<span class="fl">3.8</span>,<span class="fl">4.2</span>), <span class="kw">rep</span>(<span class="kw">mean</span>(dat$Spring),<span class="dv">2</span>), <span class="dt">col=</span><span class="st">&quot;red&quot;</span> )</code></pre></div>
+<p><img src="ANOVA_files/figure-html/unnamed-chunk-11-1.png" width="384" /></p>
+<p>A quick glance at the plot suggests that the variance within each season is large relative to the differences in means between each seasons. But could summer values be slightly higher than those of other seasons? We check this assumption with an ANOVA test.</p>
+<div id="computing-anova-the-hard-way" class="section level3">
+<h3><span class="header-section-number">2.2.1</span> Computing ANOVA the hard way</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">SSE.m &lt;-<span class="st"> </span><span class="kw">sum</span>( (dat.long$Value -<span class="st"> </span><span class="kw">mean</span>(dat.long$Value))^<span class="dv">2</span> ) 
+SSE &lt;-<span class="st"> </span><span class="kw">sum</span>( (dat$Summer -<span class="st"> </span><span class="kw">mean</span>(dat$Summer))^<span class="dv">2</span> +
+<span class="st">            </span>(dat$Fall -<span class="st"> </span><span class="kw">mean</span>(dat$Fall))^<span class="dv">2</span> +
+<span class="st">            </span>(dat$Winter -<span class="st"> </span><span class="kw">mean</span>(dat$Winter))^<span class="dv">2</span> +<span class="st"> </span>
+<span class="st">            </span>(dat$Spring -<span class="st"> </span><span class="kw">mean</span>(dat$Spring))^<span class="dv">2</span> )  
+SSR &lt;-<span class="st"> </span>SSE.m -<span class="st"> </span>SSE
+MSR &lt;-<span class="st"> </span>SSR /<span class="st"> </span><span class="dv">3</span>   <span class="co"># (p - 1) or 3 degrees of freedom</span>
+MSE &lt;-<span class="st"> </span>SSE /<span class="st"> </span><span class="dv">20</span>  <span class="co"># (n - p) or 20 degrees of freedom</span>
+Fratio &lt;-<span class="st"> </span>MSR/MSE
+p.val  &lt;-<span class="st"> </span><span class="kw">pf</span>(Fratio, <span class="dv">3</span>, <span class="dv">20</span>,<span class="dt">lower.tail=</span><span class="ot">FALSE</span>)</code></pre></div>
+<p>The function <code>pf()</code> compares our <span class="math inline">\(F\)</span>-ratio to the distribution of <span class="math inline">\(F_{Ho}\)</span> values one would expect to get if the means between seasons were not different. The two numbers following the <span class="math inline">\(F\)</span>-ratio value are the degrees of freedom for the <span class="math inline">\(MSR\)</span> and the <span class="math inline">\(MSE\)</span> calculated from <span class="math inline">\((p-1)\)</span> and <span class="math inline">\((n-p)\)</span> respectively.</p>
+<p><img src="ANOVA_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>The computed statistics are:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Statistic</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>SSE(mean)</td>
+<td>6.11</td>
+</tr>
+<tr class="even">
+<td>SSE</td>
+<td>5.35</td>
+</tr>
+<tr class="odd">
+<td>SSR</td>
+<td>0.77</td>
+</tr>
+<tr class="even">
+<td>MSR</td>
+<td>0.26</td>
+</tr>
+<tr class="odd">
+<td>MSE</td>
+<td>0.27</td>
+</tr>
+<tr class="even">
+<td>F</td>
+<td>0.96</td>
+</tr>
+<tr class="odd">
+<td>p</td>
+<td>0.433</td>
+</tr>
+</tbody>
+</table>
+<p>Our calculated p-value is 0.433 indicating that about 43% of the <span class="math inline">\(F_{Ho}\)</span> values are more extreme than ours. So it would be unwise to dismiss the chance that the means between all four seasons are equal to one another.</p>
+</div>
+<div id="computing-anova-the-easy-way" class="section level3">
+<h3><span class="header-section-number">2.2.2</span> Computing ANOVA the easy way</h3>
+<p>We can use the <code>anova</code> function to compute the <span class="math inline">\(F\)</span>-ratio and the <span class="math inline">\(p\)</span>-value. The function takes as argument a model (a linear regression model in this case) where the dependent variable <span class="math inline">\(y\)</span> is the measurement value and the independent variable <span class="math inline">\(x\)</span> is the level (or seasons in our example). This implementation of ANOVA requires that the season values be in one column (the <span class="math inline">\(x\)</span> column) and that the measurements be in another column (the <span class="math inline">\(y\)</span> column). This requires that we use the <em>long</em> version of our table, <code>dat.long</code>, where the <span class="math inline">\(x\)</span> column is labeled <code>Season</code> and the <span class="math inline">\(y\)</span> column is labeled <code>Value</code>. The first few rows of <code>dat.long</code> look like this:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(dat.long)</code></pre></div>
+<pre><code>  Year Season Value
+1 1971 Summer  2.00
+2 1972 Summer  2.34
+3 1973 Summer  2.48
+4 1974 Summer  2.63
+5 1975 Summer  2.81
+6 1976 Summer  3.20</code></pre>
+<p>The ANOVA analysis is thus computed as:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anova</span>(<span class="kw">lm</span>(Value ~<span class="st"> </span>Season, dat.long))</code></pre></div>
+<pre><code>Analysis of Variance Table
+
+Response: Value
+          Df Sum Sq Mean Sq F value Pr(&gt;F)
+Season     3 0.7666 0.25554  0.9556 0.4328
+Residuals 20 5.3483 0.26741               </code></pre>
+<p>The column <code>Mean Sq</code> displays the mean sum-of-squares for treatment <span class="math inline">\(SSR\)</span>, and the error sum-of-square, <span class="math inline">\(SSE\)</span>. The <span class="math inline">\(F\)</span>-ratio and <span class="math inline">\(p\)</span>-value are the same as those computed in the last subsection. Again, there is no evidence that the seasons have an influence on the mean concentrations of fecal coliform counts.</p>
+</div>
+<div id="anova-as-a-regression" class="section level3">
+<h3><span class="header-section-number">2.2.3</span> ANOVA as a regression</h3>
+<p>You’ll note that this approach in computing the ANOVA makes use of the linear regression function <code>lm</code>. This is because a one-way ANOVA is nothing more than a regression between all values in the batches and their levels expressed as categorical values where the number of categorical values is the number of levels minus <span class="math inline">\(1\)</span>. In essence the ANOVA is generating the following model:</p>
+<p><span class="math display">\[
+Coliform\ count = a + b(FALL) + c(Winter) + d(Spring)
+\]</span></p>
+<p>So, if a value belongs to the FALL batch, the model looks like this:</p>
+<p><span class="math display">\[
+Coliform\ count = a + b(1) + c(0) + d(0)
+\]</span></p>
+<p>If the value belongs to the SUMMER batch, the model looks like this:</p>
+<p><span class="math display">\[
+Coliform\ count = a + b(0) + c(0) + d(0)
+\]</span></p>
+<p>where <span class="math inline">\(a\)</span> is the mean value for summer coliform measurements. It follows that the coefficients <span class="math inline">\(b\)</span>, <span class="math inline">\(c\)</span> and <span class="math inline">\(d\)</span> are differences in mean values between summer measurements and fall, winter and spring measurements respectively:</p>
+<p><span class="math inline">\(a\)</span> = <code>mean(dat$Summer)</code> = 2.58</p>
+<p><span class="math inline">\(b\)</span> = <code>mean(dat$Fall) - mean(dat$Summer)</code> = -0.24</p>
+<p><span class="math inline">\(c\)</span> = <code>mean(dat$Winter) - mean(dat$Summer)</code> = -0.44</p>
+<p><span class="math inline">\(d\)</span> = <code>mean(dat$Spring) - mean(dat$Summer)</code> = -0.43</p>
+<p>These coefficients can be extracted from the <code>lm</code> model via the <code>coefficients</code> function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">coefficients</span>( <span class="kw">lm</span>( Value ~<span class="st"> </span>Season, dat.long) )</code></pre></div>
+<pre><code> (Intercept) SeasonSpring SeasonSummer SeasonWinter 
+   2.3400000   -0.1950000    0.2366667   -0.2000000 </code></pre>
+</div>
+</div>
+</div>
+<div id="assumptions-of-anova" class="section level1">
+<h1><span class="header-section-number">3</span> Assumptions of ANOVA</h1>
+<p>There are three assumptions that should be met when computing an ANOVA:</p>
+<ol style="list-style-type: decimal">
+<li>The variance between the batches (homogeneity of variance) should be similar.</li>
+<li>Observations should be independent of one another.</li>
+<li>The distribution of values within each group should be normally distributed. If a transformation is applied to the data, it should be applied to <em>all</em> batches. Note that the distribution of values for all combined batches need not be normally distributed.</li>
+</ol>
+</div>
+<div id="identifying-which-levels-are-different" class="section level1">
+<h1><span class="header-section-number">4</span> Identifying which levels are different</h1>
+<p>So far, we have seen that the ANOVA test tells us if the means between batches (levels) are similar, but it does not tell us <em>which</em> batch(es) of numbers may be different. One approach in assessing which level(s) is(are) significantly different from the mean is to implement a <strong>post hoc</strong> procedure (aka <strong>pairwise comparison</strong>).</p>
+<p>There are many <em>post hoc</em> procedures to choose from. Two popular methods are presented here: the <strong>Bonferroni</strong> procedure and <strong>Tukey’s HSD</strong> procedure. Both tend to generate slightly different results depending on the data characteristics. It’s therefore worthwhile to run both to assess if the levels are significantly different from one another. But note that in many cases there is no substitute for a visual assessment of the differences between batches.</p>
+<div id="bonferroni" class="section level2">
+<h2><span class="header-section-number">4.1</span> Bonferroni</h2>
+<p>The Bonferroni method can be implemented using the <code>pairwise.t.test</code> function with the first two parameters pointing to the column of values and the column of variables respectively, and the third parameter pointing to the pairwise method.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pairwise.t.test</span>( dat.long$Value, dat.long$Season, <span class="dt">p.adjust.method =</span> <span class="st">&quot;bonferroni&quot;</span>)</code></pre></div>
+<pre><code>
+    Pairwise comparisons using t tests with pooled SD 
+
+data:  dat.long$Value and dat.long$Season 
+
+       Fall Spring Summer
+Spring 1.00 -      -     
+Summer 1.00 0.98   -     
+Winter 1.00 1.00   0.95  
+
+P value adjustment method: bonferroni </code></pre>
+<p>The output is a matrix of <span class="math inline">\(p\)</span>-values for different pairs of levels (Fall-Summer, Winter-Summer, etc…). A low <span class="math inline">\(P\)</span>-value indicates significant differences between levels. In our working example, all <span class="math inline">\(P\)</span>-values are relatively high indicating that the means between levels are not statistically significant.</p>
+</div>
+<div id="tukeys-hsd" class="section level2">
+<h2><span class="header-section-number">4.2</span> Tukey’s HSD</h2>
+<p>The Tukey method is implemented using the <code>TukeyHSD</code> method. The first parameter is an <code>aov</code> object (<code>aov</code> is nearly identical to the <code>anova(lm(...))</code> method used thus far), and the second variable is the <em>levels</em> column from the data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">TukeyHSD</span>( <span class="kw">aov</span>( Value ~<span class="st"> </span>Season, dat.long), <span class="st">&quot;Season&quot;</span>)</code></pre></div>
+<pre><code>  Tukey multiple comparisons of means
+    95% family-wise confidence level
+
+Fit: aov(formula = Value ~ Season, data = dat.long)
+
+$Season
+                    diff        lwr       upr     p adj
+Spring-Fall   -0.1950000 -1.0306503 0.6406503 0.9132083
+Summer-Fall    0.2366667 -0.5989836 1.0723170 0.8569058
+Winter-Fall   -0.2000000 -1.0356503 0.6356503 0.9071983
+Summer-Spring  0.4316667 -0.4039836 1.2673170 0.4870045
+Winter-Spring -0.0050000 -0.8406503 0.8306503 0.9999983
+Winter-Summer -0.4366667 -1.2723170 0.3989836 0.4773334</code></pre>
+<p>The Tukey method generates a table of <span class="math inline">\(P\)</span>-values (as opposed to a matrix) for all pairs of levels. Note the slightly lower <span class="math inline">\(P\)</span>-values than those generated with the Bonferroni method. The Tukey HSD method tends to be more conservative than the Bonferri method and is thus more likely to reject the null hypothesis (that the means are equal) than the Bonferri method. This comes with an advantage, however, in that the Tukey test tends to have greater statistical <em>power</em> when there are many different levels (or batches) in our dataset.</p>
+<p>The Tukey test also generates the 95% confidence intervals (<code>lwr</code> = lower bound and <code>upr</code> = upper bound). If the lower bound is less than <span class="math inline">\(0\)</span> and the upper bound is greater than <span class="math inline">\(0\)</span> we cannot say that the means between both levels are not significantly different at a confidence level of 0.05.</p>
+</div>
+<div id="assumptions-of-the-post-hoc-test" class="section level2">
+<h2><span class="header-section-number">4.3</span> Assumptions of the post hoc test</h2>
+<p>The <em>post</em> hoc procedure assumes that we are only interested in knowing which effect (if any) is different from the grand mean. It makes no assumption about the direction of this difference (i.e. if the level mean is greater than or less than the overall mean). This is analogous to implementing a two-tailed test.</p>
+<p>If knowing whether the effect mean is greater than or less than the overall mean, a <strong>planned contrast</strong> procedure (aka <strong>planned comparison</strong> procedure) should be adopted instead. This procedure is not covered in this tutorial, but can be found in most introductory stats books.</p>
+</div>
+</div>
+<div id="another-working-example" class="section level1">
+<h1><span class="header-section-number">5</span> Another working example</h1>
+<p>The coliform dataset was an example of effects that did not differ. Here, we’ll look at an example with differences in effect means. We’ll use a dataset that comes installed with <code>R</code>, the <code>ChickWeight</code> data. This dataset tracks the weights of chicks using different diet types. We will grab a subset of the data and only focus on day 21 measurements. We will also restrict the columns to <code>Weight</code> and <code>Diet</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat &lt;-<span class="st"> </span>ChickWeight[ChickWeight$Time==<span class="dv">21</span>,<span class="kw">c</span>(<span class="st">&quot;weight&quot;</span>, <span class="st">&quot;Diet&quot;</span>)]</code></pre></div>
+<p>The group column is <code>Diet</code> which has four levels. These levels are identified as numbers (<span class="math inline">\(1\)</span> through <span class="math inline">\(4\)</span>). One needs to be careful when running an ANOVA using levels encoded as numbers since the <code>lm</code> model may interpret such values as continuous and not categorical. It’s therefore good practice to force the numbers as <code>factors</code> by using the <code>as.factor</code> function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat$Diet &lt;-<span class="st"> </span><span class="kw">as.factor</span>(dat$Diet)</code></pre></div>
+<p>Note that in this particular case, the conversion was not necessary since the <code>chickweight</code> table from which we extracted the values stored the <code>Diet</code> field as a factor (and this attribute was carried over to our <code>dat</code> data frame).</p>
+<p>Next, let’s plot the points along with the grand mean (dashed line) and each levels’ mean value (symbolized as a filled circle).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(weight ~<span class="st"> </span><span class="kw">as.numeric</span>(Diet), dat, <span class="dt">col=</span>Diet, <span class="dt">pch=</span><span class="dv">3</span>,<span class="dt">cex=</span>.<span class="dv">6</span>)
+<span class="kw">abline</span>( <span class="dt">h =</span> <span class="kw">mean</span>(dat$weight), <span class="dt">lty=</span><span class="dv">2</span>)
+<span class="kw">points</span>( <span class="kw">unique</span>(dat$Diet) , <span class="kw">by</span>(dat$weight, dat[,<span class="st">&quot;Diet&quot;</span>], mean) , <span class="dt">pch=</span><span class="dv">19</span>, <span class="dt">col=</span><span class="kw">unique</span>(dat$Diet))</code></pre></div>
+<p><img src="ANOVA_files/figure-html/unnamed-chunk-21-1.png" width="384" /></p>
+<p>One level, diet 3, seems to be a bit different from the others, but we will need to run and ANOVA to make sure of this.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anova</span>(<span class="kw">lm</span>(weight ~<span class="st"> </span>Diet, dat))</code></pre></div>
+<pre><code>Analysis of Variance Table
+
+Response: weight
+          Df Sum Sq Mean Sq F value   Pr(&gt;F)   
+Diet       3  57164 19054.7  4.6547 0.006858 **
+Residuals 41 167839  4093.6                    
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>The small <span class="math inline">\(p\)</span>-value suggests that not all levels have the same mean value. We can run a <em>post hoc</em> test to identify which level may be different</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pairwise.t.test</span>( dat$weight, dat$Diet, <span class="dt">p.adjust.method =</span> <span class="st">&quot;bonferroni&quot;</span>)</code></pre></div>
+<pre><code>
+    Pairwise comparisons using t tests with pooled SD 
+
+data:  dat$weight and dat$Diet 
+
+  1      2      3     
+2 0.9573 -      -     
+3 0.0053 0.3533 -     
+4 0.1669 1.0000 1.0000
+
+P value adjustment method: bonferroni </code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">TukeyHSD</span>( <span class="kw">aov</span>( weight ~<span class="st"> </span>Diet, dat), <span class="st">&quot;Diet&quot;</span>)</code></pre></div>
+<pre><code>  Tukey multiple comparisons of means
+    95% family-wise confidence level
+
+Fit: aov(formula = weight ~ Diet, data = dat)
+
+$Diet
+         diff        lwr       upr     p adj
+2-1  36.95000  -32.11064 106.01064 0.4868095
+3-1  92.55000   23.48936 161.61064 0.0046959
+4-1  60.80556  -10.57710 132.18821 0.1192661
+3-2  55.60000  -21.01591 132.21591 0.2263918
+4-2  23.85556  -54.85981 102.57092 0.8486781
+4-3 -31.74444 -110.45981  46.97092 0.7036249</code></pre>
+<p>Both tests suggest that diet 3 is significantly different from diet 1, but the differences between the other levels are not significant.</p>
+</div>
+<div id="references" class="section level1">
+<h1><span class="header-section-number">6</span> References</h1>
+<p>Millard S.P, Neerchal N.K., <em>Environmental Statistics with S-Plus</em>, 2001.<br />
+McClave J.T., Dietrich F.H., <em>Statistics</em>, 4th edition, 1988.<br />
+Vik P., <em>Regression, ANOVA, and the General Linear Model: A Statistics Primer</em>, 2013.</p>
+</div>
+
+
+<div class="footer">
+<hr/>
+<a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/80x15.png" /></a>  Manny Gimond 
+</br>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
