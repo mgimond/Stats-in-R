@@ -338,36 +338,16 @@ div.tocify {
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)</code></pre></div>
 <div id="introduction" class="section level1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
-<p>Analysis of Variance (ANOVA) seeks to compare the means between two or more batches of numbers. You can think of an ANOVA as an extension of the t-test where three or more batches need to be compared. The name may seem misleading since it suggests that we are comparing variances and not some central value, but in fact, we compare the variances (spreads) between batches to assess if the central values are significantly different from one another. For example, let’s compare the following batches of numbers:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>() +<span class="kw">aes</span>(<span class="dt">x=</span><span class="kw">runif</span>(<span class="dv">100</span>), <span class="dt">y=</span><span class="kw">runif</span>(<span class="dv">100</span>)) +<span class="kw">geom_point</span>(<span class="dt">alpha=</span><span class="fl">0.4</span>, <span class="dt">col=</span><span class="st">&quot;#FF7F00&quot;</span>)</code></pre></div>
-<div class="figure"><span id="fig:demo1"></span>
-<img src="Logistic_files/figure-html/demo1-1.png" alt="Scatter plot of random uniform points using orange colored points and an alpha of `0.5`." width="288" />
-<p class="caption">
-Figure 1.1: Scatter plot of random uniform points using orange colored points and an alpha of <code>0.5</code>.
-</p>
 </div>
-<div id="and-a-sub-section" class="section level2">
-<h2><span class="header-section-number">1.1</span> And a sub section</h2>
-<p>Analysis of Variance (ANOVA) seeks to compare the means between two or more batches of numbers. You can think of an ANOVA as an extension of the t-test where three or more batches need to be compared. The name may seem misleading since it suggests that we are comparing variances and not some central value, but in fact, we compare the variance.</p>
-<div id="and-a-sub-sub-section" class="section level3">
-<h3><span class="header-section-number">1.1.1</span> And a sub-sub section</h3>
-<p>Analysis of Variance (ANOVA) seeks to compare the means between two or more batches of numbers. You can think of an ANOVA as an extension of the t-test where three or more batches need to be compared. The name may seem misleading since it suggests that we are comparing variances and not some central value, but in fact, we compare the variance</p>
-</div>
-</div>
-</div>
-<div id="binary-outcome" class="section level1">
-<h1><span class="header-section-number">2</span> Binary outcome</h1>
-<p>And here’s my reference to Figure <a href="#fig:demo1">1.1</a>.</p>
-</div>
-<div id="logit-model" class="section level1">
-<h1><span class="header-section-number">3</span> Logit model</h1>
+<div id="different-forms-of-the-logistic-regression-model" class="section level1">
+<h1><span class="header-section-number">2</span> Different forms of the logistic regression model</h1>
 <hr />
 <p><strong>Session Info</strong>:</p>
 <p><strong>R version 3.3.0 (2016-05-03)</strong></p>
 <p>**<a href="Platform:**" class="uri">Platform:**</a> x86_64-w64-mingw32/x64 (64-bit)</p>
 <p><strong>attached base packages:</strong> <em>stats</em>, <em>graphics</em>, <em>grDevices</em>, <em>utils</em>, <em>datasets</em>, <em>methods</em> and <em>base</em></p>
-<p><strong>other attached packages:</strong> <em>ggplot2(v.2.1.0)</em>, <em>boot(v.1.3-18)</em>, <em>gplots(v.3.0.1)</em>, <em>MASS(v.7.3-45)</em> and <em>tidyr(v.0.4.1)</em></p>
-<p><strong>loaded via a namespace (and not attached):</strong> <em>Rcpp(v.0.12.5)</em>, <em>plyr(v.1.8.3)</em>, <em>formatR(v.1.4)</em>, <em>bitops(v.1.0-6)</em>, <em>tools(v.3.3.0)</em>, <em>extrafont(v.0.17)</em>, <em>digest(v.0.6.9)</em>, <em>gtable(v.0.2.0)</em>, <em>evaluate(v.0.9)</em>, <em>shiny(v.0.13.2)</em>, <em>DBI(v.0.4-1)</em>, <em>yaml(v.2.1.13)</em>, <em>parallel(v.3.3.0)</em>, <em>Rttf2pt1(v.1.3.4)</em>, <em>dplyr(v.0.4.3)</em>, <em>stringr(v.1.0.0)</em>, <em>knitr(v.1.13.1)</em>, <em>gtools(v.3.5.0)</em>, <em>caTools(v.1.17.1)</em>, <em>grid(v.3.3.0)</em>, <em>R6(v.2.1.2)</em>, <em>rmarkdown(v.0.9.6.9)</em>, <em>bookdown(v.0.0.71)</em>, <em>gdata(v.2.17.0)</em>, <em>pander(v.0.6.0)</em>, <em>extrafontdb(v.1.0)</em>, <em>magrittr(v.1.5)</em>, <em>scales(v.0.4.0)</em>, <em>htmltools(v.0.3.5)</em>, <em>assertthat(v.0.1)</em>, <em>colorspace(v.1.2-6)</em>, <em>mime(v.0.4)</em>, <em>xtable(v.1.8-2)</em>, <em>httpuv(v.1.3.3)</em>, <em>labeling(v.0.3)</em>, <em>KernSmooth(v.2.23-15)</em>, <em>stringi(v.1.0-1)</em>, <em>miniUI(v.0.1.1)</em>, <em>munsell(v.0.4.3)</em> and <em>lazyeval(v.0.1.10)</em></p>
+<p><strong>other attached packages:</strong> ggplot2(v.2.1.0)</p>
+<p><strong>loaded via a namespace (and not attached):</strong> <em>Rcpp(v.0.12.5)</em>, <em>knitr(v.1.13.1)</em>, <em>magrittr(v.1.5)</em>, <em>munsell(v.0.4.3)</em>, <em>colorspace(v.1.2-6)</em>, <em>xtable(v.1.8-2)</em>, <em>R6(v.2.1.2)</em>, <em>stringr(v.1.0.0)</em>, <em>plyr(v.1.8.3)</em>, <em>tools(v.3.3.0)</em>, <em>grid(v.3.3.0)</em>, <em>gtable(v.0.2.0)</em>, <em>miniUI(v.0.1.1)</em>, <em>htmltools(v.0.3.5)</em>, <em>yaml(v.2.1.13)</em>, <em>digest(v.0.6.9)</em>, <em>bookdown(v.0.0.71)</em>, <em>shiny(v.0.13.2)</em>, <em>formatR(v.1.4)</em>, <em>evaluate(v.0.9)</em>, <em>mime(v.0.4)</em>, <em>rmarkdown(v.0.9.6.9)</em>, <em>stringi(v.1.0-1)</em>, <em>pander(v.0.6.0)</em>, <em>scales(v.0.4.0)</em> and <em>httpuv(v.1.3.3)</em></p>
 </div>
 
 

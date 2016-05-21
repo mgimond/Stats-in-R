@@ -28,26 +28,9 @@ library(ggplot2)
 
 # Introduction
 
-Analysis of Variance (ANOVA) seeks to compare the means between two or more batches of numbers. You can think of an ANOVA as an extension of the t-test where three or more batches need to be compared. The name may seem misleading since it suggests that we are comparing variances and not some central value, but in fact, we compare the variances (spreads) between batches to assess if the central values are significantly different from one another. For example, let's compare the following batches of numbers:
+# Different forms of the logistic regression model
 
 
-```{r demo1, fig.cap="Scatter plot of random uniform points using orange colored points and an alpha of `0.5`.", fig.width=3,fig.height=2}
-ggplot() +aes(x=runif(100), y=runif(100)) +geom_point(alpha=0.4, col="#FF7F00")
-```
-
-## And a sub section
-
-Analysis of Variance (ANOVA) seeks to compare the means between two or more batches of numbers. You can think of an ANOVA as an extension of the t-test where three or more batches need to be compared. The name may seem misleading since it suggests that we are comparing variances and not some central value, but in fact, we compare the variance.
-
-### And a sub-sub section
-
-Analysis of Variance (ANOVA) seeks to compare the means between two or more batches of numbers. You can think of an ANOVA as an extension of the t-test where three or more batches need to be compared. The name may seem misleading since it suggests that we are comparing variances and not some central value, but in fact, we compare the variance
-
-# Binary outcome
-
-And here's my reference to Figure \@ref(fig:demo1).
-
-# Logit model
 
 -----
 
