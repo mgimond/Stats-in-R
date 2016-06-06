@@ -1,6 +1,21 @@
 ---
 title: "Stats with R"
+output:
+  bookdown::html_document2:
+    toc: no
+    toc_float: false
 ---
 
-Stuff to add
+# [Confidence intervals](CI.html)
 
+# T and Z tests
+
+# F-test
+
+# Chi-Square tests
+
+# Linear regression
+
+# Logistic regression
+
+# ANOVA

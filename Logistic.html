@@ -332,22 +332,255 @@ div.tocify {
 </div>
 
 
-<p><em>Last modified on 2016-05-21</em></p>
+<p><em>Last modified on 2016-06-06</em></p>
 <hr />
 <p>Packages used in this tutorial:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2) <span class="co"># USed for plotting data</span>
+<span class="kw">library</span>(dplyr) <span class="co"># Used to extract columns in the data</span>
+<span class="kw">library</span>(rms) <span class="co"># Used to extract p-value from logistic model</span></code></pre></div>
+<p>Another package used in this tutorial is <code>gdata</code>, but its function will be called directly from the package (e.g. <code>gdata::mapLevels</code>) in section 2.</p>
 <div id="introduction" class="section level1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
+<p>We’ll be making use of median per-capita income data aggregated at the county level for the state of Maine. We will focus on the relationship between income and whether or not the county is on the coast.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load dataset</span>
+dat &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;http://mgimond.github.io/Stats-in-R/Data/Income_and_education.csv&quot;</span>)
+
+<span class="co"># Limit the dataset to the two columns of interest</span>
+df &lt;-<span class="st"> </span><span class="kw">select</span>(dat, Coast, <span class="dt">Income =</span> Per.capita.income )
+df</code></pre></div>
+<pre><code>   Coast Income
+1     no  23663
+2     no  20659
+3    yes  32277
+4     no  21595
+5    yes  27227
+6     no  25023
+7    yes  26504
+8    yes  28741
+9     no  21735
+10    no  23366
+11    no  20871
+12   yes  28370
+13    no  21105
+14   yes  22706
+15   yes  19527
+16   yes  28321</code></pre>
+<p>One approach to exploring this dataset is to see <em>how</em> per capita income varies as a function of the county’s coastal status (i.e. whether or not the county borders the ocean or not). A t-test statistic could be used to assess if incomes differ between coastal and non-coastal communities.</p>
+<p><img src="Logistic_files/figure-html/unnamed-chunk-3-1.png" width="240" /></p>
+<p>Or, if one wanted to model that relationship, a <a href="regression.html#4_including_categorical_predictor_variables">categorical regression analysis</a> could be implemented.</p>
+<p>But what if we are interested in flipping the relationship? In other words, what if we wanted to see how the coastal status of a county related to per capita income? More specifically, what if we wanted to see if county level income could predict whether a county is on the coast or not. Visually, this relationship would look like:</p>
+<p><img src="Logistic_files/figure-html/unnamed-chunk-4-1.png" width="240" /></p>
+<p>This does not look like a <em>typical</em> scatter plot one sees in a regression analysis, but the relationship we are exploring is similar in concept–i.e. we are seeking a model of the form <code>Y = a + bX</code>. We could, of course, fit a <code>linear</code> model to the data as follows:</p>
+<p><img src="Logistic_files/figure-html/unnamed-chunk-5-1.png" width="240" /></p>
+<p>The model to the above fit is of the form <em>Coast = -1.6 + 8.7e-05 Income</em>. Now, you may see a couple of issues with this model. For starters, the model implies that there are <code>coast</code> values other than <code>yes</code> and <code>no</code> (e.g. what does the model return for an income value of $24,000?). In fact, the model is treating <code>coast</code> as a numeric value where <code>no</code> is coded as <code>0</code> (no probability) and <code>yes</code> is coded as <code>1</code> (maximum probability). This makes sense when you re-frame the question along the lines of <em>what is the probability that the county is on the coast given the county’s median per capita income?</em></p>
+<p>Another problem with the above model is that the straight line does a very poor job in <em>fitting</em> the data and, if we are treating the <code>coast</code> axis as a probability limited to the range of 0 and 1, the model implies that we can have a probability greater than <code>1</code> (e.g. and income value of $32,000 suggests a probability of about 1.17). A workaround is to fit a different model–one that is bounded by the minimum and maximum probabilities. Such a shape is called a <strong>logistic curve</strong>.</p>
+<p><img src="Logistic_files/figure-html/unnamed-chunk-6-1.png" width="240" /></p>
 </div>
-<div id="different-forms-of-the-logistic-regression-model" class="section level1">
-<h1><span class="header-section-number">2</span> Different forms of the logistic regression model</h1>
+<div id="the-logistic-regression-model" class="section level1">
+<h1><span class="header-section-number">2</span> The logistic regression model</h1>
+<p>The logistic regression model can be presented in one of two ways:</p>
+<p><span class="math display">\[
+log(\frac{p}{1-p}) = b_0 + b_1 x
+\]</span></p>
+<p>or, solving for <code>p</code> (and noting that the <code>log</code> in the above equation is the <em>natural</em> log) we get,</p>
+<p><span class="math display">\[
+p = \frac{1}{1-e^{-(b_0 + b_1 x)}}
+\]</span></p>
+<p>where <code>p</code> is the probability of <code>y</code> occurring given a value <code>x</code>. In our example this translates to the probability of a county being on the coast given its median per capita income value. In the first equation, fraction <span class="math inline">\(\frac{p}{1-p}\)</span> is referred to as the <strong>odds ratio</strong> which gives us the odds in favor of a <code>yes</code> (or <code>1</code> when represented using binomial values). The log of the <em>odds ratio</em>, <span class="math inline">\(log(\frac{p}{1-p})\)</span>, is referred to as the <strong>logit</strong>. Note that the probability can be computed from the odds ratio as <span class="math inline">\(\frac{odds}{1 + odds}\)</span>. Note too that there is not error term as is the case with a linear regression model.</p>
+<p>Whereas the linear regression parameters are estimated using the least-squares method, the logistic regression model parameters are estimated using the <strong>maximum-likelihood</strong> method. For our dataset, these parameters can be estimated in R using the <code>glm()</code> function as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">M1 &lt;-<span class="st"> </span><span class="kw">glm</span>(Coast ~<span class="st"> </span>Income, df, <span class="dt">family =</span> binomial)
+M1</code></pre></div>
+<pre><code>
+Call:  glm(formula = Coast ~ Income, family = binomial, data = df)
+
+Coefficients:
+(Intercept)       Income  
+-12.2177062    0.0005048  
+
+Degrees of Freedom: 15 Total (i.e. Null);  14 Residual
+Null Deviance:      22.18 
+Residual Deviance: 14.81    AIC: 18.81</code></pre>
+<p>Thus, our model looks like:</p>
+<p><span class="math display">\[
+P_{coast} = \frac{1}{1-e^{-(-12.2 + 0.0005 Income)}}
+\]</span></p>
+<p>where <span class="math inline">\(P_{coast}\)</span> is the probability of a county being on the coast. To see what the relationship looks like for a range of income values, we can use the <code>predict()</code> function as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create a range of income values (we&#39;ll cover a wider range then the dataset)</span>
+<span class="co"># The range of values must be saved in a data frame and must have the same column</span>
+<span class="co"># name as that given in the original dataset</span>
+M.df       &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">Income =</span> <span class="kw">seq</span>(<span class="dv">10000</span>, <span class="dv">40000</span>, <span class="dv">1000</span>))
+
+<span class="co">#Predict the Coast values (as a probability) using the above data</span>
+M.df$Coast &lt;-<span class="st"> </span><span class="kw">predict</span>(M1, <span class="dt">newdata=</span>M.df, <span class="dt">type=</span><span class="st">&quot;response&quot;</span>)
+
+<span class="co"># Plot the modeled probability values</span>
+<span class="kw">ggplot</span>(M.df, <span class="kw">aes</span>(<span class="dt">x=</span>Income, <span class="dt">y=</span>Coast)) +<span class="st"> </span><span class="kw">geom_line</span>()</code></pre></div>
+<p><img src="Logistic_files/figure-html/unnamed-chunk-8-1.png" width="240" /></p>
+<p>Note how the logistic regression model converted the categorical variable <code>Coast</code> into a numeric one by assigning <code>0</code> to <code>no</code> and <code>1</code> to <code>yes</code>.</p>
+<p>A simpler way to plot the model is to make use of <code>ggplot</code>’s <code>stat_smooth</code> function. However, this will require that we convert the <code>Coast</code> factor to numeric values manually since <code>ggplot</code> will not do this for us automatically like <code>glm</code>. One quick way to do this is to wrap the <code>Coast</code> factor with <code>as.numeric</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as.numeric</span>(df$Coast)</code></pre></div>
+<pre><code> [1] 1 1 2 1 2 1 2 2 1 1 1 2 1 2 2 2</code></pre>
+<p>Instead of seeing <code>yes</code>’s and <code>no</code>’s, we now have numbers (<code>1</code> and <code>2</code>). But which number is mapped to which factor? One easy way to map the levels is to use the <code>mapLevels</code> function from the package <code>gdata</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">gdata::<span class="kw">mapLevels</span>(df$Coast)</code></pre></div>
+<pre><code> no yes 
+  1   2 </code></pre>
+<p>The label <code>no</code> is mapped to <code>1</code> and the label <code>yes</code> is mapped to <code>2</code>.</p>
+<p>However, since we are modeling the probability as a fraction that ranges from <code>0</code> to <code>1</code> we will need to subtract <code>1</code> from the converted values as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as.numeric</span>(df$Coast) -<span class="st"> </span><span class="dv">1</span></code></pre></div>
+<pre><code> [1] 0 0 1 0 1 0 1 1 0 0 0 1 0 1 1 1</code></pre>
+<p>So the label <code>no</code> is now mapped to <code>0</code> and the label <code>yes</code> is now mapped to <code>1</code>.</p>
+<p>Next, we’ll plot the values while making sure to map the numeric representation of <code>Coast</code> to the y-axis (and not the x-axis).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(df, <span class="kw">aes</span>(<span class="dt">x=</span>Income, <span class="dt">y=</span><span class="kw">as.numeric</span>(df$Coast) -<span class="st"> </span><span class="dv">1</span>)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha=</span>.<span class="dv">5</span>) +
+<span class="st">  </span><span class="kw">stat_smooth</span>(<span class="dt">method=</span><span class="st">&quot;glm&quot;</span>, <span class="dt">se=</span><span class="ot">FALSE</span>, <span class="dt">method.args =</span> <span class="kw">list</span>(<span class="dt">family=</span>binomial)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Coast&quot;</span>) </code></pre></div>
+<p><img src="Logistic_files/figure-html/unnamed-chunk-12-1.png" width="240" /></p>
+<p>The logistic curve does not follow the complete sigmoid shape when limited to the original <code>Income</code> range. To see the full shape, we can increase the x-axis range using <code>xlim</code>, but this will also require that we instruct <code>stat_smooth</code> to extend the logistic curve to the new x-axis range by setting <code>fullrange</code> to <code>TRUE</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(df, <span class="kw">aes</span>(<span class="dt">x=</span>Income, <span class="dt">y=</span><span class="kw">as.numeric</span>(df$Coast) -<span class="st"> </span><span class="dv">1</span>)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha=</span>.<span class="dv">5</span>) +
+<span class="st">  </span><span class="kw">stat_smooth</span>(<span class="dt">method=</span><span class="st">&quot;glm&quot;</span>, <span class="dt">se=</span><span class="ot">FALSE</span>, <span class="dt">fullrange=</span><span class="ot">TRUE</span>, 
+              <span class="dt">method.args =</span> <span class="kw">list</span>(<span class="dt">family=</span>binomial)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Coast&quot;</span>) +<span class="st"> </span><span class="kw">xlim</span>(<span class="dv">10000</span>, <span class="dv">40000</span>)</code></pre></div>
+<p><img src="Logistic_files/figure-html/unnamed-chunk-13-1.png" width="240" /></p>
+</div>
+<div id="assessing-the-fit-with-a-pseudo-r2" class="section level1">
+<h1><span class="header-section-number">3</span> Assessing the fit with a pseudo R<sup>2</sup></h1>
+<blockquote>
+<p>Note that even though many statistical software will compute a pseudo-R<sup>2</sup> for logistic regression models, this measure of fit is not directly comparable to the R<sup>2</sup> computed for linear regression models. In fact, some statisticians recommend avoiding publishing R<sup>2</sup> since it can be misinterpreted in a logistic model context.</p>
+</blockquote>
+<p>To assess how well a logistic model fits the data, we make use of the <strong>log-likelihood</strong> method (this is similar to the Pearson’s correlation coefficient used with linear regression models). A <em>large</em> log-likelihood statistic indicates a poor fit (similar in idea to a large residual sum of squares statistic for a linear model). What we seek, therefore, is a <em>small</em> log-likelihood statistic. What constitutes a small or large statistic is determined by the log likelihood statistic of a base model (aka <em>null</em> model) where <em>none</em> of the predictive terms are added to he equation, i.e.:</p>
+<p><span class="math display">\[
+p_{null} = \frac{1}{1-e^{-(b_0)}}
+\]</span></p>
+<p>In our working example, the log-likelihood statistic (often labeled as <strong>-2LL</strong> in some statistical packages) for the null model is,</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">M1$null.deviance</code></pre></div>
+<pre><code>[1] 22.18071</code></pre>
+<p>What we want is -2LL for the full model (i.e. the model with the <code>Income</code> predictor variable) to be smaller than that of the null model. To extract -2LL from the model, type:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">M1$deviance</code></pre></div>
+<pre><code>[1] 14.80722</code></pre>
+<p>This value is smaller than that of the null model–a good thing!</p>
+<p>The difference between both log-likelihood values is referred to as the <strong>model Chi-square</strong>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modelChi &lt;-<span class="st"> </span>M1$null.deviance -<span class="st"> </span>M1$deviance</code></pre></div>
+<p>Dividing the model Chi-square by the null log-likelihood value gives us one measure of the <strong>pseudo R-square</strong> (note that there is no exact way to compute the R-square value with a logistic regression model).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pseudo.R2 &lt;-<span class="st"> </span>modelChi /<span class="st"> </span>M1$null.deviance
+pseudo.R2</code></pre></div>
+<pre><code>[1] 0.3324281</code></pre>
+<p>In this working example, the model can account for 33.2% of the variability in the <code>Coast</code> variable. This pseudo R-square calculation is referred to as the <strong>Hosmer and Lemeshow</strong> R-square.</p>
+<div id="alternative-pseudo-r2" class="section level2">
+<h2><span class="header-section-number">3.1</span> Alternative pseudo R<sup>2</sup></h2>
+<p>Here, we’ll make use of the <code>rms</code> package’s <code>lrm</code> function to compute another form of the pseudo R<sup>2</sup> called the <strong>Nagelkerke R<sup>2</sup></strong>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">lrm</span>(Coast ~<span class="st"> </span>Income, df)</code></pre></div>
+<pre><code>
+Logistic Regression Model
+
+lrm(formula = Coast ~ Income, data = df)
+                   Model Likelihood     Discrimination    Rank Discrim.    
+                      Ratio Test            Indexes          Indexes       
+Obs          16    LR chi2      7.37    R2       0.492    C       0.828    
+ no           8    d.f.            1    g        2.163    Dxy     0.656    
+ yes          8    Pr(&gt; chi2) 0.0066    gr       8.701    gamma   0.656    
+max |deriv| 0.4                         gp       0.381    tau-a   0.350    
+                                        Brier    0.143                     
+
+          Coef     S.E.   Wald Z Pr(&gt;|Z|)
+Intercept -12.2176 5.7646 -2.12  0.0341  
+Income      0.0005 0.0002  2.10  0.0355  </code></pre>
+<p>Note how this value of 0.49 differs from that of the <em>Hosmer and Lemeshow</em> R<sup>2</sup> whose value is 0.33.</p>
+</div>
+</div>
+<div id="assessing-the-significance" class="section level1">
+<h1><span class="header-section-number">4</span> Assessing the significance</h1>
+<div id="model-significance" class="section level2">
+<h2><span class="header-section-number">4.1</span> Model significance</h2>
+<p>A p-value for the logistic model can be approximated (note that it is difficult to associate an exact p-value with a logistic regression model).</p>
+<p>First, pull the the difference in degrees of freedom between the null and full model:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Chidf &lt;-<span class="st"> </span>M1$df.null -<span class="st"> </span>M1$df.residual</code></pre></div>
+<p>Then, compute the p-value using the chi-square statistic. This pseudo p-value is also called the <strong>likelihood ratio p-value</strong>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">chisq.prob &lt;-<span class="st"> </span><span class="dv">1</span> -<span class="st"> </span><span class="kw">pchisq</span>(modelChi, Chidf)
+chisq.prob</code></pre></div>
+<pre><code>[1] 0.006619229</code></pre>
+<p>If the p-value is small then we can reject the null hypothesis that the current model does not improve on the base model. Here, the p-value is 0.01 suggesting that the model is a significant improvement over the base model.</p>
+</div>
+<div id="parameter-significance" class="section level2">
+<h2><span class="header-section-number">4.2</span> Parameter significance</h2>
+<p>If we want to assess the significance of a parameter as it compares to the base model simply wrap the model object with the <code>summary</code> function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(M1)</code></pre></div>
+<pre><code>
+Call:
+glm(formula = Coast ~ Income, family = binomial, data = df)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-1.3578  -0.6948  -0.1863   0.5207   2.2137  
+
+Coefficients:
+               Estimate  Std. Error z value Pr(&gt;|z|)  
+(Intercept) -12.2177062   5.7646456  -2.119   0.0341 *
+Income        0.0005048   0.0002401   2.102   0.0355 *
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 22.181  on 15  degrees of freedom
+Residual deviance: 14.807  on 14  degrees of freedom
+AIC: 18.807
+
+Number of Fisher Scoring iterations: 5</code></pre>
+<p>The <code>Income</code> coefficient p-value is 0.036.</p>
+</div>
+</div>
+<div id="multi-variable-model" class="section level1">
+<h1><span class="header-section-number">5</span> Multi-variable model</h1>
+<p>So far, we’ve worked with a single variable model. We can augment the model by adding more variables. For example, we will add the fraction of the population that has attained a bachelor’s degree to the model (we’ll ignore the possibility of co-dependence between variables for pedagogical sake).</p>
+<p>The entire workflow follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Grab variables of interest</span>
+df2 &lt;-<span class="st"> </span><span class="kw">select</span>(dat, Coast, <span class="dt">Income =</span> Per.capita.income, <span class="dt">Edu =</span> Fraction.with.Bachelor.s.or.greater)
+
+<span class="co"># Run regression model</span>
+M2 &lt;-<span class="st"> </span><span class="kw">glm</span>(Coast ~<span class="st"> </span>Income +<span class="st"> </span>Edu, df2, <span class="dt">family =</span> binomial)
+
+<span class="co"># Compute pseudo R-square</span>
+modelChi &lt;-<span class="st"> </span>M2$null.deviance -<span class="st"> </span>M2$deviance
+pseudo.R2 &lt;-<span class="st"> </span>modelChi /<span class="st"> </span>M2$null.deviance
+pseudo.R2</code></pre></div>
+<pre><code>[1] 0.5422743</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Compute the pseudo p-value</span>
+Chidf &lt;-<span class="st"> </span>M2$df.null -<span class="st"> </span>M2$df.residual
+modelChi &lt;-<span class="st"> </span>M2$null.deviance -<span class="st"> </span>M2$deviance
+<span class="dv">1</span> -<span class="st"> </span><span class="kw">pchisq</span>(modelChi, Chidf)</code></pre></div>
+<pre><code>[1] 0.002444256</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Assess each parameter&#39;s significance</span>
+<span class="kw">summary</span>(M2)</code></pre></div>
+<pre><code>
+Call:
+glm(formula = Coast ~ Income + Edu, family = binomial, data = df2)
+
+Deviance Residuals: 
+     Min        1Q    Median        3Q       Max  
+-1.52529  -0.22960  -0.04039   0.37393   1.83053  
+
+Coefficients:
+              Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept) -5.9978478  6.8723294  -0.873    0.383
+Income      -0.0004927  0.0005829  -0.845    0.398
+Edu         73.8296049 46.8728758   1.575    0.115
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 22.181  on 15  degrees of freedom
+Residual deviance: 10.153  on 13  degrees of freedom
+AIC: 16.153
+
+Number of Fisher Scoring iterations: 6</code></pre>
+<p>Note the change in the <code>Income</code> coefficient p-value when adding another variable that may well be explaining the same variability in <code>Coast</code> (i.e. <code>Income</code> and <code>Edu</code> are very likely correlated).</p>
 <hr />
 <p><strong>Session Info</strong>:</p>
 <p><strong>R version 3.3.0 (2016-05-03)</strong></p>
 <p>**<a href="Platform:**" class="uri">Platform:**</a> x86_64-w64-mingw32/x64 (64-bit)</p>
 <p><strong>attached base packages:</strong> <em>stats</em>, <em>graphics</em>, <em>grDevices</em>, <em>utils</em>, <em>datasets</em>, <em>methods</em> and <em>base</em></p>
-<p><strong>other attached packages:</strong> ggplot2(v.2.1.0)</p>
-<p><strong>loaded via a namespace (and not attached):</strong> <em>Rcpp(v.0.12.5)</em>, <em>knitr(v.1.13.1)</em>, <em>magrittr(v.1.5)</em>, <em>munsell(v.0.4.3)</em>, <em>colorspace(v.1.2-6)</em>, <em>xtable(v.1.8-2)</em>, <em>R6(v.2.1.2)</em>, <em>stringr(v.1.0.0)</em>, <em>plyr(v.1.8.3)</em>, <em>tools(v.3.3.0)</em>, <em>grid(v.3.3.0)</em>, <em>gtable(v.0.2.0)</em>, <em>miniUI(v.0.1.1)</em>, <em>htmltools(v.0.3.5)</em>, <em>yaml(v.2.1.13)</em>, <em>digest(v.0.6.9)</em>, <em>bookdown(v.0.0.71)</em>, <em>shiny(v.0.13.2)</em>, <em>formatR(v.1.4)</em>, <em>evaluate(v.0.9)</em>, <em>mime(v.0.4)</em>, <em>rmarkdown(v.0.9.6.9)</em>, <em>stringi(v.1.0-1)</em>, <em>pander(v.0.6.0)</em>, <em>scales(v.0.4.0)</em> and <em>httpuv(v.1.3.3)</em></p>
+<p><strong>other attached packages:</strong> <em>rms(v.4.5-0)</em>, <em>SparseM(v.1.7)</em>, <em>Hmisc(v.3.17-4)</em>, <em>Formula(v.1.2-1)</em>, <em>survival(v.2.39-2)</em>, <em>lattice(v.0.20-33)</em>, <em>dplyr(v.0.4.3)</em> and <em>ggplot2(v.2.1.0)</em></p>
+<p><strong>loaded via a namespace (and not attached):</strong> <em>gtools(v.3.5.0)</em>, <em>zoo(v.1.7-13)</em>, <em>pander(v.0.6.0)</em>, <em>splines(v.3.3.0)</em>, <em>colorspace(v.1.2-6)</em>, <em>miniUI(v.0.1.1)</em>, <em>htmltools(v.0.3.5)</em>, <em>yaml(v.2.1.13)</em>, <em>chron(v.2.3-47)</em>, <em>foreign(v.0.8-66)</em>, <em>DBI(v.0.4-1)</em>, <em>RColorBrewer(v.1.1-2)</em>, <em>multcomp(v.1.4-5)</em>, <em>plyr(v.1.8.3)</em>, <em>stringr(v.1.0.0)</em>, <em>MatrixModels(v.0.4-1)</em>, <em>munsell(v.0.4.3)</em>, <em>gtable(v.0.2.0)</em>, <em>mvtnorm(v.1.0-5)</em>, <em>codetools(v.0.2-14)</em>, <em>evaluate(v.0.9)</em>, <em>labeling(v.0.3)</em>, <em>latticeExtra(v.0.6-28)</em>, <em>knitr(v.1.13.1)</em>, <em>httpuv(v.1.3.3)</em>, <em>quantreg(v.5.24)</em>, <em>parallel(v.3.3.0)</em>, <em>TH.data(v.1.0-7)</em>, <em>Rcpp(v.0.12.5)</em>, <em>acepack(v.1.3-3.3)</em>, <em>xtable(v.1.8-2)</em>, <em>scales(v.0.4.0)</em>, <em>formatR(v.1.4)</em>, <em>gdata(v.2.17.0)</em>, <em>mime(v.0.4)</em>, <em>gridExtra(v.2.2.1)</em>, <em>digest(v.0.6.9)</em>, <em>stringi(v.1.1.1)</em>, <em>polspline(v.1.1.12)</em>, <em>bookdown(v.0.0.71)</em>, <em>shiny(v.0.13.2)</em>, <em>grid(v.3.3.0)</em>, <em>tools(v.3.3.0)</em>, <em>sandwich(v.2.3-4)</em>, <em>magrittr(v.1.5)</em>, <em>lazyeval(v.0.1.10)</em>, <em>cluster(v.2.0.4)</em>, <em>MASS(v.7.3-45)</em>, <em>Matrix(v.1.2-6)</em>, <em>data.table(v.1.9.6)</em>, <em>assertthat(v.0.1)</em>, <em>rmarkdown(v.0.9.6.9)</em>, <em>R6(v.2.1.2)</em>, <em>rpart(v.4.1-10)</em>, <em>nnet(v.7.3-12)</em> and <em>nlme(v.3.1-127)</em></p>
 </div>
 
 
