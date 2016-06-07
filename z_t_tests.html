@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Comparing means: z and t tests</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #0000ff; } /* Keyword */
+code > span.ch { color: #008080; } /* Char */
+code > span.st { color: #008080; } /* String */
+code > span.co { color: #008000; } /* Comment */
+code > span.ot { color: #ff4000; } /* Other */
+code > span.al { color: #ff0000; } /* Alert */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #008000; font-weight: bold; } /* Warning */
+code > span.cn { } /* Constant */
+code > span.sc { color: #008080; } /* SpecialChar */
+code > span.vs { color: #008080; } /* VerbatimString */
+code > span.ss { color: #008080; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { } /* Variable */
+code > span.cf { color: #0000ff; } /* ControlFlow */
+code > span.op { } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #ff4000; } /* Preprocessor */
+code > span.do { color: #008000; } /* Documentation */
+code > span.an { color: #008000; } /* Annotation */
+code > span.cv { color: #008000; } /* CommentVar */
+code > span.at { } /* Attribute */
+code > span.in { color: #008000; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="libs\style2.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 45px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+
+.section h2 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+.section h3 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+.section h4 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+.section h5 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+.section h6 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.9em;
+  padding-left: 5px;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Stats in R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="CI.html">CI</a>
+</li>
+<li>
+  <a href="z_t_tests.html">T-test</a>
+</li>
+<li>
+  <a href="F_test.html">F-test</a>
+</li>
+<li>
+  <a href="ChiSquare_test.html">ChiSquare</a>
+</li>
+<li>
+  <a href="regression.html">Regression</a>
+</li>
+<li>
+  <a href="ANOVA.html">ANOVA</a>
+</li>
+<li>
+  <a href="Logistic.html">Logistic</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Comparing means: z and t tests</h1>
+
+</div>
+
+
+<p><em>Last modified on 2016-06-07</em></p>
+<div id="tests-of-significance-single-sample-inference" class="section level1">
+<h1><span class="header-section-number">1</span> Tests of Significance (single sample inference)</h1>
+<p>Suppose that we want to hypothesize that the mean number of TV hours watched per week is 28.5; we’ll define this as our null hypothesis, <span class="math inline">\(H_o\)</span>. Let’s also assume that we only have access to a subset of household data (i.e. a sample), <span class="math inline">\(x\)</span>,</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="fl">25.7</span>, <span class="fl">38.5</span>, <span class="fl">29.3</span>, <span class="fl">25.1</span>, <span class="fl">30.6</span>, <span class="fl">34.6</span>, <span class="fl">30.0</span>, <span class="fl">39.0</span>, <span class="fl">33.7</span>, <span class="fl">31.6</span>, 
+       <span class="fl">25.9</span>, <span class="fl">34.4</span>, <span class="fl">26.9</span>, <span class="fl">23.0</span>, <span class="fl">31.1</span>, <span class="fl">29.3</span>, <span class="fl">34.5</span>, <span class="fl">35.1</span>, <span class="fl">31.2</span>, <span class="fl">33.2</span>, 
+       <span class="fl">30.2</span>, <span class="fl">36.4</span>, <span class="fl">37.5</span>, <span class="fl">27.6</span>, <span class="fl">24.6</span>, <span class="fl">23.9</span>, <span class="fl">27.0</span>, <span class="fl">29.5</span>, <span class="fl">30.1</span>, <span class="fl">29.6</span>, 
+       <span class="fl">27.3</span>, <span class="fl">31.2</span>, <span class="fl">32.5</span>, <span class="fl">25.7</span>, <span class="fl">30.1</span>, <span class="fl">24.2</span>, <span class="fl">24.1</span>, <span class="fl">26.4</span>, <span class="fl">31.0</span>, <span class="fl">20.7</span>, 
+       <span class="fl">33.5</span>, <span class="fl">32.2</span>, <span class="fl">34.7</span>, <span class="fl">32.6</span>, <span class="fl">33.5</span>, <span class="fl">32.7</span>, <span class="fl">25.6</span>, <span class="fl">31.1</span>, <span class="fl">32.9</span>, <span class="fl">25.9</span>)</code></pre></div>
+<p>from which we can estimate the population mean and the standard error of the sample mean as:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mean.x &lt;-<span class="st"> </span><span class="kw">mean</span>(x)
+SE.x   &lt;-<span class="st"> </span><span class="kw">sd</span>(x) /<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">length</span>(x))</code></pre></div>
+<p>The arithmetic mean of <span class="math inline">\(x\)</span> is 30.14 which is slightly different from our hypothesized value of 28.5. This begs the question: is this difference significant, or is it due to chance variation alone? This question will be addressed in the following subsections.</p>
+<div id="the-null-and-the-alternative-hypotheses" class="section level2">
+<h2><span class="header-section-number">1.1</span> The null and the alternative hypotheses</h2>
+<p>The objective of hypothesis testing is to assess whether the observed data are consistent with a well specified (hypothesized) random process, <span class="math inline">\(H_o\)</span>. Note that when we mean <em>random</em> here we are not inferring complete randomness but some random variation about a central value. <em>Freedman et al.</em> (2007) define The <em>null</em> and <em>alternative</em> hypotheses as follows:</p>
+<blockquote>
+<p>The <strong><em>null hypothesis</em></strong> corresponds to the idea that an observed difference is due to chance… The <strong>alternative hypothesis</strong> corresponds to the idea that the observed difference is real.</p>
+</blockquote>
+<p><span class="math inline">\(Ho\)</span> is a statement about the true nature of things. To assess whether our observed data are consistent with our null hypothesis we seek to compare our data with the hypothesized value .</p>
+<p><img src="z_t_tests_files/figure-html/unnamed-chunk-2-1.png" width="480" /></p>
+<p>In essence, we compare our observed data (usually as a statistical summary) to the hypothesized distribution using a <em>test statistic</em> from which a <em>test of significance</em> is calculated (this tells us how likely our observed statistic agrees with our hypothesized process). These, and derived concepts, are highlighted in the subsequent sections.</p>
+</div>
+<div id="test-statistics" class="section level2">
+<h2><span class="header-section-number">1.2</span> Test statistics</h2>
+<p>A <strong>test statistic</strong> is a numerical summary of the data that is compared to what would be expected under the null hypothesis. Test statistics can take on many forms such as the <strong>z-tests</strong> (usually used for large datasets) or <strong>t-tests</strong> (usually used when datasets are small).</p>
+</div>
+<div id="z-tests" class="section level2">
+<h2><span class="header-section-number">1.3</span> <span class="math inline">\(z\)</span>-tests</h2>
+<p>The <strong><span class="math inline">\(z\)</span>-statistic</strong> is a measure of how much an observed statistic differs from an expected statistic put forward by the null hypothesis. It is computed as</p>
+<p><span class="math display">\[
+z = \frac{observed - expected}{SE}
+\]</span></p>
+<p>In computing the <span class="math inline">\(z\)</span>-statistic, the <span class="math inline">\(SE\)</span> used is <em>not</em> the standard error of the observed data, but the standard error for the null. To be more precise, the <span class="math inline">\(SE\)</span> in this formula is computed from the null’s <span class="math inline">\(SD\)</span>, if given. However, in many cases (such as in this working example) the null’s <span class="math inline">\(SD\)</span> can only be estimated from the observed data’s <span class="math inline">\(SD\)</span>.</p>
+<p>For example, the <span class="math inline">\(z\)</span>-statistic for our scenario is:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Ho     &lt;-<span class="st"> </span><span class="fl">28.5</span>
+z      &lt;-<span class="st"> </span>(mean.x -<span class="st"> </span>Ho) /<span class="st"> </span>SE.x</code></pre></div>
+<p>where <code>SE.x</code> is the observed sample’s standard error. In our working example, <span class="math inline">\(z\)</span>’s value of <strong>2.74</strong> indicates that the sample mean is <strong>2.74</strong> <span class="math inline">\(SE\)</span> ’s away from the hypothesized value.</p>
+<p><img src="z_t_tests_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>The red line shows where our observed statistic (mean number of TV hours watched) lies on the hypothesized distribution of mean values defined by <span class="math inline">\(H_o\)</span>. The grey dashed lines represent 1 <span class="math inline">\(SE\)</span> to the left and to the right of the hypothesized mean. Each tic mark interval represents a standard deviation. From the graph, it appears that the observed mean value of 30.14 is almost 3 <span class="math inline">\(SE\)</span>’s away from the hypothesized mean of 28.5. If we were to draw many samples from the population described by <span class="math inline">\(H_o\)</span> (i.e. a population whose mean number of TV hours watched equals 28.5), only a small fraction of the sample means would produce a <span class="math inline">\(z\)</span>-value more extreme than the one calculated from our dataset. The area shaded in light red highlights the probability of <span class="math inline">\(z\)</span>-values being more extreme than the one computed from our sample. We can quantify this probability <span class="math inline">\(P\)</span> by looking up its value in a <em>Normal distribution</em> table (the old fashion way), or more simply, by passing the <span class="math inline">\(z\)</span> parameter 2.74 to the <code>R</code> function <code>pnorm</code>.</p>
+<p>The <code>pnorm</code> function gives us the probability of a <span class="math inline">\(z\)</span> value “greater than” or “less than” the <span class="math inline">\(z\)</span> value computed from our data. In this case, we are interested in knowing the probability of having <span class="math inline">\(z\)</span> values more extreme than the one computed. Since our <span class="math inline">\(z\)</span> value is on the right side of the distribution curve, we will invoke the option <code>lower.tail=FALSE</code> to ensure that the probability returned is for the right tail-end section of the distribution (the pink area in the preceding figure).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">P.Ho  &lt;-<span class="st"> </span><span class="kw">pnorm</span>(z, <span class="dt">lower.tail=</span><span class="ot">FALSE</span>)
+P.Ho</code></pre></div>
+<pre><code>[1] 0.003071959</code></pre>
+<p>Here, <span class="math inline">\(z\)</span> is on the right side of the curve and the probability of getting a test statistic more extreme than our <span class="math inline">\(z\)</span> is about <strong>0.003</strong> or 0.31% . <span class="math inline">\(P\)</span> is called the <strong>observed significance level</strong> and is sometimes referred to as the <span class="math inline">\(P\)</span>-value. The <em>smaller</em> this probability, the <em>stronger</em> the evidence against <span class="math inline">\(Ho\)</span> meaning that the odds of the mean TV hours watched per household being 28.5 is very small. Careful, <span class="math inline">\(P\)</span> <strong>is not</strong> the chance of <span class="math inline">\(Ho\)</span> being right, such statement is prevalent but is <em>wrong</em>.</p>
+<p>Sometimes researchers will define a <span class="math inline">\(P\)</span> value for which <span class="math inline">\(Ho\)</span> will be rejected. Such value is usually referred to as the <span class="math inline">\(\pmb{\alpha \; value}\)</span>. If such a test is requested, we must determine if the test is <strong>one-tailed</strong> or <strong>two-tailed</strong>. A test is <em>one-tailed</em> if the alternate hypothesis, <span class="math inline">\(H_a\)</span>, is of the form “greater than” or “less than” (e.g. the mean number of TV hours watched <em>are greater than</em> 28.5). A test is <em>two-tailed</em> if <span class="math inline">\(H_a\)</span> is <em>not</em> of the form “greater than” or “less than” (e.g. the mean number of TV hours watched differs from 28.5). Here are a few examples:</p>
+<ul>
+<li>If we chose an <span class="math inline">\(\alpha\)</span> value of 0.05 and we wanted to test the hypothesis that our observed mean hours is <strong>different</strong> than <span class="math inline">\(H_o\)</span> we would define a <strong>two-tailed</strong> test, meaning that we would have to define rejection regions associated with <span class="math inline">\(P\)</span> values of <em>less than</em> 0.025 and <em>greater than</em> 0.975 (or <span class="math inline">\(z\)</span> values of -1.96 and 1.96 respectively). The reason we choose <span class="math inline">\(p\)</span> values of 0.025/0.975 and not 0.05/0.95 is because we need to split the 0.05 <span class="math inline">\(\alpha\)</span> value across <em>both</em> tails of the curve (remember that we are rejecting the null if our <span class="math inline">\(z\)</span> value falls in <em>either</em> tails of the curve).</li>
+</ul>
+<p><img src="z_t_tests_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<ul>
+<li>If we chose an <span class="math inline">\(\alpha\)</span> value of 0.05 and we wanted to test the hypothesis that our observed mean hours is <strong>greater</strong> than <span class="math inline">\(H_o\)</span>, we would define a <strong>one-tailed</strong> test, meaning that we would have to define a rejection region associated with a <span class="math inline">\(P\)</span> value <em>greater than</em> 0.95.</li>
+</ul>
+<p><img src="z_t_tests_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>In our working example, if we had chosen a two-tailed test, we would <strong>reject</strong> the null at a 5% and 1% <span class="math inline">\(\alpha\)</span> value (these would represent rejection regions associated with <span class="math inline">\(z\)</span> values of +/- 1.96 and +/- 2.58 respectively). However, if our <span class="math inline">\(\alpha\)</span> value was set at 0.005 (0.5%), we could not reject the null hypothesis since the <span class="math inline">\(z\)</span>-value associated with a two-tailed test for <span class="math inline">\(\alpha\)</span>=0.005 is 2.81 (greater than our observed <span class="math inline">\(z\)</span> value of 2.74).</p>
+<p>The following table highlights popular <span class="math inline">\(\alpha\)</span> values and their associated <span class="math inline">\(z\)</span> values for a one-tailed and two-tailed test:</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="center"><span class="math inline">\(\small\alpha=0.1\)</span></th>
+<th align="center"><span class="math inline">\(\small\alpha=0.05\)</span></th>
+<th align="center"><span class="math inline">\(\small\alpha=0.01\)</span></th>
+<th align="center"><span class="math inline">\(\small\alpha=0.005\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1-tailed</td>
+<td align="center">-1.28 or 1.28</td>
+<td align="center">-1.645 or 1.645</td>
+<td align="center">-2.33 or 2.33</td>
+<td align="center">-2.58 or 2.58</td>
+</tr>
+<tr class="even">
+<td>2-tailed</td>
+<td align="center">-1.645 &amp; 1.645</td>
+<td align="center">-1.96 &amp; 1.96</td>
+<td align="center">-2.58 &amp; 2.58</td>
+<td align="center">-2.81 &amp; 2.81</td>
+</tr>
+</tbody>
+</table>
+<p>Note that the one-tailed test requires that only <strong>one</strong> condition be met (only one of the rejection regions is of concern) whereas a two-tailed test requires that <strong>two</strong> conditions be met (both rejection regions are of concern).</p>
+<p>It’s important to note that the <span class="math inline">\(z\)</span>-test makes some restrictive assumptions: * the sample size is reasonably large * the normal (Gaussian) distribution can be used to approximate the distribution of the sample statistic (e.g. the mean) being investigated.</p>
+<p>An alternative to the <span class="math inline">\(z\)</span>-test, the <span class="math inline">\(t\)</span>-test, is discussed in the following section.</p>
+</div>
+<div id="t-tests" class="section level2">
+<h2><span class="header-section-number">1.4</span> <span class="math inline">\(t\)</span>-tests</h2>
+<p>When working with small sample sizes (typically less than 30), the <span class="math inline">\(z\)</span>-test has to be modified. For starters, the shape of the sampling distribution (i.e. the distribution of means one would compute from many different samples from the same underlying population) now depends on the shape of the underlying population distribution which must therefore be approximately normal in shape. These requirements can be quite restrictive because in most cases we do not know the population’s distribution.</p>
+<p>Continuing with our working example, let’s assume that instead of a sample size of 50 we now have a sample size of 10.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x2 &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="fl">37.13</span>, <span class="fl">32.02</span>, <span class="fl">26.05</span>, <span class="fl">31.76</span>, <span class="fl">31.90</span>, <span class="fl">38.62</span>, <span class="fl">21.63</span>, <span class="fl">40.75</span>, <span class="fl">31.36</span>, <span class="fl">27.01</span>)</code></pre></div>
+<p>Next we compute the mean and standard deviation of the sample. Note that the standard deviation can be computed in one of two ways: <span class="math inline">\(TSS/\sqrt{n}\)</span> or <span class="math inline">\(TSS/\sqrt{n-1}\)</span> where <span class="math inline">\(TSS\)</span> is the <em>total sum of squares</em>, <span class="math inline">\(\sum{(x - \bar{x})^2}\)</span>, and <span class="math inline">\(n\)</span> is the sample size. The latter formulation of <span class="math inline">\(sd\)</span> (i.e. the one with the <span class="math inline">\(\sqrt{n-1}\)</span> in the denominator) is recommended for small sample sizes but can be used for large sample sizes as well. <code>R</code>’s <code>sd()</code> function is computed using the <span class="math inline">\(\sqrt{(n-1)}\)</span> denominator. This is what we want to use with our small sample.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mean.x2 &lt;-<span class="st"> </span><span class="kw">mean</span>(x2)
+sd.x2   &lt;-<span class="st"> </span><span class="kw">sd</span>(x2) </code></pre></div>
+<p>Next, we compute the standard error. Recall that the standard error tells us something about the confidence in the range of <em>mean</em> values (or some other statistic) for the underlying population based on our sample; it’s <em>not</em> a measure of spread of our sample data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">SE.x2 &lt;-<span class="st"> </span><span class="kw">sd</span>(x2) /<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">length</span>(x2)) </code></pre></div>
+<p>The next step is to find the <span class="math inline">\(P\)</span>-value. When working with large sample sizes, the normal (Gaussian) distribution curve does a good job in approximating the distribution of a sample statistic (such as the mean). It does not, however, do a good job in approximating the distribution of that same statistic when these are computed from small sample sizes.</p>
+<p><img src="z_t_tests_files/figure-html/normal_vs_student-1.png" width="576" /></p>
+<p>The black line represents the distribution of the <em>mean</em> hours (from many hypothetical samples) of TV watched as approximated by the <em>normal</em> curve. The red line represents the same parameter but represented this time by a <em>student</em> distribution curve with a degree of freedom, <span class="math inline">\(df\)</span>, of 4. The <span class="math inline">\(df\)</span> is computed by subtracting 1 from the total number of data points in the sample.</p>
+<p>By convention when computing a test statistic for small sample sizes (and when a student curve is used), we refer to the test statistic as the <span class="math inline">\(t\)</span> statistic (or <span class="math inline">\(t\)</span> value). For our dataset <span class="math inline">\(t\)</span> can be computed as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">t.val &lt;-<span class="st"> </span>(mean.x2 -<span class="st"> </span>Ho) /<span class="st"> </span>SE.x2</code></pre></div>
+<p>Here, we make a point not to name the <span class="math inline">\(t\)</span> value <code>t</code> in our code since <code>R</code> has a function with the same name, <code>t()</code> (a matrix transpose function). Had we named our variable <code>t</code>, than that variable name would have masked the internal function <code>t()</code>. This would not have been a big deal for our working example since we won’t be using the <em>transpose</em> function, but it’s good practice to use variables not already in use in <code>R</code>.</p>
+<p>The next step is to compute the <span class="math inline">\(P\)</span>-value. We will compute <span class="math inline">\(P\)</span> using both the normal distribution curve (which we normally do for a large sample) and <em>Student’s</em> curve (which is recommended for a small sample).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">P.Ho.norm &lt;-<span class="st"> </span><span class="kw">pnorm</span>(t.val, <span class="dt">lower.tail=</span><span class="ot">FALSE</span>)
+P.Ho.stud &lt;-<span class="st"> </span><span class="kw">pt</span>(t.val, <span class="dt">df =</span> <span class="kw">length</span>(x2) -<span class="st"> </span><span class="dv">1</span>, <span class="dt">lower.tail =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<p>The <span class="math inline">\(P\)</span>-value computed from the <strong>normal curve</strong> is <strong>0.038</strong> and that computed from <strong>Student’s curve</strong> is <strong>0.055</strong>. If an <span class="math inline">\(\alpha\)</span> value of 5% was requested, the normal distribution approximation would suggest that chance variation alone could not explain the discrepancy between our hypothesized mean number of TV hours watched and that computed from our sample. Yet, if Student’s approximation of the distribution is used (as it should be with the small sample), we could not reject the null (at least not at the 5% significance level).</p>
+<p>The following figure summarizes the decision tree one should follow in deciding which curve to use when calculating a <span class="math inline">\(P\)</span>-value. This figure is adapted from Freedman <em>et al.</em> (p. 493).</p>
+<p><img src="z_t_tests_files/figure-html/unnamed-chunk-13-1.png" width="710.4" /></p>
+<p>Many textbooks only cover the <span class="math inline">\(t\)</span>-test and not the <span class="math inline">\(z\)</span>-test. In fact , you may not find a <span class="math inline">\(z\)</span>-test implementation in some statistical software. This is because the <span class="math inline">\(t\)</span>-test results will converge with the <span class="math inline">\(z\)</span>-test results as the sample size gets larger.</p>
+</div>
+<div id="follow-up-examples" class="section level2">
+<h2><span class="header-section-number">1.5</span> Follow-up examples</h2>
+<div id="problem-1" class="section level3">
+<h3><span class="header-section-number">1.5.1</span> Problem 1</h3>
+<p>You conduct a survey where the respondent is to answer <em>yes</em> or <em>no</em> to a question. Of the <strong>45</strong> respondents, <strong>20</strong> answer yes. You want to know if the percentage of <em>yes’</em> is significantly different from an expected value of <strong>50%</strong>.</p>
+</div>
+<div id="solution-to-problem-1" class="section level3">
+<h3><span class="header-section-number">1.5.2</span> Solution to problem 1</h3>
+<p>The data can be treated as a binomial proportion where the fraction of <em>yes’</em> in our sample is <span class="math inline">\(\hat{p} = 20/45 = 0.444\)</span> and the fraction of <em>no’s</em> is <span class="math inline">\(\hat{q} = 1 - \hat{p} = 1 - 0.444 = 0.555\)</span> (the <span class="math inline">\(\hat{ }\)</span> symbol reminds us that these are estimate fractions of the true yes’ and no’s in the overall population). The hypothesis <span class="math inline">\(H_o\)</span> is that the number of <em>yes’</em> in the population equals the number of <em>no’s</em> or <span class="math inline">\(p_o = q_o = 0.5\)</span>.</p>
+<p>We first need to compute <span class="math inline">\(SE_{Ho}\)</span> (The standard error for the null and <em>not</em> the observed data). In this example, the standard deviation of the null hypothesis is given to us since we are told what the proportion of yes’ and no’s should be equal to in the hypothesized population (i.e. we know that the hypothesized population has 22.5 yes’ and 22.5 no’s). If we could not glean a standard deviation from the null, we would therefore have to rely on the sample’s <span class="math inline">\(SD\)</span> instead. <span class="math inline">\(SE_{Ho}\)</span> can be computed as follows.</p>
+<p><span class="math inline">\(SE_{Ho} = \sqrt{ \frac{\displaystyle (fraction\; of\; yes&#39;)(fraction\; of\; no&#39;s)}{\displaystyle n}}=\sqrt{\frac{\displaystyle (0.5)(0.5)}{\displaystyle 45}}=0.075\)</span>.</p>
+<p>A way to interpret <span class="math inline">\(SE_{Ho}\)</span> is to say that if many surveys of 45 people were collected from a population defined by the null (i.e. a population where the number of <em>yes’</em> equals the number of <em>no’s</em>), 68% of the fraction of <em>yes’</em> would fall between <span class="math inline">\(q_o - 1SE_{Ho}\)</span> and <span class="math inline">\(q_o + 1SE_{Ho}\)</span> or between the interval defined by the fractions (0.425, 0.575) or (42.5%, 57.5%).</p>
+<p>Next, we compute the test statistic, <span class="math inline">\(z\)</span>:</p>
+<p><span class="math inline">\(z = (\hat{p} - p_o)/SE_{Ho} = (.444 - 0.5)/0.075 = -0.75\)</span>,</p>
+<p>The observed fraction of <em>yes’</em> is 0.75 <span class="math inline">\(SE\)</span>’s <em>below</em> the expected count of 22.5 (or 0.5 yes’).</p>
+<p><img src="z_t_tests_files/figure-html/unnamed-chunk-14-1.png" width="480" /></p>
+<p>Since the sample size is relatively large, we can compute the <span class="math inline">\(P\)</span>-value using the normal curve approximation using the function <code>pnorm(0.75, lower.tail=FALSE)</code> = 0.2266274.</p>
+<p>The entire <code>R</code> analysis for this example can be completed as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n   &lt;-<span class="st"> </span><span class="dv">45</span>                        <span class="co"># number of individuals surveyed</span>
+p   &lt;-<span class="st"> </span><span class="fl">0.444</span>                     <span class="co"># The fraction of yes&#39;</span>
+q   &lt;-<span class="st"> </span><span class="dv">1</span> -<span class="st"> </span>p                     <span class="co"># The fraction of no&#39;s</span>
+ho  &lt;-<span class="st"> </span><span class="fl">0.5</span>                       <span class="co"># The null hypothesis</span>
+SEo &lt;-<span class="st"> </span><span class="kw">sqrt</span>(<span class="fl">0.5</span> *<span class="st"> </span><span class="fl">0.5</span> /<span class="st"> </span>n)       <span class="co"># The standard error for Ho sample distribution</span>
+z   &lt;-<span class="st"> </span>( p -<span class="st"> </span>ho ) /<span class="st"> </span>SEo          <span class="co"># The z-statistic</span>
+P.z &lt;-<span class="st"> </span><span class="kw">pnorm</span>(z, <span class="dt">lower.tail=</span><span class="ot">TRUE</span>) <span class="co"># Get the probability</span></code></pre></div>
+<p>Note that in the last line of code we set <code>lower.tail</code> to TRUE since we are interested in the portion of the curve to the <em>left</em> of our test statistic. Had <span class="math inline">\(z\)</span> turned out positive (indicating that our observed fraction of yes’ is greater than expected under the null), we would have focused on right tail of the curve (i.e. setting <code>lower.tail</code> to FALSE).</p>
+<p>Hence, there is a 23% chance that the fraction of <em>yes’</em> one could expect to measure under <span class="math inline">\(H_o\)</span> could be more extreme than the one observed or, put differently, if 100 investigators were to conduct their own survey of 45 people from a population whose number of <em>yes’</em> equals the number of <em>no’s</em>, 23 of the survey results would have a percentage of <em>yes’</em> more extreme than ours. So our observed fraction of <em>yes’</em> is consistent with what one would expect under the null hypothesis. It would probably be safe then to state that we cannot reject the null hypothesis.</p>
+</div>
+<div id="problem-2" class="section level3">
+<h3><span class="header-section-number">1.5.3</span> Problem 2</h3>
+<p>Aldicarb, a pesticide substance, is measured from a sampling well <strong>4</strong> times over the course of a season. The concentrations measured are <strong>6.3, 7.1, 5.8 and 6.9 ppb</strong> (parts per billion). The maximum contaminant level (MCL) has been set at <strong>7 ppb</strong>. We want to determine if the average concentrations observed are less than the MCL of 7 ppb at the <strong>99% significance</strong> level.</p>
+</div>
+<div id="solution-to-problem-2" class="section level3">
+<h3><span class="header-section-number">1.5.4</span> Solution to problem 2</h3>
+<p>The question asks if the true mean concentration (from the four measurements) is less than or equal to 7 ppb. We do not have the luxury of monitoring this concentration continuously so we must contend with just four observations. These four observations are random variables that can be expected to fluctuate around the true mean concentration of the well (a value we are not privy to). We are hypothesizing that the true mean concentration is less than 7 ppb. We want to compare our observed mean concentration to the <em>range</em> of mean concentrations we could expect <em>if</em> we were to sample (with four concentration measurements) from a well whose mean concentration is indeed 7 ppb. If our observed concentration is not consistent with what we would expect to measure from a well whose true concentration is 7 ppb, we can than state that the <em>true</em> mean concentration of aldicarb in the well is less than 7 ppb.</p>
+<p>This problem differs from the last one in that we are interested in a different parameter: the mean (of a concentration) instead of the fraction. It also differs from the last problem in that we are now defining a cutoff probability (aka a rejection region) of 0.99. In the last exercise, we were only seeking the <em>probability</em> of finding a test statistic more extreme than expected under a null (and thus leaving the interpretation of what <em>is</em> significant up to someone else).</p>
+<p>We need to compute the mean of the observed concentrations, <span class="math inline">\(\hat{\mu}\)</span>, and the standard error of the mean concentrations we would observe if the null was the true state of things, <span class="math inline">\(SE_{Ho}\)</span>. For the latter, we do not know the actual standard deviation of the null distribution (this is another difference between this example and the previous example where the standard deviation–and thus the standard error–was gleaned directly from null). We will therefore assume that <span class="math inline">\(SD\)</span> of the null is the same as <span class="math inline">\(SD\)</span> from our observed data. Note that we must therefore assume that the distribution of aldicarb sample mean concentrations follows a normal curve!</p>
+<p><span class="math inline">\(\hat{\mu} = \frac{\displaystyle 6.3 + 7.1 + 5.8 + 6.9}{\displaystyle 4}=6.525\)</span></p>
+<p><span class="math inline">\(SE_{Ho} = \frac{\displaystyle SD_{wells}}{\sqrt{ \displaystyle n}}=\frac{\displaystyle 0.591}{\displaystyle \sqrt{4}} = 0.295\)</span>.</p>
+<p>Note that we are using the <span class="math inline">\(SD\)</span> formula for small samples (i.e. the one with the <span class="math inline">\(\sqrt{n-1}\)</span> denominator) which just happens to be what <code>R</code> defaults to.</p>
+<p>The test statistic, <span class="math inline">\(t\)</span> is computed as follows:</p>
+<p><span class="math inline">\(t = (\hat{\mu} - \mu_o)/SE_{Ho} = (6.525 - 7)/0.295 = -1.6\)</span>,</p>
+<p><span class="math inline">\(t\)</span> is negative implying that our observed concentration is to the left of the hypothesized value of 7. In this example, a 99% confidence interval implies that our observed mean concentration of 6.5 ppb should be at least 3 <span class="math inline">\(SE\)</span>’s to the left of our MCL of 7 ppb.</p>
+<p><img src="z_t_tests_files/figure-html/unnamed-chunk-16-1.png" width="489.6" /></p>
+<p>This dataset is very small (only 4 observations). This implies that we will want to use the student curve as opposed to the normal curve when we calculate the the <span class="math inline">\(P\)</span>-value.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x   &lt;-<span class="st">  </span><span class="kw">c</span>(<span class="fl">6.3</span>, <span class="fl">7.1</span>, <span class="fl">5.8</span>, <span class="fl">6.9</span>)               <span class="co"># the four observed concentrations</span>
+n   &lt;-<span class="st"> </span><span class="kw">length</span>(x)                            <span class="co"># number of observations </span>
+mu  &lt;-<span class="st"> </span><span class="kw">mean</span>(x)                              <span class="co"># the mean concentration</span>
+ho  &lt;-<span class="st"> </span><span class="dv">7</span>                                    <span class="co"># The null hypothesis</span>
+SEo &lt;-<span class="st"> </span><span class="kw">sd</span>(x) /<span class="st"> </span><span class="kw">sqrt</span>(n)                      <span class="co"># The standard error for Ho sample distribution</span>
+t   &lt;-<span class="st"> </span>( mu -<span class="st"> </span>ho ) /<span class="st"> </span>SEo                    <span class="co"># The t-statistic</span>
+P.z &lt;-<span class="st"> </span><span class="kw">pt</span>(t, <span class="dt">df =</span> n -<span class="st"> </span><span class="dv">1</span>, <span class="dt">lower.tail =</span> <span class="ot">TRUE</span>)<span class="co"># Get the probability</span></code></pre></div>
+<p><code>P.z</code> returns a value of 0.10, or 10%. In other words, 10% of the mean concentrations from samples collected from a well whose (hypothesized) mean concentration is 7 ppb could be less than our observed concentration. This implies that our observed concentration could well be from a well whose concentration hovers around 7 ppb. If that’s the case, and we were to collect more samples from the well, we could have values greater than 7 ppb (recall that the curve centered on 7 ppb represents the probability distribution of mean concentrations centered on 7 ppb). Given our <span class="math inline">\(P\)</span> value of 0.1, we cannot reject the null and therefore cannot state that our observed concentration is less than 7 ppb at a 99% significance level.</p>
+</div>
+</div>
+<div id="using-the-built-in-t.test-function" class="section level2">
+<h2><span class="header-section-number">1.6</span> Using the built in <strong>t.test</strong> function</h2>
+<p>The six or seven lines of code used to compute the <span class="math inline">\(t\)</span>-test can easily be replaced with <code>R</code>’s <code>t.test()</code> function. Using <em>example 2</em>, we can compute the t-test as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">t.test</span>(x, <span class="dt">mu=</span><span class="dv">7</span>, <span class="dt">alternative=</span><span class="st">&quot;less&quot;</span>, <span class="dt">conf.level=</span> <span class="fl">0.99</span>)</code></pre></div>
+<p>Let’s look at the <code>t.test()</code> parameters. <code>mu</code> is the hypothesized mean value. <code>alternative</code> determines if the test is is two-tailed (<code>=&quot;two.sided&quot;</code>) or one-tailed (<code>=&quot;less&quot;</code> or <code>=&quot;greater&quot;</code>). The <code>less</code> option gives use the probability to the left of our test statistic while the <code>greater</code> option gives us the probability to the right of our test statistic. <code>conf.level</code> determines the alpha level set for <span class="math inline">\(P\)</span>.</p>
+<p>Now let’s look at the output.</p>
+<pre><code>
+    One Sample t-test
+
+data:  x
+t = -1.6077, df = 3, p-value = 0.1031
+alternative hypothesis: true mean is less than 7
+99 percent confidence interval:
+     -Inf 7.866558
+sample estimates:
+mean of x 
+    6.525 </code></pre>
+<p>The output variables are, for the most part, self-explanatory. The value <span class="math inline">\(t\)</span> is the same as the one computed earlier. The <span class="math inline">\(P\)</span> value here gives us the probability to the <em>left</em> of our test statistic.</p>
+</div>
+</div>
+<div id="tests-of-significance-two-independent-samples-comparison" class="section level1">
+<h1><span class="header-section-number">2</span> Tests of Significance (two independent samples comparison)</h1>
+<p>Up to now, we have focused on inferences about single samples. We will now focus on comparing <em>two</em> independent samples using test statistics. The approach is very much the same except that we are no longer comparing a sample statistic to an external standard but to another sample statistic.</p>
+<div id="z-test-with-two-samples-large-sample-sizes" class="section level2">
+<h2><span class="header-section-number">2.1</span> <span class="math inline">\(z\)</span> test with two samples (large sample sizes)</h2>
+<p>If the sample sizes in both samples are large (usually more than 30), then a <span class="math inline">\(z\)</span> test is appropriate. The <span class="math inline">\(z\)</span> statistic is computed as follows: <span class="math display">\[
+z = \frac{observed\; difference - expected\; difference}{SE\; for\; difference}
+\]</span> The standard error for the difference of the two samples is: <span class="math display">\[
+SE = \sqrt{SE_{sample\; 1}^2 + SE_{sample\; 2}^2}
+\]</span></p>
+<div id="example" class="section level3">
+<h3><span class="header-section-number">2.1.1</span> Example</h3>
+<p>The National Assessment of Education Progress (NAEP) administered a reading test for 17 year-olds in 1990 and 2004. The <em>average</em> score was <strong>290</strong> and <strong>285</strong> respectively; a slight decrease over the course of 14 years. The standard deviation, <span class="math inline">\(SD\)</span> was <strong>40</strong> and <strong>37</strong> respectively. The sample size for both years was <strong>1000</strong>. So this begs the question, was the drop in reading assessment just a chance variation or real?<br />
+<em>[This example is taken from Freedman et al., page 503]</em></p>
+</div>
+<div id="solution" class="section level3">
+<h3><span class="header-section-number">2.1.2</span> Solution</h3>
+<p>The standard error for each sample can be computed as follows: <span class="math display">\[
+SE_{1990} = \frac{SD_{1990}}{\sqrt{sample\; size}}=\frac{40}{\sqrt{1000}} = 1.26
+\]</span> <span class="math display">\[
+SE_{2004} = \frac{SD_{2000}}{\sqrt{sample\; size}}=\frac{37}{\sqrt{1000}} = 1.17
+\]</span> The standard error for the difference can be computed as follows: <span class="math display">\[
+SE = \sqrt{SE_{1990}^2 + SE_{2004}^2} = \sqrt{1.26^2 + 1.17^2} = 1.72
+\]</span> Finally, we can compute <span class="math inline">\(z\)</span> as follows (keeping in mind that the <em>expected</em> difference between both years is our null hypothesis, i.e. no difference, 0): <span class="math display">\[
+z = \frac{(score_{2004} - score_{1990}) - (expected\; difference)}{SE\; of\; difference}=\frac{(285-290) - 0}{1.72} = -2.9
+\]</span> So the difference is <strong>2.9</strong> <span class="math inline">\(SE\)</span>’s below what would be expected if <span class="math inline">\(Ho\)</span> (i.e. no difference between years) was true. Looking up the <span class="math inline">\(P\)</span> value for an <span class="math inline">\(SE\)</span> of 2.9 on a normal curve is <strong>0.002</strong>. Put differently, if their was truly no difference in reading scores between both years, then the odds of getting a <span class="math inline">\(z\)</span> score as extreme as the one we just computed is 0.1%. If we had defined an <span class="math inline">\(\alpha\)</span> confidence value of 5% or even 1%, we could conclude that the difference between both years is real.</p>
+<p>The following figure illustrates the result.</p>
+<p><img src="z_t_tests_files/figure-html/unnamed-chunk-20-1.png" width="576" /></p>
+<p>The black curve encompasses the difference in scores between years one would <em>expect</em> to observe from many samples drawn under the assumption that the <em>difference in scores between both years is only due to chance variability alone</em>. The red vertical line shows where our value lies; far into the left-end tail.</p>
+<p>The above can be coded in <code>R</code> as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">SE<span class="fl">.1990</span> &lt;-<span class="st">  </span><span class="dv">40</span> /<span class="st"> </span><span class="kw">sqrt</span>(<span class="dv">1000</span>)               
+SE<span class="fl">.2004</span> &lt;-<span class="st">  </span><span class="dv">37</span> /<span class="st"> </span><span class="kw">sqrt</span>(<span class="dv">1000</span>)  
+SE      &lt;-<span class="st"> </span><span class="kw">sqrt</span>( SE<span class="fl">.1990</span>^<span class="dv">2</span> +<span class="st"> </span>SE<span class="fl">.2004</span>^<span class="dv">2</span>)                        
+z       &lt;-<span class="st"> </span>(<span class="dv">285</span> -<span class="st"> </span><span class="dv">290</span>) /<span class="st"> </span>SE
+P.z     &lt;-<span class="st"> </span><span class="kw">pnorm</span>(z, <span class="dt">lower.tail =</span> <span class="ot">TRUE</span>) </code></pre></div>
+<p>The variable <code>z</code> stores the test statistic and the variable <code>P.z</code> stores the probability <span class="math inline">\(P\)</span>.</p>
+</div>
+</div>
+<div id="t-test-with-two-samples-small-sample-sizes" class="section level2">
+<h2><span class="header-section-number">2.2</span> <span class="math inline">\(t\)</span> test with two samples (small sample sizes )</h2>
+<p>If the sample sizes in at least one of the two samples is small (usually less than 30), then a <span class="math inline">\(t\)</span> test is appropriate. Note that a <span class="math inline">\(t\)</span> test can also be used with large samples as well, in some cases, statistical packages will only compute a <span class="math inline">\(t\)</span> test and not a <span class="math inline">\(z\)</span> test.</p>
+<p>To use the <span class="math inline">\(t\)</span>-statistic, the two samples must be: * from normally distributed populations, * from populations with equal variances, * uncensored.</p>
+<p>Many times, the aforementioned criteria are not known and may have to be assumed if theory allows.</p>
+<p>If the assumption of equal variances is met, the standard error can be pooled from both sample’s standard errors. <span class="math display">\[
+SE_{pooled} = \sqrt{\frac{(n_1 - 1)SD_1^2+(n_2 - 1)SD_2^2}{n_1 + n_2 - 2}}
+\]</span></p>
+<p>Subscripts <span class="math inline">\(1\)</span> and <span class="math inline">\(2\)</span> denote samples 1 and 2. Note that we are using <span class="math inline">\(SD_1\)</span> and <span class="math inline">\(SD_2\)</span> in this equation as opposed to <span class="math inline">\(SE_1\)</span> and <span class="math inline">\(SE_2\)</span>. The test statistic <span class="math inline">\(t\)</span> is therefore computed as follows:</p>
+<p><span class="math display">\[
+t = \frac{(observed\; difference - expected\; difference) - hypothesized\; difference}
+         {SE_{pooled}\sqrt{1/n_1 + 1/n_2}}
+\]</span></p>
+<p>The <span class="math inline">\(t\)</span> value is then used to look up the <span class="math inline">\(P\)</span> value on a Student curve using <span class="math inline">\(n_1 + n_2 - 2\)</span> degrees of freedom.</p>
+<div id="example-1" class="section level3">
+<h3><span class="header-section-number">2.2.1</span> Example</h3>
+<p>Groundwater sulfate concentrations are monitored at a contaminated site over the course of a year. Those concentrations are compared to ones measured at background sites for the same time period. You want to determine if the concentration at the contaminated site is significantly larger than that for the background site. The concentrations of sulfate (in ppm) for both sites are as follows:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Contaminated</th>
+<th align="left">Background</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">600</td>
+<td align="left">560</td>
+</tr>
+<tr class="even">
+<td align="left">590</td>
+<td align="left">550</td>
+</tr>
+<tr class="odd">
+<td align="left">570</td>
+<td align="left">570</td>
+</tr>
+<tr class="even">
+<td align="left">570</td>
+<td align="left">550</td>
+</tr>
+<tr class="odd">
+<td align="left">565</td>
+<td align="left">570</td>
+</tr>
+<tr class="even">
+<td align="left">580</td>
+<td align="left">590</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">550</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">580</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="solution-1" class="section level3">
+<h3><span class="header-section-number">2.2.2</span> Solution</h3>
+<p>You will setup this problem as follows: the null hypothesis, <span class="math inline">\(H_o\)</span>, states that the concentrations between both sites is the same; the alternative hypothesis, <span class="math inline">\(H_a\)</span>, states that the contaminated site has a concentration greater than the background.</p>
+<p>We will reference the contaminated site with the <span class="math inline">\(1\)</span> subscript and the background site with the subscript <span class="math inline">\(2\)</span>. The means and standard deviations are <span class="math inline">\(\mu_1 = 579.2\)</span>, <span class="math inline">\(\mu_2 = 565\)</span>, <span class="math inline">\(SD_1 = 13.6\)</span> and <span class="math inline">\(SD_2 = 15.1\)</span>.</p>
+<p>The pooled standard error of the mean is therefore: <span class="math display">\[
+SE_{pooled} = \sqrt{\frac{(6 - 1)13.6^2+(8 - 1)15.1^2}{6 + 8 - 2}}=14.5
+\]</span></p>
+<p>and <span class="math inline">\(t\)</span> is: <span class="math display">\[
+t = \frac{(579.2-565) - 0)}{14.5\sqrt{1/6 + 1/8}} = 1.8
+\]</span></p>
+<p>One <span class="math inline">\(SE\)</span> is <span class="math inline">\(14.5\sqrt{1/6 + 1/8}=\)</span> <strong>7.8</strong> ppm, therefore our observed difference of <strong>14.2</strong> ppm (computed from 579.2 - 565) is <strong>1.8</strong> <span class="math inline">\(SE\)</span> from the expected difference of 0 (recall that for a <span class="math inline">\(t\)</span>-test <span class="math inline">\(SE\)</span> equals <span class="math inline">\(SE_{pooled}\sqrt{1/n_1 + 1/n_2}\)</span>). Looking up the <span class="math inline">\(P\)</span> value on a Student curve gives us a probability of <strong>0.048</strong> (i.e. there is a 4.8% chance that, assuming there is no difference in concentrations between sites, the difference between means would be greater than that observed by chance variation alone).</p>
+<p><img src="z_t_tests_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<p>The following block of code runs the entire analysis. Here, the data are entered manually. If data are loaded from a file into a data frame, you can set the variables <code>s1</code> and <code>s2</code> equal to the pertinent columns in the data frame.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">s1 &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">600</span>, <span class="dv">590</span>, <span class="dv">570</span>, <span class="dv">570</span>, <span class="dv">565</span>, <span class="dv">580</span>)             <span class="co"># Contaminated site</span>
+s2 &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">560</span>, <span class="dv">550</span>, <span class="dv">570</span>, <span class="dv">550</span>, <span class="dv">570</span>, <span class="dv">590</span>, <span class="dv">550</span>, <span class="dv">580</span>)   <span class="co"># Background sites</span>
+
+SD1 &lt;-<span class="st"> </span><span class="kw">sd</span>(s1)
+SD2 &lt;-<span class="st"> </span><span class="kw">sd</span>(s2)
+SE  &lt;-<span class="st"> </span><span class="kw">sqrt</span>(((<span class="kw">length</span>(s1) -<span class="st"> </span><span class="dv">1</span>) *<span class="st"> </span>SD1^<span class="dv">2</span> +<span class="st"> </span>(<span class="kw">length</span>(s2) -<span class="st"> </span><span class="dv">1</span>) *<span class="st"> </span>SD2^<span class="dv">2</span>)/(<span class="kw">length</span>(s1) +<span class="st"> </span><span class="kw">length</span>(s2) -<span class="st"> </span><span class="dv">2</span>))
+t   &lt;-<span class="st"> </span>((<span class="kw">mean</span>(s1) -<span class="st"> </span><span class="kw">mean</span>(s2)) -<span class="st"> </span><span class="dv">0</span>) /<span class="st"> </span>(SE *<span class="st"> </span><span class="kw">sqrt</span>(<span class="dv">1</span>/<span class="kw">length</span>(s1) +<span class="st"> </span><span class="dv">1</span>/<span class="kw">length</span>(s2)))
+P   &lt;-<span class="st"> </span><span class="kw">pt</span>(t, <span class="dt">df =</span> <span class="kw">length</span>(s1) +<span class="st"> </span><span class="kw">length</span>(s2) -<span class="st"> </span><span class="dv">2</span>, <span class="dt">lower.tail =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<p>The variable <code>P</code> stores the probability value 0.0477 and variable <code>t</code> stores the value 1.81.</p>
+<p>You can use the <code>t.test</code> function <em>if</em> the data are used to compute the <span class="math inline">\(t\)</span> test. If you only have the means, standard deviations and sample sizes at your disposal (and not the raw data), you must compute <span class="math inline">\(t\)</span> and <span class="math inline">\(P\)</span> as shown in the last code block. Since we have the original concentrations for both the contaminated and background sites in this example, we can run the <code>t.test</code> as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">t.test</span>(s1, s2, <span class="dt">var.equal=</span><span class="ot">TRUE</span>, <span class="dt">alternative =</span> <span class="st">&quot;greater&quot;</span>)</code></pre></div>
+<p>This returns the following values:</p>
+<pre><code>
+    Two Sample t-test
+
+data:  s1 and s2
+t = 1.8099, df = 12, p-value = 0.04771
+alternative hypothesis: true difference in means is greater than 0
+95 percent confidence interval:
+ 0.2157541       Inf
+sample estimates:
+mean of x mean of y 
+ 579.1667  565.0000 </code></pre>
+<p>Note that the <code>t.test</code> function can also be used to run a <span class="math inline">\(z\)</span>-test between means if tabulated data are available.</p>
+</div>
+</div>
+<div id="notes-on-z-and-t-tests" class="section level2">
+<h2><span class="header-section-number">2.3</span> Notes on z and t tests</h2>
+<div id="assumption-of-equal-variance" class="section level3">
+<h3><span class="header-section-number">2.3.1</span> Assumption of equal variance</h3>
+<p>One assumption that needs to be met when conducting a test of significance with small sample sizes is the equality of variances between samples. This is an assumption we have made thus far in our working examples. But such an assumption may not be tenable in real life. If such is the case, you may want to resort to alternate techniques such as robust test of significance techniques. However, if you are working with the raw data, you can use the <code>t.test</code> function along with the parameter <code>var.equal=FALSE</code> option set. This option invokes <a href="http://en.wikipedia.org/wiki/Welch&#39;s_t_test">Welch’s</a> variance approximation which is believed to provide a more robust <span class="math inline">\(t\)</span>-test analysis. Working with the last example, we can compute the <span class="math inline">\(t\)</span>-test using Welch’s approximation as demonstrated in the following line of code.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">t.test</span>(s1, s2, <span class="dt">var.equal=</span><span class="ot">FALSE</span>, <span class="dt">alternative =</span> <span class="st">&quot;greater&quot;</span>)</code></pre></div>
+<p>Note the <code>var.equal=FALSE</code> option (this is the default option if not explicitly defined). The output of this function is shown below.</p>
+<pre><code>
+    Welch Two Sample t-test
+
+data:  s1 and s2
+t = 1.8402, df = 11.514, p-value = 0.04582
+alternative hypothesis: true difference in means is greater than 0
+95 percent confidence interval:
+ 0.3974713       Inf
+sample estimates:
+mean of x mean of y 
+ 579.1667  565.0000 </code></pre>
+<p>Interestingly, the Welch’s <span class="math inline">\(t\)</span>-test returns a smaller <span class="math inline">\(P\)</span> value. It must be noted that Welch’s <span class="math inline">\(t\)</span>-test also has its limitations. If in doubt, you might want to revert to more <strong>robust</strong> tests of significance such as the Wilcoxon rank-sum tests or permutation tests.</p>
+<p>Note that equality of variances between two samples can be tested using the <strong><span class="math inline">\(F\)</span> test</strong>.</p>
+</div>
+<div id="population-distribution-and-small-sample-sizes" class="section level3">
+<h3><span class="header-section-number">2.3.2</span> Population distribution and small sample sizes</h3>
+<p>If the sample size is small, the shape of the population distribution will influence the tests. If the population is not normally distributed, the data may need to be transformed prior to conducting a <span class="math inline">\(t\)</span>-test. Many environmental data such as <em>concentrations of “something”</em> tend to be positively skewed. If such is the case, a popular transformation for skewed data is the natural logarithm transformation, <code>log</code>. Note that when you are conducting a <span class="math inline">\(t\)</span> or <span class="math inline">\(z\)</span> test on log transformed data, you are conducting a hypothesis test on the <strong>ratio of the medians</strong> and <em>not</em> a hypothesis about the difference of the means (Millard <em>et al.</em>, p. 416-417).</p>
+<p>For example, using TcCB concentration data between a background, <code>Ref</code>, and contaminated site, <code>Cont</code> (Millard et al., p.420),</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Ref &lt;-<span class="st">  </span><span class="kw">c</span>(<span class="fl">0.22</span>,<span class="fl">0.23</span>,<span class="fl">0.26</span>,<span class="fl">0.27</span>,<span class="fl">0.28</span>,<span class="fl">0.28</span>,<span class="fl">0.29</span>,<span class="fl">0.33</span>,<span class="fl">0.34</span>,<span class="fl">0.35</span>,<span class="fl">0.38</span>,<span class="fl">0.39</span>,
+        <span class="fl">0.39</span>,<span class="fl">0.42</span>,<span class="fl">0.42</span>,<span class="fl">0.43</span>,<span class="fl">0.45</span>,<span class="fl">0.46</span>,<span class="fl">0.48</span>,<span class="fl">0.5</span>,<span class="fl">0.5</span>,<span class="fl">0.51</span>,<span class="fl">0.52</span>,<span class="fl">0.54</span>,
+        <span class="fl">0.56</span>,<span class="fl">0.56</span>,<span class="fl">0.57</span>,<span class="fl">0.57</span>,<span class="fl">0.6</span>,<span class="fl">0.62</span>,<span class="fl">0.63</span>,<span class="fl">0.67</span>,<span class="fl">0.69</span>,<span class="fl">0.72</span>,<span class="fl">0.74</span>,<span class="fl">0.76</span>,
+        <span class="fl">0.79</span>,<span class="fl">0.81</span>,<span class="fl">0.82</span>,<span class="fl">0.84</span>,<span class="fl">0.89</span>,<span class="fl">1.11</span>,<span class="fl">1.13</span>,<span class="fl">1.14</span>,<span class="fl">1.14</span>,<span class="fl">1.2</span>,<span class="fl">1.33</span>)
+Cont &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="fl">0.09</span>,<span class="fl">0.09</span>,<span class="fl">0.09</span>,<span class="fl">0.12</span>,<span class="fl">0.12</span>,<span class="fl">0.14</span>,<span class="fl">0.16</span>,<span class="fl">0.17</span>,<span class="fl">0.17</span>,<span class="fl">0.17</span>,<span class="fl">0.18</span>,<span class="fl">0.19</span>,
+        <span class="fl">0.2</span>,<span class="fl">0.2</span>,<span class="fl">0.21</span>,<span class="fl">0.21</span>,<span class="fl">0.22</span>,<span class="fl">0.22</span>,<span class="fl">0.22</span>,<span class="fl">0.23</span>,<span class="fl">0.24</span>,<span class="fl">0.25</span>,<span class="fl">0.25</span>,<span class="fl">0.25</span>,
+        <span class="fl">0.25</span>,<span class="fl">0.26</span>,<span class="fl">0.28</span>,<span class="fl">0.28</span>,<span class="fl">0.29</span>,<span class="fl">0.31</span>,<span class="fl">0.33</span>,<span class="fl">0.33</span>,<span class="fl">0.33</span>,<span class="fl">0.34</span>,<span class="fl">0.37</span>,<span class="fl">0.38</span>,
+        <span class="fl">0.39</span>,<span class="fl">0.4</span>,<span class="fl">0.43</span>,<span class="fl">0.43</span>,<span class="fl">0.47</span>,<span class="fl">0.48</span>,<span class="fl">0.48</span>,<span class="fl">0.49</span>,<span class="fl">0.51</span>,<span class="fl">0.51</span>,<span class="fl">0.54</span>,<span class="fl">0.6</span>,
+        <span class="fl">0.61</span>,<span class="fl">0.62</span>,<span class="fl">0.75</span>,<span class="fl">0.82</span>,<span class="fl">0.85</span>,<span class="fl">0.92</span>,<span class="fl">0.94</span>,<span class="fl">1.05</span>,<span class="fl">1.1</span>,<span class="fl">1.1</span>,<span class="fl">1.19</span>,<span class="fl">1.22</span>,
+        <span class="fl">1.33</span>,<span class="fl">1.39</span>,<span class="fl">1.39</span>,<span class="fl">1.52</span>,<span class="fl">1.53</span>,<span class="fl">1.73</span>,<span class="fl">2.35</span>,<span class="fl">2.46</span>,<span class="fl">2.59</span>,<span class="fl">2.61</span>,<span class="fl">3.06</span>,<span class="fl">3.29</span>,
+        <span class="fl">5.56</span>,<span class="fl">6.61</span>,<span class="fl">18.4</span>,<span class="fl">51.97</span>,<span class="fl">168.64</span>)</code></pre></div>
+<p>we can test the null hypothesis that the concentrations between both wells are equal using the raw (un-transformed) data (to be conservative, we will assume that the variances are not equal and invoke Welch’s assumption about the variance),</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">t.test</span>(Cont,Ref,<span class="dt">alternative=</span><span class="st">&quot;greater&quot;</span>, <span class="dt">var.equal=</span><span class="ot">FALSE</span>)</code></pre></div>
+<p>which gives us the following:</p>
+<pre><code>
+    Welch Two Sample t-test
+
+data:  Cont and Ref
+t = 1.4538, df = 76.05, p-value = 0.07506
+alternative hypothesis: true difference in means is greater than 0
+95 percent confidence interval:
+ -0.4821023        Inf
+sample estimates:
+mean of x mean of y 
+3.9151948 0.5985106 </code></pre>
+<p>The test statitic of <strong>1.45</strong> indicates that there is a <strong>7.5%</strong> chance that we could see a test statistic more extreme under <span class="math inline">\(H_o\)</span> than the one computed.</p>
+<p>If we log-transform the data, we get</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">t.test</span>(<span class="kw">log</span>(Cont),<span class="kw">log</span>(Ref),<span class="dt">alternative=</span><span class="st">&quot;greater&quot;</span>, <span class="dt">var.equal=</span><span class="ot">FALSE</span>)</code></pre></div>
+<p>which gives us the following:</p>
+<pre><code>
+    Welch Two Sample t-test
+
+data:  log(Cont) and log(Ref)
+t = 0.42589, df = 101.99, p-value = 0.3355
+alternative hypothesis: true difference in means is greater than 0
+95 percent confidence interval:
+ -0.2090447        Inf
+sample estimates:
+ mean of x  mean of y 
+-0.5474262 -0.6195712 </code></pre>
+<p>Notice the larger <span class="math inline">\(P\)</span> value of <em>%33.5</em> which indicates that we should not reject the null and that for all intents and purposes, we cannot dismiss the chance that the differences in <em>median</em> concentrations (as expressed by a ratio) are due to variability alone. Remember that by log-transforming the data we are looking at the ratio of the <em>medians</em>, not the difference between means, so interpret these results with caution!</p>
+<p>Other methods used to test the normality of the data are tests of <strong>skewness</strong> and <strong>kurtosis</strong>.</p>
+</div>
+<div id="tests-of-paired-samples-paired-t-test" class="section level3">
+<h3><span class="header-section-number">2.3.3</span> Tests of paired samples (paired t-test)</h3>
+<p>Suppose that you want to compare concentrations of ozone between two locations on a <em>set of dates</em> (i.e. for each date, ozone concentrations are compared between two sites). This problem differs from the groundwater sulfate example shown earlier in that a sample from each location is paired. This violates one of the <span class="math inline">\(z\)</span> and <span class="math inline">\(t\)</span> test requirements in that samples from <em>both</em> groups be independent of each other. In the case of the ozone concentration, this assumption does not hold. However, Freedman <em>et al.</em> (page 510) explain that the errors introduced (in estimating <span class="math inline">\(SE\)</span>) when violating this assumption tend to cancel each other out when applied to paired tests. Using data from Millard <em>et al.</em> (page 408) where ozone concentrations for two areas (Yonkers, NY and Stamford, CT) are collected on a daily bases the <strong>paired <span class="math inline">\(t\)</span>-test</strong> can be computed by invoking the <code>paired = TRUE</code> option.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Ozone concentrations in ppb)</span>
+yonkers &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">47</span>,<span class="dv">37</span>,<span class="dv">45</span>,<span class="dv">52</span>,<span class="dv">51</span>,<span class="dv">22</span>,<span class="dv">27</span>,<span class="dv">25</span>,<span class="dv">55</span>,<span class="dv">72</span>,<span class="dv">132</span>,<span class="dv">106</span>,<span class="dv">42</span>,<span class="dv">45</span>,<span class="dv">80</span>,
+            <span class="dv">107</span>,<span class="dv">21</span>,<span class="dv">50</span>,<span class="dv">31</span>,<span class="dv">37</span>,<span class="dv">19</span>,<span class="dv">33</span>,<span class="dv">22</span>,<span class="dv">45</span>,<span class="dv">36</span>,<span class="dv">24</span>,<span class="dv">88</span>,<span class="dv">111</span>,<span class="dv">117</span>,<span class="dv">31</span>,
+            <span class="dv">37</span>,<span class="dv">93</span>,<span class="dv">106</span>,<span class="dv">64</span>,<span class="dv">83</span>,<span class="dv">97</span>,<span class="dv">79</span>,<span class="dv">36</span>,<span class="dv">51</span>,<span class="dv">75</span>,<span class="dv">104</span>,<span class="dv">107</span>,<span class="dv">68</span>,<span class="dv">19</span>,<span class="dv">67</span>,
+            <span class="dv">20</span>,<span class="dv">35</span>,<span class="dv">30</span>,<span class="dv">31</span>,<span class="dv">81</span>,<span class="dv">119</span>,<span class="dv">76</span>,<span class="dv">108</span>,<span class="dv">85</span>,<span class="dv">96</span>,<span class="dv">48</span>,<span class="dv">60</span>,<span class="dv">54</span>,<span class="dv">71</span>,<span class="dv">50</span>,<span class="dv">37</span>,
+            <span class="dv">47</span>,<span class="dv">71</span>,<span class="dv">46</span>,<span class="dv">41</span>,<span class="dv">49</span>,<span class="dv">59</span>,<span class="dv">25</span>,<span class="dv">45</span>,<span class="dv">40</span>,<span class="dv">13</span>,<span class="dv">46</span>,<span class="dv">62</span>,<span class="dv">80</span>,<span class="dv">39</span>,<span class="dv">74</span>,<span class="dv">66</span>,
+            <span class="dv">82</span>,<span class="dv">47</span>,<span class="dv">28</span>,<span class="dv">44</span>,<span class="dv">55</span>,<span class="dv">34</span>,<span class="dv">60</span>,<span class="dv">70</span>,<span class="dv">41</span>,<span class="dv">96</span>,<span class="dv">54</span>,<span class="dv">100</span>,<span class="dv">44</span>,<span class="dv">44</span>,<span class="dv">75</span>,<span class="dv">86</span>,
+            <span class="dv">70</span>,<span class="dv">53</span>,<span class="dv">36</span>,<span class="dv">117</span>,<span class="dv">43</span>,<span class="dv">27</span>,<span class="dv">77</span>,<span class="dv">75</span>,<span class="dv">87</span>,<span class="dv">47</span>,<span class="dv">114</span>,<span class="dv">66</span>,<span class="dv">18</span>,<span class="dv">25</span>,<span class="dv">14</span>,<span class="dv">27</span>,
+            <span class="dv">9</span>,<span class="dv">16</span>,<span class="dv">67</span>,<span class="dv">74</span>,<span class="dv">74</span>,<span class="dv">75</span>,<span class="dv">74</span>,<span class="dv">42</span>,<span class="dv">38</span>,<span class="dv">23</span>,<span class="dv">50</span>,<span class="dv">34</span>,<span class="dv">58</span>,<span class="dv">35</span>,<span class="dv">24</span>,<span class="dv">27</span>,<span class="dv">17</span>,
+            <span class="dv">21</span>,<span class="dv">14</span>,<span class="dv">32</span>,<span class="dv">51</span>,<span class="dv">15</span>,<span class="dv">21</span>)
+stamford &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">66</span>,<span class="dv">52</span>,<span class="dv">49</span>,<span class="dv">64</span>,<span class="dv">68</span>,<span class="dv">26</span>,<span class="dv">86</span>,<span class="dv">52</span>,<span class="dv">75</span>,<span class="dv">87</span>,<span class="dv">188</span>,<span class="dv">103</span>,<span class="dv">82</span>,<span class="dv">71</span>,<span class="dv">103</span>,
+             <span class="dv">240</span>,<span class="dv">31</span>,<span class="dv">40</span>,<span class="dv">47</span>,<span class="dv">51</span>,<span class="dv">31</span>,<span class="dv">47</span>,<span class="dv">14</span>,<span class="dv">71</span>,<span class="dv">61</span>,<span class="dv">47</span>,<span class="dv">196</span>,<span class="dv">131</span>,<span class="dv">173</span>,<span class="dv">37</span>,
+             <span class="dv">47</span>,<span class="dv">215</span>,<span class="dv">230</span>,<span class="dv">69</span>,<span class="dv">98</span>,<span class="dv">125</span>,<span class="dv">94</span>,<span class="dv">72</span>,<span class="dv">72</span>,<span class="dv">125</span>,<span class="dv">143</span>,<span class="dv">192</span>,<span class="dv">122</span>,<span class="dv">32</span>,
+             <span class="dv">114</span>,<span class="dv">32</span>,<span class="dv">23</span>,<span class="dv">71</span>,<span class="dv">38</span>,<span class="dv">136</span>,<span class="dv">169</span>,<span class="dv">152</span>,<span class="dv">201</span>,<span class="dv">134</span>,<span class="dv">206</span>,<span class="dv">92</span>,<span class="dv">101</span>,<span class="dv">119</span>,
+             <span class="dv">124</span>,<span class="dv">83</span>,<span class="dv">60</span>,<span class="dv">124</span>,<span class="dv">142</span>,<span class="dv">124</span>,<span class="dv">64</span>,<span class="dv">75</span>,<span class="dv">103</span>,<span class="dv">46</span>,<span class="dv">68</span>,<span class="dv">87</span>,<span class="dv">27</span>,<span class="dv">73</span>,<span class="dv">59</span>,
+             <span class="dv">119</span>,<span class="dv">64</span>,<span class="dv">111</span>,<span class="dv">80</span>,<span class="dv">68</span>,<span class="dv">24</span>,<span class="dv">24</span>,<span class="dv">82</span>,<span class="dv">100</span>,<span class="dv">55</span>,<span class="dv">91</span>,<span class="dv">87</span>,<span class="dv">64</span>,<span class="dv">170</span>,<span class="dv">86</span>,<span class="dv">202</span>,
+             <span class="dv">71</span>,<span class="dv">85</span>,<span class="dv">122</span>,<span class="dv">155</span>,<span class="dv">80</span>,<span class="dv">71</span>,<span class="dv">28</span>,<span class="dv">212</span>,<span class="dv">80</span>,<span class="dv">24</span>,<span class="dv">80</span>,<span class="dv">169</span>,<span class="dv">174</span>,<span class="dv">141</span>,<span class="dv">202</span>,
+             <span class="dv">113</span>,<span class="dv">38</span>,<span class="dv">38</span>,<span class="dv">28</span>,<span class="dv">52</span>,<span class="dv">14</span>,<span class="dv">38</span>,<span class="dv">94</span>,<span class="dv">89</span>,<span class="dv">99</span>,<span class="dv">150</span>,<span class="dv">146</span>,<span class="dv">113</span>,<span class="dv">66</span>,<span class="dv">38</span>,<span class="dv">80</span>,
+             <span class="dv">80</span>,<span class="dv">99</span>,<span class="dv">71</span>,<span class="dv">42</span>,<span class="dv">52</span>,<span class="dv">33</span>,<span class="dv">38</span>,<span class="dv">24</span>,<span class="dv">61</span>,<span class="dv">108</span>,<span class="dv">38</span>,<span class="dv">28</span>)
+<span class="kw">t.test</span>(stamford, yonkers, <span class="dt">alternative=</span><span class="st">&quot;greater&quot;</span>, <span class="dt">var.equal=</span><span class="ot">FALSE</span>, <span class="dt">paired=</span>T)</code></pre></div>
+<pre><code>
+    Paired t-test
+
+data:  stamford and yonkers
+t = 13.044, df = 131, p-value &lt; 0.00000000000000022
+alternative hypothesis: true difference in means is greater than 0
+95 percent confidence interval:
+ 30.52863      Inf
+sample estimates:
+mean of the differences 
+                34.9697 </code></pre>
+<p>The <span class="math inline">\(t\)</span>-test result can be interpreted in the same way. The test statistic of 13.04 is way up in the right-tail end side of the curve. Its associated probability of nearly 0 indicates that the differences in ozone concentrations between both locations cannot be explained by chance variability alone. Note that even though we invoked the <span class="math inline">\(t\)</span> test the results are identical to what we would have gotten had we performed a <span class="math inline">\(z\)</span> test since the sample size is large.</p>
+</div>
+</div>
+</div>
+<div id="references" class="section level1">
+<h1><span class="header-section-number">3</span> References</h1>
+<p>Freedman D.A., Robert Pisani, Roger Purves. <em>Statistics</em>, 4th edition, 2007.<br />
+Millard S.P, Neerchal N.K., <em>Environmental Statistics with S-Plus</em>, 2001.<br />
+McClave J.T., Dietrich F.H., <em>Statistics</em>, 4th edition, 1988.</p>
+<hr />
+<p><strong>Session Info</strong>:</p>
+<p><strong>R version 3.3.0 (2016-05-03)</strong></p>
+<p>**<a href="Platform:**" class="uri">Platform:**</a> x86_64-w64-mingw32/x64 (64-bit)</p>
+<p><strong>attached base packages:</strong> <em>stats</em>, <em>graphics</em>, <em>grDevices</em>, <em>utils</em>, <em>datasets</em>, <em>methods</em> and <em>base</em></p>
+<p><strong>other attached packages:</strong> <em>extrafont(v.0.17)</em>, <em>scatterplot3d(v.0.3-37)</em>, <em>car(v.2.1-2)</em>, <em>rms(v.4.5-0)</em>, <em>SparseM(v.1.7)</em>, <em>Hmisc(v.3.17-4)</em>, <em>Formula(v.1.2-1)</em>, <em>survival(v.2.39-2)</em>, <em>lattice(v.0.20-33)</em>, <em>dplyr(v.0.4.3)</em>, <em>ggplot2(v.2.1.0)</em>, <em>boot(v.1.3-18)</em>, <em>gplots(v.3.0.1)</em>, <em>MASS(v.7.3-45)</em> and <em>tidyr(v.0.4.1)</em></p>
+<p><strong>loaded via a namespace (and not attached):</strong> <em>splines(v.3.3.0)</em>, <em>gtools(v.3.5.0)</em>, <em>shiny(v.0.13.2)</em>, <em>assertthat(v.0.1)</em>, <em>highr(v.0.6)</em>, <em>latticeExtra(v.0.6-28)</em>, <em>pander(v.0.6.0)</em>, <em>yaml(v.2.1.13)</em>, <em>Rttf2pt1(v.1.3.4)</em>, <em>quantreg(v.5.24)</em>, <em>extrafontdb(v.1.0)</em>, <em>chron(v.2.3-47)</em>, <em>digest(v.0.6.9)</em>, <em>RColorBrewer(v.1.1-2)</em>, <em>minqa(v.1.2.4)</em>, <em>colorspace(v.1.2-6)</em>, <em>sandwich(v.2.3-4)</em>, <em>htmltools(v.0.3.5)</em>, <em>httpuv(v.1.3.3)</em>, <em>Matrix(v.1.2-6)</em>, <em>plyr(v.1.8.3)</em>, <em>bookdown(v.0.0.71)</em>, <em>xtable(v.1.8-2)</em>, <em>mvtnorm(v.1.0-5)</em>, <em>scales(v.0.4.0)</em>, <em>gdata(v.2.17.0)</em>, <em>lme4(v.1.1-12)</em>, <em>MatrixModels(v.0.4-1)</em>, <em>mgcv(v.1.8-12)</em>, <em>TH.data(v.1.0-7)</em>, <em>nnet(v.7.3-12)</em>, <em>lazyeval(v.0.1.10)</em>, <em>pbkrtest(v.0.4-6)</em>, <em>magrittr(v.1.5)</em>, <em>mime(v.0.4)</em>, <em>polspline(v.1.1.12)</em>, <em>evaluate(v.0.9)</em>, <em>nlme(v.3.1-127)</em>, <em>foreign(v.0.8-66)</em>, <em>tools(v.3.3.0)</em>, <em>data.table(v.1.9.6)</em>, <em>formatR(v.1.4)</em>, <em>multcomp(v.1.4-5)</em>, <em>stringr(v.1.0.0)</em>, <em>munsell(v.0.4.3)</em>, <em>cluster(v.2.0.4)</em>, <em>caTools(v.1.17.1)</em>, <em>nloptr(v.1.0.4)</em>, <em>grid(v.3.3.0)</em>, <em>miniUI(v.0.1.1)</em>, <em>bitops(v.1.0-6)</em>, <em>labeling(v.0.3)</em>, <em>rmarkdown(v.0.9.6.14)</em>, <em>gtable(v.0.2.0)</em>, <em>codetools(v.0.2-14)</em>, <em>DBI(v.0.4-1)</em>, <em>R6(v.2.1.2)</em>, <em>gridExtra(v.2.2.1)</em>, <em>zoo(v.1.7-13)</em>, <em>knitr(v.1.13.1)</em>, <em>KernSmooth(v.2.23-15)</em>, <em>stringi(v.1.1.1)</em>, <em>parallel(v.3.3.0)</em>, <em>Rcpp(v.0.12.5)</em>, <em>rpart(v.4.1-10)</em> and <em>acepack(v.1.3-3.3)</em></p>
+</div>
+
+
+<div class="footer">
+<hr/>
+<a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/80x15.png" /></a>  Manny Gimond 
+</br>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
