@@ -4,7 +4,7 @@
 
 <head>
 
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
@@ -14,14 +14,15 @@
 <title>Logistic regression</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
-<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
-<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -119,6 +120,7 @@ button.code-folding-btn:focus {
 }
 </style>
 
+
 <style type="text/css">
 /* padding for bootstrap navbar */
 body {
@@ -175,7 +177,6 @@ $(document).ready(function () {
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
-<script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
@@ -201,7 +202,7 @@ $(document).ready(function ()  {
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
-        return text.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
       },
       ignoreSelector: ".toc-ignore",
       scrollTo: 0
@@ -260,8 +261,9 @@ div.tocify {
 }
 
 .tocify-subheader .tocify-item {
-  font-size: 0.9em;
-  padding-left: 5px;
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -333,7 +335,7 @@ div.tocify {
 </div>
 
 
-<p><em>Last modified on 2016-06-07</em></p>
+<p><em>Last modified on 2017-07-21</em></p>
 <hr />
 <p>Packages used in this tutorial:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2) <span class="co"># USed for plotting data</span>
@@ -471,21 +473,22 @@ pseudo.R2</code></pre></div>
 <h2><span class="header-section-number">3.1</span> Alternative pseudo R<sup>2</sup></h2>
 <p>Here, we’ll make use of the <code>rms</code> package’s <code>lrm</code> function to compute another form of the pseudo R<sup>2</sup> called the <strong>Nagelkerke R<sup>2</sup></strong>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">lrm</span>(Coast ~<span class="st"> </span>Income, df)</code></pre></div>
-<pre><code>
-Logistic Regression Model
-
-lrm(formula = Coast ~ Income, data = df)
-                   Model Likelihood     Discrimination    Rank Discrim.    
-                      Ratio Test            Indexes          Indexes       
-Obs          16    LR chi2      7.37    R2       0.492    C       0.828    
- no           8    d.f.            1    g        2.163    Dxy     0.656    
- yes          8    Pr(&gt; chi2) 0.0066    gr       8.701    gamma   0.656    
-max |deriv| 0.4                         gp       0.381    tau-a   0.350    
-                                        Brier    0.143                     
-
-          Coef     S.E.   Wald Z Pr(&gt;|Z|)
-Intercept -12.2176 5.7646 -2.12  0.0341  
-Income      0.0005 0.0002  2.10  0.0355  </code></pre>
+<pre><code>Logistic Regression Model
+ 
+ lrm(formula = Coast ~ Income, data = df)
+ 
+                    Model Likelihood     Discrimination    Rank Discrim.    
+                       Ratio Test           Indexes           Indexes       
+ Obs          16    LR chi2      7.37    R2       0.492    C       0.828    
+  no           8    d.f.            1    g        2.163    Dxy     0.656    
+  yes          8    Pr(&gt; chi2) 0.0066    gr       8.701    gamma   0.656    
+ max |deriv| 0.4                         gp       0.381    tau-a   0.350    
+                                         Brier    0.143                     
+ 
+           Coef     S.E.   Wald Z Pr(&gt;|Z|)
+ Intercept -12.2176 5.7646 -2.12  0.0341  
+ Income      0.0005 0.0002  2.10  0.0355  
+ </code></pre>
 <p>Note how this value of 0.49 differs from that of the <em>Hosmer and Lemeshow</em> R<sup>2</sup> whose value is 0.33.</p>
 </div>
 </div>
@@ -577,11 +580,11 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <p>Note the change in the <code>Income</code> coefficient p-value when adding another variable that may well be explaining the same variability in <code>Coast</code> (i.e. <code>Income</code> and <code>Edu</code> are very likely correlated).</p>
 <hr />
 <p><strong>Session Info</strong>:</p>
-<p><strong>R version 3.3.0 (2016-05-03)</strong></p>
+<p><strong>R version 3.4.0 (2017-04-21)</strong></p>
 <p>**<a href="Platform:**" class="uri">Platform:**</a> x86_64-w64-mingw32/x64 (64-bit)</p>
 <p><strong>attached base packages:</strong> <em>stats</em>, <em>graphics</em>, <em>grDevices</em>, <em>utils</em>, <em>datasets</em>, <em>methods</em> and <em>base</em></p>
-<p><strong>other attached packages:</strong> <em>rms(v.4.5-0)</em>, <em>SparseM(v.1.7)</em>, <em>Hmisc(v.3.17-4)</em>, <em>Formula(v.1.2-1)</em>, <em>survival(v.2.39-2)</em>, <em>lattice(v.0.20-33)</em>, <em>dplyr(v.0.4.3)</em>, <em>ggplot2(v.2.1.0)</em>, <em>boot(v.1.3-18)</em>, <em>gplots(v.3.0.1)</em>, <em>MASS(v.7.3-45)</em> and <em>tidyr(v.0.4.1)</em></p>
-<p><strong>loaded via a namespace (and not attached):</strong> <em>Rcpp(v.0.12.5)</em>, <em>mvtnorm(v.1.0-5)</em>, <em>zoo(v.1.7-13)</em>, <em>gtools(v.3.5.0)</em>, <em>assertthat(v.0.1)</em>, <em>digest(v.0.6.9)</em>, <em>mime(v.0.4)</em>, <em>R6(v.2.1.2)</em>, <em>plyr(v.1.8.3)</em>, <em>chron(v.2.3-47)</em>, <em>acepack(v.1.3-3.3)</em>, <em>MatrixModels(v.0.4-1)</em>, <em>evaluate(v.0.9)</em>, <em>multcomp(v.1.4-5)</em>, <em>lazyeval(v.0.1.10)</em>, <em>data.table(v.1.9.6)</em>, <em>gdata(v.2.17.0)</em>, <em>miniUI(v.0.1.1)</em>, <em>extrafontdb(v.1.0)</em>, <em>rpart(v.4.1-10)</em>, <em>Matrix(v.1.2-6)</em>, <em>rmarkdown(v.0.9.6.14)</em>, <em>labeling(v.0.3)</em>, <em>splines(v.3.3.0)</em>, <em>extrafont(v.0.17)</em>, <em>stringr(v.1.0.0)</em>, <em>foreign(v.0.8-66)</em>, <em>pander(v.0.6.0)</em>, <em>munsell(v.0.4.3)</em>, <em>shiny(v.0.13.2)</em>, <em>httpuv(v.1.3.3)</em>, <em>htmltools(v.0.3.5)</em>, <em>nnet(v.7.3-12)</em>, <em>gridExtra(v.2.2.1)</em>, <em>bookdown(v.0.0.71)</em>, <em>codetools(v.0.2-14)</em>, <em>bitops(v.1.0-6)</em>, <em>grid(v.3.3.0)</em>, <em>nlme(v.3.1-127)</em>, <em>polspline(v.1.1.12)</em>, <em>xtable(v.1.8-2)</em>, <em>Rttf2pt1(v.1.3.4)</em>, <em>gtable(v.0.2.0)</em>, <em>DBI(v.0.4-1)</em>, <em>magrittr(v.1.5)</em>, <em>formatR(v.1.4)</em>, <em>scales(v.0.4.0)</em>, <em>KernSmooth(v.2.23-15)</em>, <em>stringi(v.1.1.1)</em>, <em>latticeExtra(v.0.6-28)</em>, <em>sandwich(v.2.3-4)</em>, <em>TH.data(v.1.0-7)</em>, <em>RColorBrewer(v.1.1-2)</em>, <em>tools(v.3.3.0)</em>, <em>parallel(v.3.3.0)</em>, <em>yaml(v.2.1.13)</em>, <em>colorspace(v.1.2-6)</em>, <em>cluster(v.2.0.4)</em>, <em>caTools(v.1.17.1)</em>, <em>knitr(v.1.13.1)</em> and <em>quantreg(v.5.24)</em></p>
+<p><strong>other attached packages:</strong> <em>rms(v.5.1-1)</em>, <em>SparseM(v.1.77)</em>, <em>Hmisc(v.4.0-3)</em>, <em>Formula(v.1.2-2)</em>, <em>survival(v.2.41-3)</em>, <em>lattice(v.0.20-35)</em>, <em>dplyr(v.0.7.2)</em>, <em>ggplot2(v.2.2.1)</em>, <em>boot(v.1.3-19)</em>, <em>gplots(v.3.0.1)</em>, <em>MASS(v.7.3-47)</em> and <em>tidyr(v.0.6.3)</em></p>
+<p><strong>loaded via a namespace (and not attached):</strong> <em>Rcpp(v.0.12.12)</em>, <em>mvtnorm(v.1.0-6)</em>, <em>zoo(v.1.8-0)</em>, <em>gtools(v.3.5.0)</em>, <em>assertthat(v.0.2.0)</em>, <em>rprojroot(v.1.2)</em>, <em>digest(v.0.6.12)</em>, <em>R6(v.2.2.2)</em>, <em>plyr(v.1.8.4)</em>, <em>backports(v.1.1.0)</em>, <em>acepack(v.1.4.1)</em>, <em>MatrixModels(v.0.4-1)</em>, <em>evaluate(v.0.10.1)</em>, <em>rlang(v.0.1.1)</em>, <em>lazyeval(v.0.2.0)</em>, <em>multcomp(v.1.4-6)</em>, <em>data.table(v.1.10.4)</em>, <em>gdata(v.2.18.0)</em>, <em>extrafontdb(v.1.0)</em>, <em>rpart(v.4.1-11)</em>, <em>Matrix(v.1.2-10)</em>, <em>checkmate(v.1.8.3)</em>, <em>rmarkdown(v.1.6)</em>, <em>labeling(v.0.3)</em>, <em>splines(v.3.4.0)</em>, <em>extrafont(v.0.17)</em>, <em>stringr(v.1.2.0)</em>, <em>foreign(v.0.8-69)</em>, <em>pander(v.0.6.0)</em>, <em>htmlwidgets(v.0.9)</em>, <em>munsell(v.0.4.3)</em>, <em>compiler(v.3.4.0)</em>, <em>pkgconfig(v.2.0.1)</em>, <em>base64enc(v.0.1-3)</em>, <em>htmltools(v.0.3.6)</em>, <em>nnet(v.7.3-12)</em>, <em>tibble(v.1.3.3)</em>, <em>gridExtra(v.2.2.1)</em>, <em>htmlTable(v.1.9)</em>, <em>bookdown(v.0.4)</em>, <em>codetools(v.0.2-15)</em>, <em>bitops(v.1.0-6)</em>, <em>grid(v.3.4.0)</em>, <em>nlme(v.3.1-131)</em>, <em>polspline(v.1.1.12)</em>, <em>Rttf2pt1(v.1.3.4)</em>, <em>gtable(v.0.2.0)</em>, <em>magrittr(v.1.5)</em>, <em>scales(v.0.4.1)</em>, <em>KernSmooth(v.2.23-15)</em>, <em>stringi(v.1.1.5)</em>, <em>bindrcpp(v.0.2)</em>, <em>latticeExtra(v.0.6-28)</em>, <em>sandwich(v.2.3-4)</em>, <em>TH.data(v.1.0-8)</em>, <em>RColorBrewer(v.1.1-2)</em>, <em>tools(v.3.4.0)</em>, <em>glue(v.1.1.1)</em>, <em>yaml(v.2.1.14)</em>, <em>colorspace(v.1.3-2)</em>, <em>cluster(v.2.0.6)</em>, <em>caTools(v.1.17.1)</em>, <em>knitr(v.1.16)</em>, <em>bindr(v.0.1)</em> and <em>quantreg(v.5.33)</em></p>
 </div>
 
 
@@ -599,9 +602,13 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <script>
 
 // add bootstrap table styles to pandoc tables
-$(document).ready(function () {
+function bootstrapStylePandocTables() {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
 });
+
 
 </script>
 
@@ -610,7 +617,7 @@ $(document).ready(function () {
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>

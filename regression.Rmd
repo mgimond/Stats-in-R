@@ -19,6 +19,15 @@ std = function(x,y) {
 }
 ```
 
+
+Packages used in this tutorial:
+
+```{r packages}
+library(car) 
+library(boot) 
+library(scatterplot3d) # Used to extract p-value from logistic model
+```
+
 # The simple model
 
 The objective of statistical modeling is to come up with the most parsimonious model that does a good job in predicting some variable. The simplest  mode is the sample mean. We can express this model as:

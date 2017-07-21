@@ -4,7 +4,7 @@
 
 <head>
 
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
@@ -14,14 +14,15 @@
 <title>Confidence intervals</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
-<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
-<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -119,6 +120,7 @@ button.code-folding-btn:focus {
 }
 </style>
 
+
 <style type="text/css">
 /* padding for bootstrap navbar */
 body {
@@ -175,7 +177,6 @@ $(document).ready(function () {
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
-<script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
@@ -201,7 +202,7 @@ $(document).ready(function ()  {
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
-        return text.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
       },
       ignoreSelector: ".toc-ignore",
       scrollTo: 0
@@ -260,8 +261,9 @@ div.tocify {
 }
 
 .tocify-subheader .tocify-item {
-  font-size: 0.9em;
-  padding-left: 5px;
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -333,7 +335,7 @@ div.tocify {
 </div>
 
 
-<p><em>Last modified on 2016-06-07</em></p>
+<p><em>Last modified on 2017-07-21</em></p>
 <div id="introduction" class="section level1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
 <p>Most data, or <em>batches</em>, are subsets of some underlying population. From these batches, we attempt to infer about the state of the population. For example, we may want to determine how many hours of TV are watched in each household each week. Since we seldom have the resources needed to collect the data for <em>all</em> households, we opt to collect data for a small subset of the population. From this sampled survey, we compute a summary statistic (such as the mean hours of TV watched each week). We then use this sample statistic as an estimate of the number of hours watched by <em>all</em> households in the population.</p>
@@ -356,13 +358,13 @@ for (i in <span class="dv">1</span>:num.samp){
 <p>From the histogram it seems that, out of the 1000 samples, most sample means are centered around 30. In fact, we can compute the arithmetic mean from the 1000 samples. This statistic is referred to as the <strong>grand mean</strong> (not to be confused with each individual <em>sample mean</em> of which there are 1000 in our example).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">grand.mean &lt;-<span class="st"> </span><span class="kw">mean</span>(samp.mean)
 grand.mean</code></pre></div>
-<pre><code>[1] 30.03157</code></pre>
-<p>From the <em>grand mean</em>, we might be tempted to infer that the mean hours of TV watched by each household in the <em>entire</em> population is 30.03 hours. But note from the histogram that there is some variability in the <em>means</em> computed from each 50 household samples. It might behoove us to assess the chance that this estimate (the grand mean) is not representative of the whole <em>population</em> mean. We can find out how big the chance error might be by calculating the <em>standard error</em>.</p>
+<pre><code>[1] 29.99018</code></pre>
+<p>From the <em>grand mean</em>, we might be tempted to infer that the mean hours of TV watched by each household in the <em>entire</em> population is 29.99 hours. But note from the histogram that there is some variability in the <em>means</em> computed from each 50 household samples. It might behoove us to assess the chance that this estimate (the grand mean) is not representative of the whole <em>population</em> mean. We can find out how big the chance error might be by calculating the <em>standard error</em>.</p>
 <p>The <strong>standard error</strong> is the <em>standard deviation</em> of the sampling distribution of a statistic; it’s the likely size of chance error when estimating a statistic. In our case the standard error of our sample means, <span class="math inline">\(SE\)</span>, is computed by taking the standard deviation of the 1000 sample means:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">SE &lt;-<span class="st"> </span><span class="kw">sd</span>(samp.mean)
 SE</code></pre></div>
-<pre><code>[1] 0.6481165</code></pre>
-<p>We can now state that the average number of hours of TV watched per household per week is <em>30.03</em> <span class="math inline">\(\pm\)</span> <em>0.65</em>. It’s important to note that <span class="math inline">\(SE\)</span> is <em>not</em> an estimate of the population standard deviation but a measure of uncertainty in the population mean estimate.</p>
+<pre><code>[1] 0.6568007</code></pre>
+<p>We can now state that the average number of hours of TV watched per household per week is <em>29.99</em> <span class="math inline">\(\pm\)</span> <em>0.66</em>. It’s important to note that <span class="math inline">\(SE\)</span> is <em>not</em> an estimate of the population standard deviation but a measure of uncertainty in the population mean estimate.</p>
 <p>In most cases, we do not have the luxury of collecting hundreds or thousands of samples. We usually only have a <em>single</em> sample to work with (hence a single sample from which to make inferences about the whole population). Methods in <em>estimating</em> the sample variability given a single sample is covered next.</p>
 </div>
 <div id="estimate-of-a-population-statistic-from-a-single-sample" class="section level1">
@@ -414,26 +416,26 @@ for (i in <span class="dv">1</span>:<span class="dv">10000</span>){
 }
 SE.boot &lt;-<span class="st"> </span><span class="kw">sd</span>(median.boot)
 SE.boot</code></pre></div>
-<pre><code>[1] 0.7081543</code></pre>
-<p>In this example, the sample <code>x</code> is re-sampled 10,000 times (each sample having a size equal to the original sample, <code>length(x)</code>). The function <code>sample()</code> samples anew from the sample <code>x</code> <em>with</em> replacement each time. The median of each re-sampled batch is stored in the variable <code>median.boot[i]</code>. The variable <code>SE.boot</code> stores the standard error for the bootstrap sample medians, or 0.7081543 in this working example (note that your result may differ slightly given that the re-sampling process is random).</p>
+<pre><code>[1] 0.7066932</code></pre>
+<p>In this example, the sample <code>x</code> is re-sampled 10,000 times (each sample having a size equal to the original sample, <code>length(x)</code>). The function <code>sample()</code> samples anew from the sample <code>x</code> <em>with</em> replacement each time. The median of each re-sampled batch is stored in the variable <code>median.boot[i]</code>. The variable <code>SE.boot</code> stores the standard error for the bootstrap sample medians, or 0.7066932 in this working example (note that your result may differ slightly given that the re-sampling process is random).</p>
 <p>Another way to implement the bootstrap technique is to use the function <code>boot()</code> from the <code>boot</code> library. This reduces the code to:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(boot)
 f.med       &lt;-<span class="st"> </span>function(Y,i) <span class="kw">median</span>(Y[i])
 median.boot &lt;-<span class="st"> </span><span class="kw">boot</span>(x, <span class="dt">R =</span> <span class="dv">10000</span>, <span class="dt">statistic =</span> f.med)
 SE.boot     &lt;-<span class="st"> </span><span class="kw">sd</span>( <span class="kw">as.vector</span>(median.boot$t))
 SE.boot</code></pre></div>
-<pre><code>[1] 0.6781216</code></pre>
+<pre><code>[1] 0.6780954</code></pre>
 <p>In this example, we are defining a function called <code>f.med</code> where the function returns the <em>median</em> value for an array. This is a simple example of a function, but this demonstrates how one can create a customized statistic for which <span class="math inline">\(SE\)</span> is sought. The function <code>boot</code> returns a <em>list</em> and not a numeric vector. To view the contents of a list, you can invoke the structure function <code>str()</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(median.boot)</code></pre></div>
 <pre><code>List of 11
  $ t0       : num 30.4
- $ t        : num [1:10000, 1] 31 31.1 31.1 31.1 29.6 ...
+ $ t        : num [1:10000, 1] 29.8 31.1 30.1 30.8 29.6 ...
  $ R        : num 10000
  $ data     : num [1:50] 25.7 38.5 29.3 25.1 30.6 34.6 30 39 33.7 31.6 ...
- $ seed     : int [1:626] 403 343 -986067110 -159805141 -1436842664 856158602 -2105953327 -2028689650 565466580 149568920 ...
+ $ seed     : int [1:626] 403 328 -986067110 -159805141 -1436842664 856158602 -2105953327 -2028689650 565466580 149568920 ...
  $ statistic:function (Y, i)  
   ..- attr(*, &quot;srcref&quot;)=Class &#39;srcref&#39;  atomic [1:8] 2 16 2 41 16 41 2 2
-  .. .. ..- attr(*, &quot;srcfile&quot;)=Classes &#39;srcfilecopy&#39;, &#39;srcfile&#39; &lt;environment: 0x000000000b3aaed8&gt; 
+  .. .. ..- attr(*, &quot;srcfile&quot;)=Classes &#39;srcfilecopy&#39;, &#39;srcfile&#39; &lt;environment: 0x0000000007f2e1d8&gt; 
  $ sim      : chr &quot;ordinary&quot;
  $ call     : language boot(data = x, statistic = f.med, R = 10000)
  $ stype    : chr &quot;i&quot;
@@ -455,7 +457,7 @@ mean.int<span class="fl">.90</span></code></pre></div>
 <p>Likewise, we can compute the 90% confidence interval from the bootstrap <span class="math inline">\(SE\)</span> estimate of the <em>median</em>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">median.int<span class="fl">.90</span> &lt;-<span class="st"> </span><span class="kw">mean</span>(median.boot$t) +<span class="st"> </span><span class="kw">qt</span>( <span class="kw">c</span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>), <span class="kw">length</span>(x) -<span class="st"> </span><span class="dv">1</span>) *<span class="st"> </span>SE.boot
 median.int<span class="fl">.90</span></code></pre></div>
-<pre><code>[1] 29.34538 31.61919</code></pre>
+<pre><code>[1] 29.34539 31.61912</code></pre>
 <p>This example suggests that there is a 90% chance that the range of median values [29.35, 31.62] encompasses the true population <em>median</em>. Note that using standard bootstrap techniques to estimate <span class="math inline">\(CI\)</span> requires that the bootstrap distribution of a statistic follow a normal distribution. If it does not, the computed <span class="math inline">\(CI\)</span> may over- or under-estimate the true confidence interval. A safer (and more robust) bootstrap based measure of <span class="math inline">\(CI\)</span> is the <em>bias corrected</em> bootstrap method, <strong>BCa</strong>, which can be easily computed using the <code>boot.ci</code> function in the <code>boot</code> library. The parameter <code>conf</code> defines the confidence interval sought.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">median.int<span class="fl">.90</span>.BCa &lt;-<span class="st"> </span><span class="kw">boot.ci</span>(median.boot, <span class="dt">conf =</span> .<span class="dv">90</span>, <span class="dt">type=</span><span class="st">&quot;bca&quot;</span>)
 median.int<span class="fl">.90</span>.BCa</code></pre></div>
@@ -478,11 +480,11 @@ Calculations and Intervals on Original Scale</code></pre>
 McClave J.T., Dietrich F.H., <em>Statistics</em>, 4th edition, 1988.</p>
 <hr />
 <p><strong>Session Info</strong>:</p>
-<p><strong>R version 3.3.0 (2016-05-03)</strong></p>
+<p><strong>R version 3.4.0 (2017-04-21)</strong></p>
 <p>**<a href="Platform:**" class="uri">Platform:**</a> x86_64-w64-mingw32/x64 (64-bit)</p>
 <p><strong>attached base packages:</strong> <em>stats</em>, <em>graphics</em>, <em>grDevices</em>, <em>utils</em>, <em>datasets</em>, <em>methods</em> and <em>base</em></p>
-<p><strong>other attached packages:</strong> <em>boot(v.1.3-18)</em>, <em>gplots(v.3.0.1)</em>, <em>MASS(v.7.3-45)</em> and <em>tidyr(v.0.4.1)</em></p>
-<p><strong>loaded via a namespace (and not attached):</strong> <em>Rcpp(v.0.12.5)</em>, <em>Rttf2pt1(v.1.3.4)</em>, <em>knitr(v.1.13.1)</em>, <em>magrittr(v.1.5)</em>, <em>xtable(v.1.8-2)</em>, <em>R6(v.2.1.2)</em>, <em>stringr(v.1.0.0)</em>, <em>dplyr(v.0.4.3)</em>, <em>caTools(v.1.17.1)</em>, <em>tools(v.3.3.0)</em>, <em>parallel(v.3.3.0)</em>, <em>KernSmooth(v.2.23-15)</em>, <em>miniUI(v.0.1.1)</em>, <em>DBI(v.0.4-1)</em>, <em>extrafontdb(v.1.0)</em>, <em>gtools(v.3.5.0)</em>, <em>htmltools(v.0.3.5)</em>, <em>lazyeval(v.0.1.10)</em>, <em>yaml(v.2.1.13)</em>, <em>digest(v.0.6.9)</em>, <em>assertthat(v.0.1)</em>, <em>bookdown(v.0.0.71)</em>, <em>shiny(v.0.13.2)</em>, <em>formatR(v.1.4)</em>, <em>bitops(v.1.0-6)</em>, <em>evaluate(v.0.9)</em>, <em>mime(v.0.4)</em>, <em>rmarkdown(v.0.9.6.14)</em>, <em>gdata(v.2.17.0)</em>, <em>stringi(v.1.1.1)</em>, <em>pander(v.0.6.0)</em>, <em>extrafont(v.0.17)</em> and <em>httpuv(v.1.3.3)</em></p>
+<p><strong>other attached packages:</strong> <em>boot(v.1.3-19)</em>, <em>gplots(v.3.0.1)</em>, <em>MASS(v.7.3-47)</em> and <em>tidyr(v.0.6.3)</em></p>
+<p><strong>loaded via a namespace (and not attached):</strong> <em>Rcpp(v.0.12.12)</em>, <em>Rttf2pt1(v.1.3.4)</em>, <em>knitr(v.1.16)</em>, <em>bindr(v.0.1)</em>, <em>magrittr(v.1.5)</em>, <em>R6(v.2.2.2)</em>, <em>rlang(v.0.1.1)</em>, <em>stringr(v.1.2.0)</em>, <em>dplyr(v.0.7.2)</em>, <em>caTools(v.1.17.1)</em>, <em>tools(v.3.4.0)</em>, <em>KernSmooth(v.2.23-15)</em>, <em>extrafontdb(v.1.0)</em>, <em>gtools(v.3.5.0)</em>, <em>htmltools(v.0.3.6)</em>, <em>yaml(v.2.1.14)</em>, <em>rprojroot(v.1.2)</em>, <em>digest(v.0.6.12)</em>, <em>assertthat(v.0.2.0)</em>, <em>tibble(v.1.3.3)</em>, <em>bookdown(v.0.4)</em>, <em>bindrcpp(v.0.2)</em>, <em>bitops(v.1.0-6)</em>, <em>glue(v.1.1.1)</em>, <em>evaluate(v.0.10.1)</em>, <em>rmarkdown(v.1.6)</em>, <em>gdata(v.2.18.0)</em>, <em>stringi(v.1.1.5)</em>, <em>pander(v.0.6.0)</em>, <em>compiler(v.3.4.0)</em>, <em>backports(v.1.1.0)</em>, <em>extrafont(v.0.17)</em> and <em>pkgconfig(v.2.0.1)</em></p>
 </div>
 
 
@@ -500,9 +502,13 @@ McClave J.T., Dietrich F.H., <em>Statistics</em>, 4th edition, 1988.</p>
 <script>
 
 // add bootstrap table styles to pandoc tables
-$(document).ready(function () {
+function bootstrapStylePandocTables() {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
 });
+
 
 </script>
 
@@ -511,7 +517,7 @@ $(document).ready(function () {
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>

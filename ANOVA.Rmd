@@ -17,6 +17,12 @@ loadfonts(device="postscript")
 
 ----
 
+Package used in this tutorial:
+
+```{r packages}
+library(tidyr) # Used to reshape a data table
+```
+
 # Introduction
 Analysis of Variance (ANOVA) seeks to compare the means between two or more batches of numbers. You can think of an ANOVA as an extension of the t-test where three or more batches need to be compared. The name may seem misleading since it suggests that we are comparing variances and not some central value, but in fact, we compare the variances (spreads) between batches to assess if the central values are significantly different from one another. For example, let's compare the following batches of numbers:
 

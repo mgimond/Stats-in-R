@@ -4,7 +4,7 @@
 
 <head>
 
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
@@ -14,14 +14,15 @@
 <title>Comparing means: z and t tests</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
-<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
-<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -119,6 +120,7 @@ button.code-folding-btn:focus {
 }
 </style>
 
+
 <style type="text/css">
 /* padding for bootstrap navbar */
 body {
@@ -175,7 +177,6 @@ $(document).ready(function () {
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
-<script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
@@ -201,7 +202,7 @@ $(document).ready(function ()  {
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
-        return text.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
       },
       ignoreSelector: ".toc-ignore",
       scrollTo: 0
@@ -260,8 +261,9 @@ div.tocify {
 }
 
 .tocify-subheader .tocify-item {
-  font-size: 0.9em;
-  padding-left: 5px;
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -333,7 +335,7 @@ div.tocify {
 </div>
 
 
-<p><em>Last modified on 2016-06-07</em></p>
+<p><em>Last modified on 2017-07-21</em></p>
 <div id="tests-of-significance-single-sample-inference" class="section level1">
 <h1><span class="header-section-number">1</span> Tests of Significance (single sample inference)</h1>
 <p>Suppose that we want to hypothesize that the mean number of TV hours watched per week is 28.5; we’ll define this as our null hypothesis, <span class="math inline">\(H_o\)</span>. Let’s also assume that we only have access to a subset of household data (i.e. a sample), <span class="math inline">\(x\)</span>,</p>
@@ -560,7 +562,12 @@ P.z     &lt;-<span class="st"> </span><span class="kw">pnorm</span>(z, <span cla
 <div id="t-test-with-two-samples-small-sample-sizes" class="section level2">
 <h2><span class="header-section-number">2.2</span> <span class="math inline">\(t\)</span> test with two samples (small sample sizes )</h2>
 <p>If the sample sizes in at least one of the two samples is small (usually less than 30), then a <span class="math inline">\(t\)</span> test is appropriate. Note that a <span class="math inline">\(t\)</span> test can also be used with large samples as well, in some cases, statistical packages will only compute a <span class="math inline">\(t\)</span> test and not a <span class="math inline">\(z\)</span> test.</p>
-<p>To use the <span class="math inline">\(t\)</span>-statistic, the two samples must be: * from normally distributed populations, * from populations with equal variances, * uncensored.</p>
+<p>To use the <span class="math inline">\(t\)</span>-statistic, the two samples must be:</p>
+<ul>
+<li>from normally distributed populations,</li>
+<li>from populations with equal variances,</li>
+<li>uncensored.</li>
+</ul>
 <p>Many times, the aforementioned criteria are not known and may have to be assumed if theory allows.</p>
 <p>If the assumption of equal variances is met, the standard error can be pooled from both sample’s standard errors. <span class="math display">\[
 SE_{pooled} = \sqrt{\frac{(n_1 - 1)SD_1^2+(n_2 - 1)SD_2^2}{n_1 + n_2 - 2}}
@@ -769,11 +776,11 @@ Millard S.P, Neerchal N.K., <em>Environmental Statistics with S-Plus</em>, 2001.
 McClave J.T., Dietrich F.H., <em>Statistics</em>, 4th edition, 1988.</p>
 <hr />
 <p><strong>Session Info</strong>:</p>
-<p><strong>R version 3.3.0 (2016-05-03)</strong></p>
+<p><strong>R version 3.4.0 (2017-04-21)</strong></p>
 <p>**<a href="Platform:**" class="uri">Platform:**</a> x86_64-w64-mingw32/x64 (64-bit)</p>
 <p><strong>attached base packages:</strong> <em>stats</em>, <em>graphics</em>, <em>grDevices</em>, <em>utils</em>, <em>datasets</em>, <em>methods</em> and <em>base</em></p>
-<p><strong>other attached packages:</strong> <em>extrafont(v.0.17)</em>, <em>scatterplot3d(v.0.3-37)</em>, <em>car(v.2.1-2)</em>, <em>rms(v.4.5-0)</em>, <em>SparseM(v.1.7)</em>, <em>Hmisc(v.3.17-4)</em>, <em>Formula(v.1.2-1)</em>, <em>survival(v.2.39-2)</em>, <em>lattice(v.0.20-33)</em>, <em>dplyr(v.0.4.3)</em>, <em>ggplot2(v.2.1.0)</em>, <em>boot(v.1.3-18)</em>, <em>gplots(v.3.0.1)</em>, <em>MASS(v.7.3-45)</em> and <em>tidyr(v.0.4.1)</em></p>
-<p><strong>loaded via a namespace (and not attached):</strong> <em>splines(v.3.3.0)</em>, <em>gtools(v.3.5.0)</em>, <em>shiny(v.0.13.2)</em>, <em>assertthat(v.0.1)</em>, <em>highr(v.0.6)</em>, <em>latticeExtra(v.0.6-28)</em>, <em>pander(v.0.6.0)</em>, <em>yaml(v.2.1.13)</em>, <em>Rttf2pt1(v.1.3.4)</em>, <em>quantreg(v.5.24)</em>, <em>extrafontdb(v.1.0)</em>, <em>chron(v.2.3-47)</em>, <em>digest(v.0.6.9)</em>, <em>RColorBrewer(v.1.1-2)</em>, <em>minqa(v.1.2.4)</em>, <em>colorspace(v.1.2-6)</em>, <em>sandwich(v.2.3-4)</em>, <em>htmltools(v.0.3.5)</em>, <em>httpuv(v.1.3.3)</em>, <em>Matrix(v.1.2-6)</em>, <em>plyr(v.1.8.3)</em>, <em>bookdown(v.0.0.71)</em>, <em>xtable(v.1.8-2)</em>, <em>mvtnorm(v.1.0-5)</em>, <em>scales(v.0.4.0)</em>, <em>gdata(v.2.17.0)</em>, <em>lme4(v.1.1-12)</em>, <em>MatrixModels(v.0.4-1)</em>, <em>mgcv(v.1.8-12)</em>, <em>TH.data(v.1.0-7)</em>, <em>nnet(v.7.3-12)</em>, <em>lazyeval(v.0.1.10)</em>, <em>pbkrtest(v.0.4-6)</em>, <em>magrittr(v.1.5)</em>, <em>mime(v.0.4)</em>, <em>polspline(v.1.1.12)</em>, <em>evaluate(v.0.9)</em>, <em>nlme(v.3.1-127)</em>, <em>foreign(v.0.8-66)</em>, <em>tools(v.3.3.0)</em>, <em>data.table(v.1.9.6)</em>, <em>formatR(v.1.4)</em>, <em>multcomp(v.1.4-5)</em>, <em>stringr(v.1.0.0)</em>, <em>munsell(v.0.4.3)</em>, <em>cluster(v.2.0.4)</em>, <em>caTools(v.1.17.1)</em>, <em>nloptr(v.1.0.4)</em>, <em>grid(v.3.3.0)</em>, <em>miniUI(v.0.1.1)</em>, <em>bitops(v.1.0-6)</em>, <em>labeling(v.0.3)</em>, <em>rmarkdown(v.0.9.6.14)</em>, <em>gtable(v.0.2.0)</em>, <em>codetools(v.0.2-14)</em>, <em>DBI(v.0.4-1)</em>, <em>R6(v.2.1.2)</em>, <em>gridExtra(v.2.2.1)</em>, <em>zoo(v.1.7-13)</em>, <em>knitr(v.1.13.1)</em>, <em>KernSmooth(v.2.23-15)</em>, <em>stringi(v.1.1.1)</em>, <em>parallel(v.3.3.0)</em>, <em>Rcpp(v.0.12.5)</em>, <em>rpart(v.4.1-10)</em> and <em>acepack(v.1.3-3.3)</em></p>
+<p><strong>other attached packages:</strong> extrafont(v.0.17)</p>
+<p><strong>loaded via a namespace (and not attached):</strong> <em>Rcpp(v.0.12.12)</em>, <em>bookdown(v.0.4)</em>, <em>digest(v.0.6.12)</em>, <em>rprojroot(v.1.2)</em>, <em>Rttf2pt1(v.1.3.4)</em>, <em>backports(v.1.1.0)</em>, <em>magrittr(v.1.5)</em>, <em>evaluate(v.0.10.1)</em>, <em>stringi(v.1.1.5)</em>, <em>extrafontdb(v.1.0)</em>, <em>rmarkdown(v.1.6)</em>, <em>tools(v.3.4.0)</em>, <em>pander(v.0.6.0)</em>, <em>stringr(v.1.2.0)</em>, <em>yaml(v.2.1.14)</em>, <em>compiler(v.3.4.0)</em>, <em>htmltools(v.0.3.6)</em> and <em>knitr(v.1.16)</em></p>
 </div>
 
 
@@ -791,9 +798,13 @@ McClave J.T., Dietrich F.H., <em>Statistics</em>, 4th edition, 1988.</p>
 <script>
 
 // add bootstrap table styles to pandoc tables
-$(document).ready(function () {
+function bootstrapStylePandocTables() {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
 });
+
 
 </script>
 
@@ -802,7 +813,7 @@ $(document).ready(function () {
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>

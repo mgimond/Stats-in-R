@@ -533,6 +533,7 @@ The variable `z` stores the test statistic and the variable `P.z` stores the pro
 If the sample sizes in at least one of the two samples is small (usually less than 30), then a $t$ test is appropriate. Note that a $t$ test can also be used with large samples as well, in some cases, statistical packages will only compute a $t$ test and not a $z$ test.
 
 To use the $t$-statistic, the two samples must be:
+
  * from normally distributed populations,
  * from populations with equal variances,
  * uncensored.

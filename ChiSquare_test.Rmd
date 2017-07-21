@@ -15,6 +15,12 @@ font_import(prompt=FALSE, pattern="[A/a]rchitects")
 loadfonts(device="postscript")
 ```
 
+Packages used in this tutorial:
+
+```{r packages}
+library(MASS) 
+```
+
 # Introduction
 
 One important assumption made when using this test is that none of the **expected** frequencies  be less than **5**. If this assumption does not hold, then **Yate's correction** should be applied  using the `correct=TRUE` option in the `chissq.test()` function. Note that this setting is the default, i.e. the Yates correction gets applied unless `correct` is set to `FALSE`.
