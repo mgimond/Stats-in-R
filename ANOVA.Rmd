@@ -21,6 +21,7 @@ Package used in this tutorial:
 
 ```{r packages}
 library(tidyr) # Used to reshape a data table
+library(ggplot2)
 ```
 
 # Introduction
@@ -437,21 +438,15 @@ The column `Mean Sq` displays the mean sum-of-squares for treatment  $SSR$, and 
 
 You'll note that this approach in computing the ANOVA makes use of the linear regression function `lm`. This is because a one-way ANOVA is nothing more than a regression between all values in the batches and their levels expressed as categorical values where the number of categorical values is the number of levels minus $1$. In essence the ANOVA is generating the following model:
 
-$$
-Coliform\ count = a + b(FALL) + c(Winter) + d(Spring)
-$$
+$Coliform\ count = a + b(FALL) + c(Winter) + d(Spring)$
 
 So, if a value belongs to the FALL batch, the model looks like this:
 
-$$
-Coliform\ count = a + b(1) + c(0) + d(0)
-$$
+$Coliform\ count = a + b(1) + c(0) + d(0)$
 
 If the value belongs to the SUMMER batch, the model looks like this:
 
-$$
-Coliform\ count = a + b(0) + c(0) + d(0)
-$$
+$Coliform\ count = a + b(0) + c(0) + d(0)$
 
 where $a$ is the mean value for summer coliform measurements. It follows that the coefficients $b$, $c$ and $d$ are differences in mean values between summer measurements and fall, winter and spring measurements respectively:
 
@@ -469,13 +464,36 @@ These coefficients can be extracted from the `lm` model via the `coefficients` f
 coefficients( lm( Value ~ Season, dat.long) )
 ```
 
+> Note that R has a built-in function called `aov()` that can be used in lieu of `lm()`. The computed model will be the same but the functions differ slightly in their methods. Examples of its use are presented later in the tutorial. 
+
 # Assumptions of ANOVA
 
 There are three assumptions that should be met when computing an ANOVA:
 
-1. The variance between the batches (homogeneity of variance) should be similar.
-2. Observations should be independent of one another.
-3. The distribution of values within each group should be normally distributed. If a transformation is applied to the data, it should be applied to *all* batches. Note that the distribution of values for all combined batches need not be normally distributed.
+1. The response variable must be quantitative (i.e. measured on a continuous scale). It should not be a count (i.e. the result of qualitative outcome such as yes/no).
+2. The variance between the batches (homogeneity of variance) should be similar.
+3. Observations should be independent of one another.
+4. The distribution of values within each group should be normally distributed. If a transformation is applied to the data, it should be applied to *all* batches. Note that the distribution of values for all combined batches need not be normally distributed.
+
+You can check these assumptions graphically by plotting the results of the ANOVA analysis.
+
+```{r fig.width=6, fig.height=3}
+OP <- par(mfrow=c(1,2))
+plot(lm(Value ~ Season, dat.long), 1:2)
+par(OP)
+```
+
+The *Residuals-Fit* plot checks that the variance is constant across groups. What you want to avoid is a funnel like shape to the data (which may be present in this example). The *Normal Q-Q* plot checks for normality in the residuals--the closer the points fit the diagonal line, the better. 
+
+If normality in the residuals seems to be an issue, then you might want to consider re-expressing your data (note that we already re-expressed the coliform count by logging its values--had he worked with the original data the assumption of normality would have been violated).
+
+If the assumption of equal variance is violated, you might want to run the analysis using `oneway.test()` (which applies **Welch's F** to the data):
+
+```{r}
+oneway.test(Value ~ Season, dat.long)
+```
+
+Note the slightly higher F-value and p-value (but not enough to change the analysis outcome)
 
 # Identifying which levels are different
 
@@ -516,13 +534,13 @@ If knowing whether the effect mean is greater than or less than the overall mean
 The coliform dataset was an example of effects that did not differ. Here, we'll look at an example with differences in effect means. We'll use a dataset that comes installed with `R`, the `ChickWeight` data. This dataset tracks the weights of chicks using different diet types. We will grab a subset of the data and only focus on day 21 measurements. We will also restrict the columns to `Weight` and `Diet`.
 
 ```{r}
-dat <- ChickWeight[ChickWeight$Time==21,c("weight", "Diet")]
+dat2 <- ChickWeight[ChickWeight$Time==21,c("weight", "Diet")]
 ```
 
 The group column is `Diet` which has four levels. These levels are identified as numbers ($1$ through $4$). One needs to be careful when running an ANOVA using levels encoded as numbers since the `lm` model may interpret such values as continuous and not categorical. It's therefore good practice to force the numbers as `factors` by using the `as.factor` function:
 
 ```{r}
-dat$Diet <- as.factor(dat$Diet)
+dat2$Diet <- as.factor(dat2$Diet)
 ```
 
 Note that in this particular case, the conversion was not necessary since the `chickweight` table from which we extracted the values stored the `Diet` field as a factor (and this attribute was carried over to our `dat` data frame).
@@ -530,26 +548,142 @@ Note that in this particular case, the conversion was not necessary since the `c
 Next, let's plot the points along with the grand mean (dashed line) and each levels' mean value (symbolized as a filled circle).
 
 ```{r fig.width=4, fig.height=4}
-plot(weight ~ as.numeric(Diet), dat, col=Diet, pch=3,cex=.6)
-abline( h = mean(dat$weight), lty=2)
-points( unique(dat$Diet) , by(dat$weight, dat[,"Diet"], mean) , pch=19, col=unique(dat$Diet))
+plot(weight ~ as.numeric(Diet), dat2, col=Diet, pch=3,cex=.6)
+abline( h = mean(dat2$weight), lty=2)
+points( unique(dat2$Diet) , by(dat2$weight, dat2[,"Diet"], mean) , pch=19, col=unique(dat2$Diet))
 ```
 
 One level, diet 3, seems to be a bit different from the others, but we will need to run and ANOVA to make sure of this.
 
 ```{r}
-anova(lm(weight ~ Diet, dat))
+anova(lm(weight ~ Diet, dat2))
 ```
 
 The small $p$-value suggests that not all levels have the same mean value. We can run a *post hoc* test to identify which level may be different
 
 ```{r}
-pairwise.t.test( dat$weight, dat$Diet, p.adjust.method = "bonferroni")
-TukeyHSD( aov( weight ~ Diet, dat), "Diet")
+pairwise.t.test( dat2$weight, dat2$Diet, p.adjust.method = "bonferroni")
+TukeyHSD( aov( weight ~ Diet, dat2), "Diet")
 ```
 
 Both tests suggest that diet 3 is significantly different from diet 1, but the differences between the other levels are not significant.
 
+# Two-way ANOVA
+
+A two-way ANOVA adds another factor (explanatory variable) to the analysis. For example, in the earlier fecal coliform count dataset (Section 2.2), coliform counts were only compared across season yet, another piece of information is made available to us: year. We could choose to treat year as a second factor. This would add a *second* hypothesis to our analysis, that being *"can **year** help explain the variability in coliform count"* (the first hypothesis asks if seasons can explain the variability in the coliform count). 
+
+While a one-way ANOVA does not make sense if the data are devoid of replicates, a two-way ANOVA can be conducted if the data do not have replicates (referred to as an **unreplicated two-way ANOVA**). The implementation does not differ between both scenarios except when testing for interaction (described further below).
+
+The `dat.long` dataframe is a *replicatless* dataset. What follows is a *replicated* version of the dataset (used later in demonstrating for interactions). Note that this dataset is used for instructional purposes only and is *not* the way you would create replicate measurements!
+
+```{r}
+set.seed(321)
+datr.long <- data.frame( Year   = rep(rep(c(1971,1972,1973,1974,1975,1976),each=3),4),
+                         Season = rep(c("Summer","Fall","Winter","Spring"),each=18),
+                         Value  = rep(dat.long$Value,each=3) + rnorm(72,0,0.1))
+```
+
+In the following examples, we will use the `dat.long` dataset but note that the same code chunks can be applied to the `datr.long` dataset. 
+
+First we'll visualize the variability across each factor via boxplots:
+
+```{r fig.height=2.3, echo=2:3}
+OP <- par(mar=c(3,3,1,1), mfrow=c(1,2))
+boxplot(Value ~ Year, dat.long)
+boxplot(Value ~ Season, dat.long)
+par(OP)
+```
+
+The differences in (logged) coliform counts across years appear significant from the plots. More so than the differences across seasons.
+
+A two-way ANOVA test assesses how much of an effect (if any) each factor has on the variable. The implementation in R is simple--just add the `Year` variable to the one-way ANOVA function shown in Section 2.2.2. 
+
+```{r}
+anova(lm(Value ~ Season + as.factor(Year), dat.long))
+```
+
+Note that we are wrapping the `Year` variable with the `as.factor` function to force R to treat that variable as a factor and not a continuous variable (it's currently stored in R as a `numeric` and *not* a `factor`). 
+
+The p-values appear significant for *both* factors (you'll recall that an earlier one-way analysis suggested that seasons had little influence on the variability on coliform counts). This discrepancy can be partially explained by looking at a boxplot of the *residuals* vs. `Season` (i.e. the residuals that remain after accounting for `Year` alone in the model).
+
+```{r fig.height=2.3, fig.width=3, echo=2:3}
+OP <- par(mar=c(3,3,1,1))
+res <- residuals(lm(Value ~ as.factor(Year), dat.long))
+boxplot(res ~ dat.long$Season)
+par(OP)
+```
+
+Accounting for variability across years reveals a greater spread in values across seasons (hence the drop in that factor's p-value in a two-way analysis). 
+
+The two-factor model coefficients can be extracted as follows:
+
+```{r}
+coefficients(lm(Value ~ Season + as.factor(Year), dat.long))
+```
+
+The model is thus,
+
+
+$Coliform_{log} = 1.60 - 0.19 Spring +0.24 Summer -0.20 Winter + \\ 0.42 Year_{1972} +0.67 Year_{1973} +0.840 Year_{1974} + 1.07 Year_{1975} + 1.45 Year_{1976}$
+
+So if we want to predict (log) Coliform counts for the Fall season of 1976, the model would take the form:
+
+
+$Coliform_{log} = 1.60 - 0.19(0) +0.24(0) -0.20(0) + 0.42 (0) + 0.67(0) +0.840(0) + 1.07(0) + 1.45(1)$ 
+
+
+or 
+
+$Coliform_{log} = 1.60 + 1.45(1)$
+
+Note that the Fall coefficient, like the 1971 coefficient, is wrapped in the intercept term.
+
+## Checking for interaction (non-additive model)
+
+> Note that it makes no sense to test for interactivity if you do not have replicates (i.e. if you have just one case per factor level combinations) since you may not be able to distinguish the error terms from the residuals. In the examples that follow, we'll make use of the `datr.long` dataset which *has* (simulated) replicates.
+
+We need to check that the additive model we've chosen is appropriate for this dataset. A graphical approach involves plotting the values as a function of one factor using a line graph (where each line represents the levels of the other factor). This is sometimes referred to as an *interactive plot*. We'll make use of the built-in `interaction.plot` function where one of the factors (`Year`) will be mapped to the x-axis and the other factor (`Season`) will be mapped to the line plots. This function does not have a `data=...` parameter telling it which data frame to work off of so we'll wrap the function with the `with()` function which defines the data frame from which the variables are to be read from. 
+
+```{r fig.height=2.5, fig.width=5, echo=2}
+OP <- par(mar=c(3,3,1,3))
+with(datr.long, interaction.plot(as.factor(Year), Season, Value))
+par(OP)
+```
+
+We are seeking parallel lines. The more *non-parallel* the lines, the more unlikely an additive model is a proper fit. If the lines are clearly not parallel, then there is interaction between the factors and an interaction term is probably needed in the model. If we chose to add an interaction component to our model, we would simply augment the formula by adding `as.factor(Year):Season`:
+
+```{r}
+anova(lm(Value ~ Season + as.factor(Year) + as.factor(Year):Season, datr.long))
+```
+
+The p-value associated with the interactive term `as.factor(Year):Season` is small suggesting that the interaction should not be ignored. Note that had the two-way ANOVA been run on the replicate-free version of the data (`dat.long`), the code chunk would not have generated p-values.
+
+Coefficients can be extracted using the `coefficients()` function.
+
+```{r}
+coefficients(lm(Value ~ Season + as.factor(Year) + as.factor(Year):Season, datr.long))
+```
+
+Note that one disadvantage in having so many terms in the model is that you reduce the *power* of the model.  In this example we now have 23 variables and a little more than three times as many measurements (72 to be exact). It's always good practice to seek the most parsimonious model possible. This may involve, for example, grouping factor levels if theory supports it.
+
+## Extracting effects for each level
+
+The regression model will wrap one level's effect from each factor into the intercept term however, you might wish to know each level's effect on the measured variable. This requires decomposing the model's intercept into an overall mean measurement and two level effects (one for each factor). This can be done by running the ANOVA analysis using `aov()` then wrapping its output with the `model.tables()` function as follows:
+
+```{r}
+M1 <- aov(Value ~ Season + as.factor(Year), dat.long)
+model.tables(M1)
+```
+
+The overall mean (and new model intercept) can be extracted from the original table as follows:
+
+```{r}
+mean(dat.long$Value)
+```
+
+While this approach expands the model by adding two more variables, it does allow one to quantify the effect  each level has in explaining the coliform counts. For example, the model suggests that the overall mean (log) coliform count is `2.3` but the Spring seasons lower that value by about `-0.155`. Likewise, we can state that the year 1975 increases the overall mean by about `0.327`. It's also clear from the output that 1971 had the greatest effect on coliform count by dropping the overall value by  `-0.7404`.
+
+Note, however, that if the model has a significant cross-factor interaction effect, you should not attempt to draw anything too meaningful from the main level effects. In such a scenario, the most meaningful result to glean from the model is the interaction between the factors.
 
 # References
 Millard S.P, Neerchal N.K., _Environmental Statistics with S-Plus_, 2001.  
