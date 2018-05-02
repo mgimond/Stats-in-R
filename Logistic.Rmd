@@ -94,7 +94,7 @@ $$
 or, solving for `p` (and noting that the `log` in the above equation is the *natural* log) we get,
 
 $$
-p = \frac{1}{1-e^{-(b_0 + b_1 x)}}
+p = \frac{1}{1+e^{-(b_0 + b_1 x)}}
 $$
 
 where `p` is the probability of `y` occurring given a value `x`. In our example this translates to the probability of a county being on the coast given its median per capita income value. In the first equation, fraction $\frac{p}{1-p}$ is referred to as the **odds ratio** which gives us the odds in favor of a `yes` (or `1` when represented using binomial values). The log of the *odds ratio*, $log(\frac{p}{1-p})$, is referred to as the **logit**. Note that the probability can be computed from the odds ratio as $\frac{odds}{1 + odds}$. Note too that there is not error term as is the case with a linear regression model. 
@@ -109,7 +109,7 @@ M1
 Thus, our model looks like:
 
 $$
-P_{coast} = \frac{1}{1-e^{-(-12.2 + 0.0005 Income)}}
+P_{coast} = \frac{1}{1+e^{-(-12.2 + 0.0005 Income)}}
 $$
 
 where $P_{coast}$ is the probability of a county being on the coast. To see what the relationship looks like for a range of income values, we can use the `predict()` function as follows:
@@ -181,7 +181,7 @@ ggplot(df, aes(x=Income, y=as.numeric(df$Coast) - 1)) +
 To assess how well a logistic model fits the data, we make use of the **log-likelihood** method (this is similar to the Pearson's correlation coefficient used with linear regression models). A *large* log-likelihood statistic indicates a poor fit (similar in idea to a large residual sum of squares statistic for a linear model). What we seek, therefore, is a *small* log-likelihood statistic. What constitutes a small or large statistic is determined by the log likelihood statistic of a base model (aka *null* model) where *none* of the predictive terms are added to he equation, i.e.:
 
 $$
-p_{null} = \frac{1}{1-e^{-(b_0)}}
+p_{null} = \frac{1}{1+e^{-(b_0)}}
 $$
 
 In our working example, the log-likelihood statistic (often labeled as **-2LL** in some statistical packages) for the null model is,
