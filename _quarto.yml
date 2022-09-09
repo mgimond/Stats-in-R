@@ -30,11 +30,11 @@ format:
     theme:
       - cosmo
       - custom.scss
-    css: styles.css
     toc: true
     minimal: true
     number-sections: true
     code-copy: hover
+    anchor-sections: true
 
 execute:
   cache: false

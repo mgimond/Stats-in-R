@@ -90,6 +90,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <meta name="quarto:offset" content="./">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
@@ -116,7 +117,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-fixed">
@@ -232,7 +232,7 @@ F = \frac{s_1^2}{s_2^2}
 </section>
 <section id="example-1" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Example 1</h1>
-<p>In one of the examples in the <em><span class="math inline">\(z\)</span> and <span class="math inline">\(t\)</span> test</em> section, we seek to compare the concentration of sulfates between a background sites and a contaminated well (data taken from Millard <em>et al.</em>, p.&nbsp;418). Did the two samples have equal variances? The table of concentrations is reproduced here.</p>
+<p>In one of the examples in the <em><span class="math inline">\(z\)</span> and <span class="math inline">\(t\)</span> test</em> <a href="z_t_tests.html#example-1">tutorial</a>, we seek to compare the concentration of sulfates between background sites and a contaminated well (data taken from Millard <em>et al.</em>, p.&nbsp;418). Did the two samples have equal variances? The table of concentrations is reproduced here.</p>
 <table class="table">
 <thead>
 <tr class="header">
@@ -276,7 +276,7 @@ F = \frac{s_1^2}{s_2^2}
 </tbody>
 </table>
 <section id="solution-to-example-1" class="level2" data-number="2.1">
-<h2 data-number="2.1" data-anchor-id="solution-to-example-1"><span class="header-section-number">2.1</span> Solution to example 1</h2>
+<h2 data-number="2.1" class="anchored" data-anchor-id="solution-to-example-1"><span class="header-section-number">2.1</span> Solution to example 1</h2>
 <p>The variances for both samples are <span class="math inline">\(s_{Ref}^2 = 712.5\)</span> and <span class="math inline">\(s_{Cont}^2 = 336.7\)</span>. Since <span class="math inline">\(s_{Ref}^2 &gt; s_{Cont}^2\)</span>, the value <span class="math inline">\(s_{Ref}^2\)</span> will be in the numerator giving us the following test statistic:</p>
 <p><span class="math display">\[
 F = \frac{s_{Ref}^2}{s_{Cont}^2} = \frac{712.5}{336.7} = 2.12
@@ -288,10 +288,16 @@ df_{Ref} = 8 - 1 = 7
 <p><span class="math display">\[
 df_{Cont} = 6 - 1 =5
 \]</span></p>
-<p>Now that we have the shape of the <span class="math inline">\(F\)</span>-distribution defined, we can look up the probability of getting an <span class="math inline">\(F\)</span> statistic as extreme as ours (an F-distribution table can be used, or the value can be computed exactly using the function <code>pf()</code>, e.g.&nbsp;<code>pf(2.12, 7, 5,lower.tail=FALSE)</code> where the values 7 and 5 are the <span class="math inline">\(degrees\; of\; freedom\)</span> for the reference sample and contaminated site sample respectively).</p>
+<p>Now that we have the shape of the <span class="math inline">\(F\)</span>-distribution defined, we can look up the probability of getting an <span class="math inline">\(F\)</span> statistic as extreme as ours, An F-distribution table can be used, or the value can be computed exactly using the function <code>pf()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pf</span>(<span class="fl">2.12</span>, <span class="dv">7</span>, <span class="dv">5</span>, <span class="at">lower.tail=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.2126279</code></pre>
+</div>
+</div>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="F_test_files/figure-html/unnamed-chunk-2-1.png" width="672"></p>
+<p><img src="F_test_files/figure-html/unnamed-chunk-3-1.png" width="672"></p>
 </div>
 </div>
 <p>The <span class="math inline">\(F\)</span> values associated with a probability of 0.025 and 0.975 (associated with rejection regions for a two-tailed <span class="math inline">\(\alpha\)</span> of 0.05) are displayed on the curve in grey dashed vertical lines.</p>
@@ -299,14 +305,14 @@ df_{Cont} = 6 - 1 =5
 <p>The following figure shows the observed <span class="math inline">\(P\)</span> values in both tails.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="F_test_files/figure-html/unnamed-chunk-3-1.png" width="672"></p>
+<p><img src="F_test_files/figure-html/unnamed-chunk-4-1.png" width="672"></p>
 </div>
 </div>
 <p>This can be easily executed in <code>R</code> as a two-tailed test as shown in the following code block:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Ref <span class="ot">&lt;-</span>  <span class="fu">c</span>(<span class="dv">560</span>, <span class="dv">530</span>, <span class="dv">570</span>, <span class="dv">490</span>, <span class="dv">510</span>, <span class="dv">550</span>, <span class="dv">550</span>, <span class="dv">530</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>Cont <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">600</span>, <span class="dv">590</span>, <span class="dv">590</span>, <span class="dv">630</span>, <span class="dv">610</span>, <span class="dv">630</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">var.test</span>(Ref, Cont, <span class="at">alternative=</span><span class="st">"two.sided"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Ref <span class="ot">&lt;-</span>  <span class="fu">c</span>(<span class="dv">560</span>, <span class="dv">530</span>, <span class="dv">570</span>, <span class="dv">490</span>, <span class="dv">510</span>, <span class="dv">550</span>, <span class="dv">550</span>, <span class="dv">530</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>Cont <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">600</span>, <span class="dv">590</span>, <span class="dv">590</span>, <span class="dv">630</span>, <span class="dv">610</span>, <span class="dv">630</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">var.test</span>(Ref, Cont, <span class="at">alternative=</span><span class="st">"two.sided"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     F test to compare two variances
@@ -326,7 +332,7 @@ ratio of variances
 </section>
 <section id="example-2" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span> Example 2</h1>
-<p>An investor is concerned that stock 1 is a riskier investment than stock 2 because its variation in daily prices is greater. The following table is provided with summary statistics for a sample of 25 daily price changes.</p>
+<p>An investor is concerned that stock 1 is a riskier investment than stock 2 because its variation in daily prices is greater. The following table provides summary statistics for a sample of 25 daily price changes.</p>
 <table class="table">
 <thead>
 <tr class="header">
@@ -351,7 +357,7 @@ ratio of variances
 <p>Is stock 1’s variability significantly greater than that of stock 2, or is the observed difference due to chance?<br>
 <em>[This example is adapted from McCLave et al.&nbsp;page 461]</em></p>
 <section id="solution-to-example-2" class="level2" data-number="3.1">
-<h2 data-number="3.1" data-anchor-id="solution-to-example-2"><span class="header-section-number">3.1</span> Solution to example 2</h2>
+<h2 data-number="3.1" class="anchored" data-anchor-id="solution-to-example-2"><span class="header-section-number">3.1</span> Solution to example 2</h2>
 <p>We are asked to test the hypothesis, <span class="math inline">\(H_o\)</span>, that the two stock have equal variances and that any observed difference is due to chance (i.e.&nbsp;<span class="math inline">\(\sigma_1^2 = \sigma_2^2\)</span>). The alternate hypothesis, <span class="math inline">\(H_a\)</span>, states that stock 1 has greater variability than stock 2 (i.e.&nbsp;<span class="math inline">\(\sigma_1^2 &gt; \sigma_2^2\)</span>).</p>
 <p>Since we are given summary statistics of the samples and not the full dataset, we cannot use the <code>var.test()</code> function which requires the full dataset as input. Instead, we will compute the <span class="math inline">\(F\)</span> ratio and observed probabilities separately.</p>
 <p>The <span class="math inline">\(F\)</span> ratio is:</p>
@@ -361,7 +367,7 @@ F = \frac{(.76)^2}{(.46)^2} = 2.73
 <p>The degrees of freedom are <span class="math inline">\((25 - 1) = 24\)</span> for both samples.</p>
 <p>The probability of getting a test statistic as extreme as ours can be computed using the <code>pf()</code> function:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pf</span>( <span class="fl">2.73</span>, <span class="dv">24</span>, <span class="dv">24</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pf</span>( <span class="fl">2.73</span>, <span class="dv">24</span>, <span class="dv">24</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.008502252</code></pre>
 </div>
@@ -369,7 +375,7 @@ F = \frac{(.76)^2}{(.46)^2} = 2.73
 <p>Note that we are using the <code>lower.tail = FALSE</code> option since our alternate hypothesis is that <span class="math inline">\(\sigma_1^2 &gt; \sigma_2^2\)</span>. This gives us a probability of <span class="math inline">\(0.008\)</span>, in other words, if the difference between stock 1 and stock 2 were explained by chance variability alone, there would be lest than a 1% chance of computing a <span class="math inline">\(F\)</span> ratio as extreme as ours. We can safely reject <span class="math inline">\(H_o\)</span> and state that the observed difference is real and that stock 1 has greater daily variability than stock 2.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="F_test_files/figure-html/unnamed-chunk-6-1.png" width="672"></p>
+<p><img src="F_test_files/figure-html/unnamed-chunk-7-1.png" width="672"></p>
 </div>
 </div>
 </section>
@@ -411,6 +417,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
   toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
   const clipboard = new window.ClipboardJS('.code-copy-button', {
     target: function(trigger) {
       return trigger.previousElementSibling;

@@ -90,6 +90,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <meta name="quarto:offset" content="./">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
@@ -116,7 +117,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-fixed">
@@ -250,7 +250,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <p>The arithmetic mean of <span class="math inline">\(x\)</span> is 30.14 which is slightly different from our hypothesized value of 28.5. This begs the question: is this difference significant, or is it due to chance variation alone? This question will be addressed in the following subsections.</p>
 <section id="the-null-and-the-alternative-hypotheses" class="level2" data-number="1.1">
-<h2 data-number="1.1" data-anchor-id="the-null-and-the-alternative-hypotheses"><span class="header-section-number">1.1</span> The null and the alternative hypotheses</h2>
+<h2 data-number="1.1" class="anchored" data-anchor-id="the-null-and-the-alternative-hypotheses"><span class="header-section-number">1.1</span> The null and the alternative hypotheses</h2>
 <p>The objective of hypothesis testing is to assess whether the observed data are consistent with a well specified (hypothesized) random process, <span class="math inline">\(H_o\)</span>. Note that when we mean <em>random</em> here we are not inferring complete randomness but some random variation about a central value. <em>Freedman et al.</em> (2007) define The <em>null</em> and <em>alternative</em> hypotheses as follows:</p>
 <blockquote class="blockquote">
 <p>The <strong><em>null hypothesis</em></strong> corresponds to the idea that an observed difference is due to chance… The <strong>alternative hypothesis</strong> corresponds to the idea that the observed difference is real.</p>
@@ -264,11 +264,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>In essence, we compare our observed data (usually as a statistical summary) to the hypothesized distribution using a <em>test statistic</em> from which a <em>test of significance</em> is calculated (this tells us how likely our observed statistic agrees with our hypothesized process). These, and derived concepts, are highlighted in the subsequent sections.</p>
 </section>
 <section id="test-statistics" class="level2" data-number="1.2">
-<h2 data-number="1.2" data-anchor-id="test-statistics"><span class="header-section-number">1.2</span> Test statistics</h2>
+<h2 data-number="1.2" class="anchored" data-anchor-id="test-statistics"><span class="header-section-number">1.2</span> Test statistics</h2>
 <p>A <strong>test statistic</strong> is a numerical summary of the data that is compared to what would be expected under the null hypothesis. Test statistics can take on many forms such as the <strong>z-tests</strong> (usually used for large datasets) or <strong>t-tests</strong> (usually used when datasets are small).</p>
 </section>
 <section id="z-tests" class="level2" data-number="1.3">
-<h2 data-number="1.3" data-anchor-id="z-tests"><span class="header-section-number">1.3</span> <span class="math inline">\(z\)</span>-tests</h2>
+<h2 data-number="1.3" class="anchored" data-anchor-id="z-tests"><span class="header-section-number">1.3</span> <span class="math inline">\(z\)</span>-tests</h2>
 <p>The <strong><span class="math inline">\(z\)</span>-statistic</strong> is a measure of how much an observed statistic differs from an expected statistic put forward by the null hypothesis. It is computed as</p>
 <p><span class="math display">\[
 z = \frac{observed - expected}{SE}
@@ -346,7 +346,7 @@ z = \frac{observed - expected}{SE}
 <p>An alternative to the <span class="math inline">\(z\)</span>-test, the <span class="math inline">\(t\)</span>-test, is discussed in the following section.</p>
 </section>
 <section id="t-tests" class="level2" data-number="1.4">
-<h2 data-number="1.4" data-anchor-id="t-tests"><span class="header-section-number">1.4</span> <span class="math inline">\(t\)</span>-tests</h2>
+<h2 data-number="1.4" class="anchored" data-anchor-id="t-tests"><span class="header-section-number">1.4</span> <span class="math inline">\(t\)</span>-tests</h2>
 <p>When working with small sample sizes (typically less than 30), the <span class="math inline">\(z\)</span>-test has to be modified. For starters, the shape of the sampling distribution (i.e.&nbsp;the distribution of means one would compute from many different samples from the same underlying population) now depends on the shape of the underlying population distribution which must therefore be approximately normal in shape. These requirements can be quite restrictive because in most cases we do not know the population’s distribution.</p>
 <p>Continuing with our working example, let’s assume that instead of a sample size of 50 we now have a sample size of 10.</p>
 <div class="cell">
@@ -388,13 +388,13 @@ z = \frac{observed - expected}{SE}
 <p>Many textbooks only cover the <span class="math inline">\(t\)</span>-test and not the <span class="math inline">\(z\)</span>-test. In fact , you may not find a <span class="math inline">\(z\)</span>-test implementation in some statistical software. This is because the <span class="math inline">\(t\)</span>-test results will converge with the <span class="math inline">\(z\)</span>-test results as the sample size gets larger.</p>
 </section>
 <section id="follow-up-examples" class="level2" data-number="1.5">
-<h2 data-number="1.5" data-anchor-id="follow-up-examples"><span class="header-section-number">1.5</span> Follow-up examples</h2>
+<h2 data-number="1.5" class="anchored" data-anchor-id="follow-up-examples"><span class="header-section-number">1.5</span> Follow-up examples</h2>
 <section id="problem-1" class="level3" data-number="1.5.1">
-<h3 data-number="1.5.1" data-anchor-id="problem-1"><span class="header-section-number">1.5.1</span> Problem 1</h3>
+<h3 data-number="1.5.1" class="anchored" data-anchor-id="problem-1"><span class="header-section-number">1.5.1</span> Problem 1</h3>
 <p>You conduct a survey where the respondent is to answer <em>yes</em> or <em>no</em> to a question. Of the <strong>45</strong> respondents, <strong>20</strong> answer yes. You want to know if the percentage of <em>yes’</em> is significantly different from an expected value of <strong>50%</strong>.</p>
 </section>
 <section id="solution-to-problem-1" class="level3" data-number="1.5.2">
-<h3 data-number="1.5.2" data-anchor-id="solution-to-problem-1"><span class="header-section-number">1.5.2</span> Solution to problem 1</h3>
+<h3 data-number="1.5.2" class="anchored" data-anchor-id="solution-to-problem-1"><span class="header-section-number">1.5.2</span> Solution to problem 1</h3>
 <p>The data can be treated as a binomial proportion where the fraction of <em>yes’</em> in our sample is <span class="math inline">\(\hat{p} = 20/45 = 0.444\)</span> and the fraction of <em>no’s</em> is <span class="math inline">\(\hat{q} = 1 - \hat{p} = 1 - 0.444 = 0.555\)</span> (the <span class="math inline">\(\hat{ }\)</span> symbol reminds us that these are estimate fractions of the true yes’ and no’s in the overall population). The hypothesis <span class="math inline">\(H_o\)</span> is that the number of <em>yes’</em> in the population equals the number of <em>no’s</em> or <span class="math inline">\(p_o = q_o = 0.5\)</span>.</p>
 <p>We first need to compute <span class="math inline">\(SE_{Ho}\)</span> (The standard error for the null and <em>not</em> the observed data). In this example, the standard deviation of the null hypothesis is given to us since we are told what the proportion of yes’ and no’s should be equal to in the hypothesized population (i.e.&nbsp;we know that the hypothesized population has 22.5 yes’ and 22.5 no’s). If we could not glean a standard deviation from the null, we would therefore have to rely on the sample’s <span class="math inline">\(SD\)</span> instead. <span class="math inline">\(SE_{Ho}\)</span> can be computed as follows.</p>
 <p><span class="math inline">\(SE_{Ho} = \sqrt{ \frac{\displaystyle (fraction\; of\; yes')(fraction\; of\; no's)}{\displaystyle n}}=\sqrt{\frac{\displaystyle (0.5)(0.5)}{\displaystyle 45}}=0.075\)</span>.</p>
@@ -422,11 +422,11 @@ z = \frac{observed - expected}{SE}
 <p>Hence, there is a 23% chance that the fraction of <em>yes’</em> one could expect to measure under <span class="math inline">\(H_o\)</span> could be more extreme than the one observed or, put differently, if 100 investigators were to conduct their own survey of 45 people from a population whose number of <em>yes’</em> equals the number of <em>no’s</em>, 23 of the survey results would have a percentage of <em>yes’</em> more extreme than ours. So our observed fraction of <em>yes’</em> is consistent with what one would expect under the null hypothesis. It would probably be safe then to state that we cannot reject the null hypothesis.</p>
 </section>
 <section id="problem-2" class="level3" data-number="1.5.3">
-<h3 data-number="1.5.3" data-anchor-id="problem-2"><span class="header-section-number">1.5.3</span> Problem 2</h3>
+<h3 data-number="1.5.3" class="anchored" data-anchor-id="problem-2"><span class="header-section-number">1.5.3</span> Problem 2</h3>
 <p>Aldicarb, a pesticide substance, is measured from a sampling well <strong>4</strong> times over the course of a season. The concentrations measured are <strong>6.3, 7.1, 5.8 and 6.9 ppb</strong> (parts per billion). The maximum contaminant level (MCL) has been set at <strong>7 ppb</strong>. We want to determine if the average concentrations observed are less than the MCL of 7 ppb at the <strong>99% significance</strong> level.</p>
 </section>
 <section id="solution-to-problem-2" class="level3" data-number="1.5.4">
-<h3 data-number="1.5.4" data-anchor-id="solution-to-problem-2"><span class="header-section-number">1.5.4</span> Solution to problem 2</h3>
+<h3 data-number="1.5.4" class="anchored" data-anchor-id="solution-to-problem-2"><span class="header-section-number">1.5.4</span> Solution to problem 2</h3>
 <p>The question asks if the true mean concentration (from the four measurements) is less than or equal to 7 ppb. We do not have the luxury of monitoring this concentration continuously so we must contend with just four observations. These four observations are random variables that can be expected to fluctuate around the true mean concentration of the well (a value we are not privy to). We are hypothesizing that the true mean concentration is less than 7 ppb. We want to compare our observed mean concentration to the <em>range</em> of mean concentrations we could expect <em>if</em> we were to sample (with four concentration measurements) from a well whose mean concentration is indeed 7 ppb. If our observed concentration is not consistent with what we would expect to measure from a well whose true concentration is 7 ppb, we can than state that the <em>true</em> mean concentration of aldicarb in the well is less than 7 ppb.</p>
 <p>This problem differs from the last one in that we are interested in a different parameter: the mean (of a concentration) instead of the fraction. It also differs from the last problem in that we are now defining a cutoff probability (aka a rejection region) of 0.99. In the last exercise, we were only seeking the <em>probability</em> of finding a test statistic more extreme than expected under a null (and thus leaving the interpretation of what <em>is</em> significant up to someone else).</p>
 <p>We need to compute the mean of the observed concentrations, <span class="math inline">\(\hat{\mu}\)</span>, and the standard error of the mean concentrations we would observe if the null was the true state of things, <span class="math inline">\(SE_{Ho}\)</span>. For the latter, we do not know the actual standard deviation of the null distribution (this is another difference between this example and the previous example where the standard deviation–and thus the standard error–was gleaned directly from null). We will therefore assume that <span class="math inline">\(SD\)</span> of the null is the same as <span class="math inline">\(SD\)</span> from our observed data. Note that we must therefore assume that the distribution of aldicarb sample mean concentrations follows a normal curve!</p>
@@ -455,7 +455,7 @@ z = \frac{observed - expected}{SE}
 </section>
 </section>
 <section id="using-the-built-in-t.test-function" class="level2" data-number="1.6">
-<h2 data-number="1.6" data-anchor-id="using-the-built-in-t.test-function"><span class="header-section-number">1.6</span> Using the built in <strong>t.test</strong> function</h2>
+<h2 data-number="1.6" class="anchored" data-anchor-id="using-the-built-in-t.test-function"><span class="header-section-number">1.6</span> Using the built in <strong>t.test</strong> function</h2>
 <p>The six or seven lines of code used to compute the <span class="math inline">\(t\)</span>-test can easily be replaced with <code>R</code>’s <code>t.test()</code> function. Using <em>example 2</em>, we can compute the t-test as follows:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(x, <span class="at">mu=</span><span class="dv">7</span>, <span class="at">alternative=</span><span class="st">"less"</span>, <span class="at">conf.level=</span> <span class="fl">0.99</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -484,7 +484,7 @@ mean of x
 <h1 data-number="2"><span class="header-section-number">2</span> Tests of Significance (two independent samples comparison)</h1>
 <p>Up to now, we have focused on inferences about single samples. We will now focus on comparing <em>two</em> independent samples using test statistics. The approach is very much the same except that we are no longer comparing a sample statistic to an external standard but to another sample statistic.</p>
 <section id="z-test-with-two-samples-large-sample-sizes" class="level2" data-number="2.1">
-<h2 data-number="2.1" data-anchor-id="z-test-with-two-samples-large-sample-sizes"><span class="header-section-number">2.1</span> <span class="math inline">\(z\)</span> test with two samples (large sample sizes)</h2>
+<h2 data-number="2.1" class="anchored" data-anchor-id="z-test-with-two-samples-large-sample-sizes"><span class="header-section-number">2.1</span> <span class="math inline">\(z\)</span> test with two samples (large sample sizes)</h2>
 <p>If the sample sizes in both samples are large (usually more than 30), then a <span class="math inline">\(z\)</span> test is appropriate. The <span class="math inline">\(z\)</span> statistic is computed as follows:</p>
 <p><span class="math display">\[
 z = \frac{observed\; difference - expected\; difference}{SE\; for\; difference}
@@ -494,12 +494,12 @@ z = \frac{observed\; difference - expected\; difference}{SE\; for\; difference}
 SE = \sqrt{SE_{sample\; 1}^2 + SE_{sample\; 2}^2}
 \]</span></p>
 <section id="example" class="level3" data-number="2.1.1">
-<h3 data-number="2.1.1" data-anchor-id="example"><span class="header-section-number">2.1.1</span> Example</h3>
+<h3 data-number="2.1.1" class="anchored" data-anchor-id="example"><span class="header-section-number">2.1.1</span> Example</h3>
 <p>The National Assessment of Education Progress (NAEP) administered a reading test for 17 year-olds in 1990 and 2004. The <em>average</em> score was <strong>290</strong> and <strong>285</strong> respectively; a slight decrease over the course of 14 years. The standard deviation, <span class="math inline">\(SD\)</span> was <strong>40</strong> and <strong>37</strong> respectively. The sample size for both years was <strong>1000</strong>. So this begs the question, was the drop in reading assessment just a chance variation or real?<br>
 <em>[This example is taken from Freedman et al., page 503]</em></p>
 </section>
 <section id="solution" class="level3" data-number="2.1.2">
-<h3 data-number="2.1.2" data-anchor-id="solution"><span class="header-section-number">2.1.2</span> Solution</h3>
+<h3 data-number="2.1.2" class="anchored" data-anchor-id="solution"><span class="header-section-number">2.1.2</span> Solution</h3>
 <p>The standard error for each sample can be computed as follows:</p>
 <p><span class="math display">\[
 SE_{1990} = \frac{SD_{1990}}{\sqrt{sample\; size}}=\frac{40}{\sqrt{1000}} = 1.26
@@ -535,7 +535,7 @@ z = \frac{(score_{2004} - score_{1990}) - (expected\; difference)}{SE\; of\; dif
 </section>
 </section>
 <section id="t-test-with-two-samples-small-sample-sizes" class="level2" data-number="2.2">
-<h2 data-number="2.2" data-anchor-id="t-test-with-two-samples-small-sample-sizes"><span class="header-section-number">2.2</span> <span class="math inline">\(t\)</span> test with two samples (small sample sizes )</h2>
+<h2 data-number="2.2" class="anchored" data-anchor-id="t-test-with-two-samples-small-sample-sizes"><span class="header-section-number">2.2</span> <span class="math inline">\(t\)</span> test with two samples (small sample sizes )</h2>
 <p>If the sample sizes in at least one of the two samples is small (usually less than 30), then a <span class="math inline">\(t\)</span> test is appropriate. Note that a <span class="math inline">\(t\)</span> test can also be used with large samples as well, in some cases, statistical packages will only compute a <span class="math inline">\(t\)</span> test and not a <span class="math inline">\(z\)</span> test.</p>
 <p>To use the <span class="math inline">\(t\)</span>-statistic, the two samples must be:</p>
 <ul>
@@ -555,7 +555,7 @@ t = \frac{(observed\; difference - expected\; difference) - hypothesized\; diffe
 \]</span></p>
 <p>The <span class="math inline">\(t\)</span> value is then used to look up the <span class="math inline">\(P\)</span> value on a Student curve using <span class="math inline">\(n_1 + n_2 - 2\)</span> degrees of freedom.</p>
 <section id="example-1" class="level3" data-number="2.2.1">
-<h3 data-number="2.2.1" data-anchor-id="example-1"><span class="header-section-number">2.2.1</span> Example</h3>
+<h3 data-number="2.2.1" class="anchored" data-anchor-id="example-1"><span class="header-section-number">2.2.1</span> Example</h3>
 <p>Groundwater sulfate concentrations are monitored at a contaminated site over the course of a year. Those concentrations are compared to ones measured at background sites for the same time period. You want to determine if the concentration at the contaminated site is significantly larger than that for the background site. The concentrations of sulfate (in ppm) for both sites are as follows:</p>
 <table class="table">
 <thead>
@@ -601,7 +601,7 @@ t = \frac{(observed\; difference - expected\; difference) - hypothesized\; diffe
 </table>
 </section>
 <section id="solution-1" class="level3" data-number="2.2.2">
-<h3 data-number="2.2.2" data-anchor-id="solution-1"><span class="header-section-number">2.2.2</span> Solution</h3>
+<h3 data-number="2.2.2" class="anchored" data-anchor-id="solution-1"><span class="header-section-number">2.2.2</span> Solution</h3>
 <p>You will setup this problem as follows: the null hypothesis, <span class="math inline">\(H_o\)</span>, states that the concentrations between both sites is the same; the alternative hypothesis, <span class="math inline">\(H_a\)</span>, states that the contaminated site has a concentration greater than the background.</p>
 <p>We will reference the contaminated site with the <span class="math inline">\(1\)</span> subscript and the background site with the subscript <span class="math inline">\(2\)</span>. The means and standard deviations are <span class="math inline">\(\mu_1 = 579.2\)</span>, <span class="math inline">\(\mu_2 = 565\)</span>, <span class="math inline">\(SD_1 = 13.6\)</span> and <span class="math inline">\(SD_2 = 15.1\)</span>.</p>
 <p>The pooled standard error of the mean is therefore:</p>
@@ -654,9 +654,9 @@ mean of x mean of y
 </section>
 </section>
 <section id="notes-on-z-and-t-tests" class="level2" data-number="2.3">
-<h2 data-number="2.3" data-anchor-id="notes-on-z-and-t-tests"><span class="header-section-number">2.3</span> Notes on z and t tests</h2>
+<h2 data-number="2.3" class="anchored" data-anchor-id="notes-on-z-and-t-tests"><span class="header-section-number">2.3</span> Notes on z and t tests</h2>
 <section id="assumption-of-equal-variance" class="level3" data-number="2.3.1">
-<h3 data-number="2.3.1" data-anchor-id="assumption-of-equal-variance"><span class="header-section-number">2.3.1</span> Assumption of equal variance</h3>
+<h3 data-number="2.3.1" class="anchored" data-anchor-id="assumption-of-equal-variance"><span class="header-section-number">2.3.1</span> Assumption of equal variance</h3>
 <p>One assumption that needs to be met when conducting a test of significance with small sample sizes is the equality of variances between samples. This is an assumption we have made thus far in our working examples. But such an assumption may not be tenable in real life. If such is the case, you may want to resort to alternate techniques such as robust test of significance techniques. However, if you are working with the raw data, you can use the <code>t.test</code> function along with the parameter <code>var.equal=FALSE</code> option set. This option invokes <a href="http://en.wikipedia.org/wiki/Welch's_t_test">Welch’s</a> variance approximation which is believed to provide a more robust <span class="math inline">\(t\)</span>-test analysis. Working with the last example, we can compute the <span class="math inline">\(t\)</span>-test using Welch’s approximation as demonstrated in the following line of code.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(s1, s2, <span class="at">var.equal=</span><span class="cn">FALSE</span>, <span class="at">alternative =</span> <span class="st">"greater"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -681,7 +681,7 @@ mean of x mean of y
 <p>Note that equality of variances between two samples can be tested using the <strong><span class="math inline">\(F\)</span> test</strong>.</p>
 </section>
 <section id="population-distribution-and-small-sample-sizes" class="level3" data-number="2.3.2">
-<h3 data-number="2.3.2" data-anchor-id="population-distribution-and-small-sample-sizes"><span class="header-section-number">2.3.2</span> Population distribution and small sample sizes</h3>
+<h3 data-number="2.3.2" class="anchored" data-anchor-id="population-distribution-and-small-sample-sizes"><span class="header-section-number">2.3.2</span> Population distribution and small sample sizes</h3>
 <p>If the sample size is small, the shape of the population distribution will influence the tests. If the population is not normally distributed, the data may need to be transformed prior to conducting a <span class="math inline">\(t\)</span>-test. Many environmental data such as <em>concentrations of “something”</em> tend to be positively skewed. If such is the case, a popular transformation for skewed data is the natural logarithm transformation, <code>log</code>. Note that when you are conducting a <span class="math inline">\(t\)</span> or <span class="math inline">\(z\)</span> test on log transformed data, you are conducting a hypothesis test on the <strong>ratio of the medians</strong> and <em>not</em> a hypothesis about the difference of the means (Millard <em>et al.</em>, p.&nbsp;416-417).</p>
 <p>For example, using TcCB concentration data between a background, <code>Ref</code>, and contaminated site, <code>Cont</code> (Millard et al., p.420),</p>
 <div class="cell">
@@ -742,7 +742,7 @@ sample estimates:
 <p>Other methods used to test the normality of the data are tests of <strong>skewness</strong> and <strong>kurtosis</strong>.</p>
 </section>
 <section id="tests-of-paired-samples-paired-t-test" class="level3" data-number="2.3.3">
-<h3 data-number="2.3.3" data-anchor-id="tests-of-paired-samples-paired-t-test"><span class="header-section-number">2.3.3</span> Tests of paired samples (paired t-test)</h3>
+<h3 data-number="2.3.3" class="anchored" data-anchor-id="tests-of-paired-samples-paired-t-test"><span class="header-section-number">2.3.3</span> Tests of paired samples (paired t-test)</h3>
 <p>Suppose that you want to compare concentrations of ozone between two locations on a <em>set of dates</em> (i.e.&nbsp;for each date, ozone concentrations are compared between two sites). This problem differs from the groundwater sulfate example shown earlier in that a sample from each location is paired. This violates one of the <span class="math inline">\(z\)</span> and <span class="math inline">\(t\)</span> test requirements in that samples from <em>both</em> groups be independent of each other. In the case of the ozone concentration, this assumption does not hold. However, Freedman <em>et al.</em> (page 510) explain that the errors introduced (in estimating <span class="math inline">\(SE\)</span>) when violating this assumption tend to cancel each other out when applied to paired tests. Using data from Millard <em>et al.</em> (page 408) where ozone concentrations for two areas (Yonkers, NY and Stamford, CT) are collected on a daily bases the <strong>paired <span class="math inline">\(t\)</span>-test</strong> can be computed by invoking the <code>paired = TRUE</code> option.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ozone concentrations in ppb)</span></span>
@@ -825,6 +825,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
   toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
   const clipboard = new window.ClipboardJS('.code-copy-button', {
     target: function(trigger) {
       return trigger.previousElementSibling;

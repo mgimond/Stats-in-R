@@ -1,5 +1,7 @@
 ---
 title: "Comparing variances: Fisher's F-test"
+editor_options: 
+  chunk_output_type: console
 ---
 
 *Last modified on `r Sys.Date()`*
@@ -45,7 +47,7 @@ The shape of the $\pmb F$**-distribution** curve is defined by both sample's $df
 
 # Example 1
 
-In one of the examples in the _$z$ and $t$ test_ section, we seek to compare the concentration of sulfates between a background sites and a contaminated well (data taken from Millard _et al._, p. 418). Did the two samples have equal variances? The table of concentrations is reproduced here.
+In one of the examples in the _$z$ and $t$ test_ [tutorial](z_t_tests.html#example-1), we seek to compare the concentration of sulfates between background sites and a contaminated well (data taken from Millard _et al._, p. 418). Did the two samples have equal variances? The table of concentrations is reproduced here.
 
 Contaminated      Background
 ---------------   -------------------
@@ -59,6 +61,7 @@ Contaminated      Background
                   580
 
 ## Solution to example 1
+
 The variances for both samples are $s_{Ref}^2 = 712.5$ and $s_{Cont}^2 = 336.7$. Since $s_{Ref}^2 > s_{Cont}^2$, the value $s_{Ref}^2$ will be in the numerator giving us the following test statistic:
 
 $$
@@ -73,7 +76,12 @@ $$
 df_{Cont} = 6 - 1 =5
 $$
 
-Now that we have the shape of the $F$-distribution defined, we can look up the probability of getting an $F$ statistic as extreme as ours (an F-distribution table can be used, or the value can be computed exactly using the function `pf()`, e.g. ` pf(2.12, 7, 5,lower.tail=FALSE)` where the values 7 and 5 are the $degrees\; of\; freedom$ for the reference sample and contaminated site sample respectively). 
+Now that we have the shape of the $F$-distribution defined, we can look up the probability of getting an $F$ statistic as extreme as ours, An F-distribution table can be used, or the value can be computed exactly using the function `pf()`:
+
+```{r}
+pf(2.12, 7, 5, lower.tail=FALSE)
+```
+
 
 ```{r echo=FALSE, message=FALSE, fig.width=7, fig.height=3.0, warning=FALSE}
 OP <- par("mar"=c(2,4,3,1), xpd=NA)
@@ -127,8 +135,8 @@ axis(1, family= "Architects Daughter")
 #lines(x = c(Ft,Ft), y=c(0,df(Ft,df1,df2)), col="red"  , lty=1, lw=2)
 
 #text(x=Ft, y = df(Ft,df1,df2), eval(Ft), col="red", pos=3, family= "Architects Daughter")
-text(x=3, y = df(2,df1,df2),  "Upper 21%\nregion", col=rgb(1, 0, 0,.5), pos=4, family= "Architects Daughter")
-text(x=0, y = df(.1,df1,df2), "Lower\n21%\nregion", col=rgb(1, 0, 0,.5), pos=2, family= "Architects Daughter")
+text(x=3, y = df(2,df1,df2),  sprintf("Upper 0.21\nregion"), col=rgb(1, 0, 0,.5), pos=4, family= "Architects Daughter")
+text(x=0, y = df(.1,df1,df2), sprintf("Lower\n0.21\nregion"), col=rgb(1, 0, 0,.5), pos=2, family= "Architects Daughter")
 
 # Right side
 ncurve.x.mSE <- seq(Ft, xmax, length.out= 100)
@@ -158,7 +166,7 @@ Note that the `var.test()` computes the $F$ ratio using the first variable name 
 
 # Example 2
 
-An investor is concerned that stock 1 is a riskier investment than stock 2 because its variation in daily prices is greater.  The following table is provided with summary statistics for a sample of 25 daily price changes. 
+An investor is concerned that stock 1 is a riskier investment than stock 2 because its variation in daily prices is greater.  The following table provides summary statistics for a sample of 25 daily price changes. 
 
                      Stock 1   Stock 2
 ------------------- --------- --------

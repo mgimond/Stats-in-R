@@ -90,6 +90,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <meta name="quarto:offset" content="./">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
@@ -116,7 +117,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-fixed">
@@ -236,19 +236,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>grand.mean <span class="ot">&lt;-</span> <span class="fu">mean</span>(samp.mean)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>grand.mean</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 29.98705</code></pre>
+<pre><code>[1] 30.01271</code></pre>
 </div>
 </div>
-<p>From the <em>grand mean</em>, we might be tempted to infer that the mean hours of TV watched by each household in the <em>entire</em> population is 29.99 hours. But note from the histogram that there is some variability in the <em>means</em> computed from each 50 household samples. It might behoove us to assess the chance that this estimate (the grand mean) is not representative of the whole <em>population</em> mean. We can find out how big the chance error might be by calculating the <em>standard error</em>.</p>
+<p>From the <em>grand mean</em>, we might be tempted to infer that the mean hours of TV watched by each household in the <em>entire</em> population is 30.01 hours. But note from the histogram that there is some variability in the <em>means</em> computed from each 50 household samples. It might behoove us to assess the chance that this estimate (the grand mean) is not representative of the whole <em>population</em> mean. We can find out how big the chance error might be by calculating the <em>standard error</em>.</p>
 <p>The <strong>standard error</strong> is the <em>standard deviation</em> of the sampling distribution of a statistic; it’s the likely size of chance error when estimating a statistic. In our case the standard error of our sample means, <span class="math inline">\(SE\)</span>, is computed by taking the standard deviation of the 1000 sample means:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>SE <span class="ot">&lt;-</span> <span class="fu">sd</span>(samp.mean)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>SE</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.6524902</code></pre>
+<pre><code>[1] 0.6593752</code></pre>
 </div>
 </div>
-<p>We can now state that the average number of hours of TV watched per household per week is <em>29.99</em> <span class="math inline">\(\pm\)</span> <em>0.65</em>. It’s important to note that <span class="math inline">\(SE\)</span> is <em>not</em> an estimate of the population standard deviation but a measure of uncertainty in the population mean estimate.</p>
+<p>We can now state that the average number of hours of TV watched per household per week is <em>30.01</em> <span class="math inline">\(\pm\)</span> <em>0.66</em>. It’s important to note that <span class="math inline">\(SE\)</span> is <em>not</em> an estimate of the population standard deviation but a measure of uncertainty in the population mean estimate.</p>
 <p>In most cases, we do not have the luxury of collecting hundreds or thousands of samples. We usually only have a <em>single</em> sample to work with (hence a single sample from which to make inferences about the whole population). Methods in <em>estimating</em> the sample variability given a single sample is covered next.</p>
 </section>
 <section id="estimate-of-a-population-statistic-from-a-single-sample" class="level1" data-number="3">
@@ -319,10 +319,10 @@ SE_{fraction} = \frac{\sqrt{(fraction\; of\; 1's)(fraction\; of\; 0's)}}{\sqrt{s
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>SE.boot <span class="ot">&lt;-</span> <span class="fu">sd</span>(median.boot)</span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>SE.boot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.7048915</code></pre>
+<pre><code>[1] 0.6872271</code></pre>
 </div>
 </div>
-<p>In this example, the sample <code>x</code> is re-sampled 10,000 times (each sample having a size equal to the original sample, <code>length(x)</code>). The function <code>sample()</code> samples anew from the sample <code>x</code> <em>with</em> replacement each time. The median of each re-sampled batch is stored in the variable <code>median.boot[i]</code>. The variable <code>SE.boot</code> stores the standard error for the bootstrap sample medians, or 0.7048915 in this working example (note that your result may differ slightly given that the re-sampling process is random).</p>
+<p>In this example, the sample <code>x</code> is re-sampled 10,000 times (each sample having a size equal to the original sample, <code>length(x)</code>). The function <code>sample()</code> samples anew from the sample <code>x</code> <em>with</em> replacement each time. The median of each re-sampled batch is stored in the variable <code>median.boot[i]</code>. The variable <code>SE.boot</code> stores the standard error for the bootstrap sample medians, or 0.6872271 in this working example (note that your result may differ slightly given that the re-sampling process is random).</p>
 <p>Another way to implement the bootstrap technique is to use the function <code>boot()</code> from the <code>boot</code> library. This reduces the code to:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(boot)</span>
@@ -331,7 +331,7 @@ SE_{fraction} = \frac{\sqrt{(fraction\; of\; 1's)(fraction\; of\; 0's)}}{\sqrt{s
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>SE.boot     <span class="ot">&lt;-</span> <span class="fu">sd</span>( <span class="fu">as.vector</span>(median.boot<span class="sc">$</span>t))</span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>SE.boot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.6993753</code></pre>
+<pre><code>[1] 0.700472</code></pre>
 </div>
 </div>
 <p>In this example, we are defining a function called <code>f.med</code> where the function returns the <em>median</em> value for an array. This is a simple example of a function, but this demonstrates how one can create a customized statistic for which <span class="math inline">\(SE\)</span> is sought. The function <code>boot</code> returns a <em>list</em> and not a numeric vector. To view the contents of a list, you can invoke the structure function <code>str()</code>.</p>
@@ -340,13 +340,13 @@ SE_{fraction} = \frac{\sqrt{(fraction\; of\; 1's)(fraction\; of\; 0's)}}{\sqrt{s
 <div class="cell-output cell-output-stdout">
 <pre><code>List of 11
  $ t0       : num 30.4
- $ t        : num [1:10000, 1] 30.6 30.1 30.8 30.1 30.1 ...
+ $ t        : num [1:10000, 1] 30.4 31.1 31.1 31.1 30.1 ...
  $ R        : num 10000
  $ data     : num [1:50] 25.7 38.5 29.3 25.1 30.6 34.6 30 39 33.7 31.6 ...
- $ seed     : int [1:626] 10403 339 -2039064027 -1230412158 2083235002 -724891796 1960552843 -748753637 1288892054 -1864264827 ...
+ $ seed     : int [1:626] 10403 407 -1460966299 -1192277213 1230023787 1631995198 1384144593 399685553 489982420 1895624707 ...
  $ statistic:function (Y, i)  
   ..- attr(*, "srcref")= 'srcref' int [1:8] 2 16 2 41 16 41 2 2
-  .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x0000014345e4e540&gt; 
+  .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x000001dcff14d580&gt; 
  $ sim      : chr "ordinary"
  $ call     : language boot(data = x, statistic = f.med, R = 10000)
  $ stype    : chr "i"
@@ -381,10 +381,10 @@ SE_{fraction} = \frac{\sqrt{(fraction\; of\; 1's)(fraction\; of\; 0's)}}{\sqrt{s
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>median.int<span class="fl">.90</span> <span class="ot">&lt;-</span> <span class="fu">mean</span>(median.boot<span class="sc">$</span>t) <span class="sc">+</span> <span class="fu">qt</span>( <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>), <span class="fu">length</span>(x) <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> SE.boot</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>median.int<span class="fl">.90</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 29.31089 31.65597</code></pre>
+<pre><code>[1] 29.31544 31.66419</code></pre>
 </div>
 </div>
-<p>This example suggests that there is a 90% chance that the range of median values [29.31, 31.66] encompasses the true population <em>median</em>. Note that using standard bootstrap techniques to estimate <span class="math inline">\(CI\)</span> requires that the bootstrap distribution of a statistic follow a normal distribution. If it does not, the computed <span class="math inline">\(CI\)</span> may over- or under-estimate the true confidence interval. A safer (and more robust) bootstrap based measure of <span class="math inline">\(CI\)</span> is the <em>bias corrected</em> bootstrap method, <strong>BCa</strong>, which can be easily computed using the <code>boot.ci</code> function in the <code>boot</code> library. The parameter <code>conf</code> defines the confidence interval sought.</p>
+<p>This example suggests that there is a 90% chance that the range of median values [29.32, 31.66] encompasses the true population <em>median</em>. Note that using standard bootstrap techniques to estimate <span class="math inline">\(CI\)</span> requires that the bootstrap distribution of a statistic follow a normal distribution. If it does not, the computed <span class="math inline">\(CI\)</span> may over- or under-estimate the true confidence interval. A safer (and more robust) bootstrap based measure of <span class="math inline">\(CI\)</span> is the <em>bias corrected</em> bootstrap method, <strong>BCa</strong>, which can be easily computed using the <code>boot.ci</code> function in the <code>boot</code> library. The parameter <code>conf</code> defines the confidence interval sought.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>median.int.<span class="fl">90.</span>BCa <span class="ot">&lt;-</span> <span class="fu">boot.ci</span>(median.boot, <span class="at">conf =</span> .<span class="dv">90</span>, <span class="at">type=</span><span class="st">"bca"</span>)</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>median.int.<span class="fl">90.</span>BCa</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -442,6 +442,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
   toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
   const clipboard = new window.ClipboardJS('.code-copy-button', {
     target: function(trigger) {
       return trigger.previousElementSibling;

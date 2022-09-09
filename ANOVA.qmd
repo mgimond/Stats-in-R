@@ -1,5 +1,7 @@
 ---
 title: "ANOVA"
+editor_options: 
+  chunk_output_type: console
 ---
 
 *Last modified on `r Sys.Date()`*
@@ -42,7 +44,7 @@ mean.grand <- mean(c(x,y,z))
 
 OP <- par(mar=c(2,3,1,4))
 plot(c(x,y,z)~ jitter(c(rep(1,length(x)),rep(2,length(y)),rep(3,length(z))),0.1),
-     pch=215, ylab=NA,xlab=NA,axes = F,family="Architects Daughter", cex=1.3,
+     pch=16, ylab=NA,xlab=NA,axes = F,family="Architects Daughter", cex=1.3,
      xlim=c(0,3.5), ylim=c(23,27))
 axis(1, at=c(1,2,3),label=c("Batch 1", "Batch 2", "Batch 3"),col="grey", 
      family="Architects Daughter" ,tick=FALSE, cex.axis=0.8)
@@ -81,7 +83,7 @@ where $\bar{\bar{y}}$ is the mean for *all* values. In this example, $\bar{\bar 
 ```{r, echo=FALSE, fig.height=3, fig.width=5}
 OP <- par(mar=c(2,3,1,4))
 plot(c(x,y,z)~ jitter(c(x.x,y.x,z.x),0.1),
-     pch=215, ylab=NA,xlab=NA,axes = F,family="Architects Daughter", cex=1.3,
+     pch=16, ylab=NA,xlab=NA,axes = F,family="Architects Daughter", cex=1.3,
      xlim=c(0,5.5), ylim=c(23,27))
 axis(1, at=c(0.8,2.3,3.75),label=c("Batch 1", "Batch 2", "Batch 3"), 
      family="Architects Daughter", tick=FALSE , cex.axis=.8)
@@ -119,7 +121,7 @@ b3.mean <- mean(z)
 
 OP <- par(mar=c(2,3,1,4))
 plot(c(x,y,z)~ jitter(c(x.x,y.x,z.x),0.1),
-     pch=215, ylab=NA,xlab=NA,axes = F,family="Architects Daughter", cex=1.3,
+     pch=16, ylab=NA,xlab=NA,axes = F,family="Architects Daughter", cex=1.3,
      xlim=c(0,5.5), ylim=c(23,27))
 axis(1, at=c(0.8,2.3,3.75),label=c("Batch 1", "Batch 2", "Batch 3"), 
      family="Architects Daughter", tick=FALSE , cex.axis=.8)
@@ -164,7 +166,7 @@ If SSR is close to 0, then the differences between the levels is small, if SSR i
 ```{r echo=FALSE, fig.height=3, fig.width=5}
 OP <- par(mar=c(2,3,1,4))
 plot(c(x,y,z)~ jitter(c(x.x,y.x,z.x),0.1),
-     pch=215, ylab=NA,xlab=NA,axes = F,family="Architects Daughter", cex=1.3,
+     pch=16, ylab=NA,xlab=NA,axes = F,family="Architects Daughter", cex=1.3,
      xlim=c(0,5.5), ylim=c(23,27))
 axis(1, at=c(0.8,2.3,3.75),label=c("Batch 1", "Batch 2", "Batch 3"), 
      family="Architects Daughter", tick=FALSE , cex.axis=.8)
@@ -222,11 +224,11 @@ $F$ gives us the proportion of the overall spread in the measurements that can b
 
 The following graphic shows the spread for *all* values in the data (right-side plot) and its spread broken down by levels (left-side plot). In this case, it seems that a good chunk of the overall spread can be explained by the differences in spread between levels. If this is still unclear, picture the plots with the measurements for batch 2 removed; what you would note is that the overall spread will be noticeably reduced suggesting that the measurements in level two alone were an important contributor to the overall spread.
 
-```{r fig.width=9, fig.height=2.5, fig.show='hold', echo=FALSE}
+```{r fig.width=7, fig.height=2.5, fig.show='hold', echo=FALSE}
 set.seed(4)
 OP <- par(mar=c(2,2,1,1), mfrow=c(1,2))
 plot(c(x,y,z)~ jitter(c(rep(1,length(x)),rep(2,length(y)),rep(3,length(z))),0.1),
-     pch=215, ylab=NA,xlab=NA,axes = F,family="Architects Daughter", cex=1.3,
+     pch=16, ylab=NA,xlab=NA,axes = F,family="Architects Daughter", cex=1.3,
      xlim=c(0,3.5), col=c(rep("red",5),rep("green",5),rep("blue",5)), ylim=c(23,27))
 axis(1, at=c(1,2,3),label=c("Batch 1", "Batch 2", "Batch 3"), 
      family="Architects Daughter", tick=FALSE )
@@ -234,7 +236,7 @@ axis(2, at=c(23,24,25,26,27), family="Architects Daughter", las=2,
      col="grey80", col.axis="grey80", cex.axis=.8)
 
 plot(c(x,y,z) ~ jitter(rep(1,length(c(x,y,z))), 2),
-     pch=215, ylab=NA,xlab=NA,axes = F,family="Architects Daughter", cex=1.3,
+     pch=16, ylab=NA,xlab=NA,axes = F,family="Architects Daughter", cex=1.3,
      xlim=c(0,3.5), col=c(rep("red",5),rep("green",5),rep("blue",5)), ylim=c(23,27))
 axis(1, at=c(1),label=c("All values"), family="Architects Daughter", tick=FALSE )
 text(2,25,"F >> 1", family="Architects Daughter")
@@ -245,7 +247,7 @@ par(OP)
 
 Contrast this last example with the following dataset where the differences in spread (and mean) between levels are negligible. Removing anyone of the batches from the dataset would have a negligible impact on the overall spread in the measurements. We would say that little of the spread (variability) in the overall measurements can be explained by differences in measurements between levels; this would result in an $F$-ratio close to $1$.
 
-```{r fig.width=9, fig.height=2.5, fig.show='hold', echo=FALSE}
+```{r fig.width=7, fig.height=2.5, fig.show='hold', echo=FALSE}
 set.seed(4)
 x1 <- x
 y1 <- y-1.1
@@ -253,7 +255,7 @@ z1 <- z
 
 OP <- par(mar=c(2,2,1,1), mfrow=c(1,2))
 plot(c(x1,y1,z1)~ jitter(c(rep(1,length(x1)),rep(2,length(y1)),rep(3,length(z1))),0.1),
-     pch=215, ylab=NA,xlab=NA,axes = F,family="Architects Daughter", cex=1.3,
+     pch=16, ylab=NA,xlab=NA,axes = F,family="Architects Daughter", cex=1.3,
      xlim=c(0,3.5), col=c(rep("red",5),rep("green",5),rep("blue",5)), ylim=c(23,26))
 axis(1, at=c(1,2,3),label=c("Batch 1", "Batch 2", "Batch 3"), 
      family="Architects Daughter", tick=FALSE)
@@ -261,7 +263,7 @@ axis(2, at=c(23,24,25,26), family="Architects Daughter", las=2,
      col="grey80", col.axis="grey80", cex.axis=.8)
 
 plot(c(x1,y1,z1) ~ jitter(rep(1,length(c(x1,y1,z1))),2),
-     pch=215, ylab=NA,xlab=NA,axes = F,family="Architects Daughter", cex=1.3,
+     pch=16, ylab=NA,xlab=NA,axes = F,family="Architects Daughter", cex=1.3,
      xlim=c(0,3.5), col=c(rep("red",5),rep("green",5),rep("blue",5)), ylim=c(23,26))
 axis(1, at=c(1),label=c("All values"), family="Architects Daughter", tick=FALSE )
 text(2,25,"F = 1", family="Architects Daughter")

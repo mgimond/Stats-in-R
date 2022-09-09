@@ -815,7 +815,7 @@ Data transformation is an iterative process which relies heavily on **Explorator
 
 Several data transformation scenarios were explored using square root and logarithmic transformation of the $X$'s and/or $Y$'s. Of course, a thorough analysis would consist of a wide range of Box-Cox transformations.  The scatter plots (along with the regression lines) are displayed on the left hand side for different transformations (the axes labels indicate which, if any, transformation was applied). The accompanying Q-Q plots are displayed to the right of the scatter plots. 
 
-```{r fig.height=12, fig.width=6.5, echo=FALSE}
+```{r fig.height=12, fig.width=6.5, echo=FALSE, results='hide'}
 
 M.nlog <- lm( Income ~ log(Education), dat)
 M.logn <- lm( log(Income) ~ Education, dat)
@@ -827,10 +827,10 @@ plot( Income ~ log(Education), dat, pch=16); abline(M.nlog, col="red")
 plot( log(Income) ~ Education, dat, pch=16); abline(M.logn, col="red")
 plot( Income ~ sqrt(Education), dat, pch=16); abline(M.nsqr, col="red")
 plot( sqrt(Income) ~ Education, dat, pch=16); abline(M.sqrn, col="red")
-qqPlot(M.nlog, lw=1,pch=16, cex=1, ylab=NA)
-qqPlot(M.logn, lw=1,pch=16, cex=1, ylab=NA)
-qqPlot(M.nsqr, lw=1,pch=16, cex=1, ylab=NA)
-qqPlot(M.sqrn, lw=1,pch=16, cex=1, ylab=NA)
+qqPlot(M.nlog, lw=1,pch=16, cex=1, ylab=NA, envelope=FALSE)
+qqPlot(M.logn, lw=1,pch=16, cex=1, ylab=NA, envelope=FALSE)
+qqPlot(M.nsqr, lw=1,pch=16, cex=1, ylab=NA, envelope=FALSE)
+qqPlot(M.sqrn, lw=1,pch=16, cex=1, ylab=NA, envelope=FALSE)
 par(OP)
 ```
 
