@@ -1,0 +1,767 @@
+---
+title: "Comparing means: z and t tests"
+---
+
+*Last modified on `r Sys.Date()`*
+
+```{r, echo = FALSE, message = FALSE}
+source("libs/Common.R")
+```
+
+
+```{r Load fonts, echo=FALSE, eval=TRUE, warning=FALSE, message=FALSE}
+library(extrafont)
+font_import(prompt=FALSE, pattern="[A/a]rchitects")
+loadfonts(device="postscript")
+# loadfonts(device="win") # TO view in windows
+```
+
+# Tests of Significance (single sample inference)
+
+Suppose that we want to hypothesize that the mean number of TV hours watched per week is 28.5; we'll define this as our null hypothesis, $H_o$. Let's also assume that we only have access to a subset of household data (i.e. a sample), $x$,
+
+```{r example2_single_sample, tidy=FALSE}
+x <- c(25.7, 38.5, 29.3, 25.1, 30.6, 34.6, 30.0, 39.0, 33.7, 31.6, 
+       25.9, 34.4, 26.9, 23.0, 31.1, 29.3, 34.5, 35.1, 31.2, 33.2, 
+       30.2, 36.4, 37.5, 27.6, 24.6, 23.9, 27.0, 29.5, 30.1, 29.6, 
+       27.3, 31.2, 32.5, 25.7, 30.1, 24.2, 24.1, 26.4, 31.0, 20.7, 
+       33.5, 32.2, 34.7, 32.6, 33.5, 32.7, 25.6, 31.1, 32.9, 25.9)
+```
+
+from which we can estimate the population mean and the standard error of the sample mean as:
+
+```{r example2_SE, tidy=FALSE}
+mean.x <- mean(x)
+SE.x   <- sd(x) / sqrt(length(x))
+```
+
+The arithmetic mean of $x$ is `r mean(x)` which is slightly different from our hypothesized value of 28.5. This begs the question: is this difference significant, or is it due to chance variation  alone? This question will be addressed in the following subsections.
+
+## The null and the alternative hypotheses
+
+The objective of hypothesis testing is to assess whether the observed data are consistent with a well specified (hypothesized) random process, $H_o$. Note that when we mean _random_ here we are not inferring complete randomness but some random variation about a central value. _Freedman et al._ (2007) define The _null_ and _alternative_ hypotheses as follows:
+
+> The **_null hypothesis_** corresponds to the idea that an observed difference is due to chance... The **alternative hypothesis** corresponds to the idea that the observed difference is real.
+
+$Ho$ is a statement about the true nature of things. To assess whether our observed data are consistent with our null hypothesis we seek to compare our data with the hypothesized value . 
+
+```{r echo=FALSE, message=FALSE, fig.width=5, fig.height=2, warning=FALSE}
+OP <- par("mar"=c(1,1,1,2))
+plot(density(rnorm(1000000)), ylab=NA, xlab=NA,axes=FALSE,main=NA)
+abline(v=-1, col="red",lty=2)
+mtext(side=3, text="Sample\n statistic", family= "Architects Daughter", 
+      las=1,outer = FALSE , adj=0.37, line=0.0, col="red", cex=1.0)
+mtext(side=4, text="Hypothesized \n statistical \ndistribution", family= "Architects Daughter", 
+      las=1,outer = FALSE , adj=0, line=-4.9, col="black", cex=1.0)
+par(OP)
+```
+
+In essence, we compare our observed data (usually as a statistical summary) to the hypothesized distribution using a _test statistic_ from which a _test of significance_ is calculated (this tells us how likely our observed statistic agrees with our hypothesized process). These, and derived concepts, are highlighted in the subsequent sections.
+
+## Test statistics
+A **test statistic** is a numerical summary of the data that is compared to what would be expected under the null hypothesis. Test statistics can take on many forms such as the **z-tests** (usually used for large datasets) or **t-tests** (usually used when datasets are small).
+
+## $z$-tests
+
+The **$z$-statistic** is a measure of how much an observed statistic differs from an expected statistic put forward by the null hypothesis. It is computed as
+
+$$
+z = \frac{observed - expected}{SE}
+$$
+
+In computing the $z$-statistic, the $SE$ used is _not_ the standard error of the observed data, but the standard error for the null. To be more precise, the $SE$ in this formula is computed from the null's $SD$, if given. However, in many cases (such as in this working example) the null's $SD$ can only be estimated from the observed data's $SD$.
+
+For example, the $z$-statistic for our scenario is:
+
+```{r tidy=FALSE}
+Ho     <- 28.5
+z      <- (mean.x - Ho) / SE.x
+```
+
+where `SE.x` is the observed sample's standard error. In our working example, $z$'s value of **`r round(z,2)`** indicates that the sample mean is **`r round(z,2)`** $SE$ 's away from the hypothesized value. 
+
+
+```{r echo=FALSE, message=FALSE, fig.width=7, fig.height=3.0, warning=FALSE}
+OP <- par("mar"=c(2,3,3,2), xpd=NA)
+n        = 50
+obs      = 30.14
+ho       = 28.5
+se       = 0.599
+z        = 2.74  #z statistic
+ncurve.x = seq(-4, +4, length.out= 200)
+ncurve.y = dnorm(ncurve.x, mean=0, sd=1 )
+plot( ncurve.y ~ ncurve.x, type="l", ylab=NA, xlab=NA,axes=FALSE,main=NA)
+axis(1, family= "Architects Daughter", at=seq(-3,3,1),
+     labels=round(seq(-3,3,1)*se + ho,2), cex.axis=1.0)
+lines(x = c(z,z), y=c(0,dnorm(0,0,1)), col="red"  , lty=1, lw=1)
+lines(x = c(0,0), y=c(0,dnorm(0,0,1)), col="black", lty=2)
+lines(x = c(-1,-1)  , y=c(0,dnorm(-1,0,1)) , col="grey", lty=2)
+lines(x = c(+1,+1)  , y=c(0,dnorm(+1,0,1)) , col="grey", lty=2)
+text(x=0, y = max(ncurve.y), "Ho (28 . 5 hours)", col="black", pos=3, family= "Architects Daughter", cex=1.0)
+text(x=z, y = dnorm(0,0,1)/2, "Observed\nmean", col="red", pos=4, family= "Architects Daughter", cex=1.0)
+text(x=-1, y = dnorm(-1,0,1), "-1 SE", col="#777777", pos=2, family= "Architects Daughter", cex=1.0)
+text(x=+1, y = dnorm(+1,0,1), "+1 SE", col="#777777", pos=4, family= "Architects Daughter", cex=1.0)
+arrows(x0=0, y0=max(ncurve.y)/3,x1=z,y1=max(ncurve.y)/3,lty=1,col="blue", length=.15, code=3)
+text(x= z/2, y = max(ncurve.y)/3, labels=sprintf("%.2f SE",z), 
+     col="blue", family= "Architects Daughter",pos=1, cex=1.0)
+ncurve.x.mSE <- seq(z,4, by=.05)
+ncurve.y.mSE <- dnorm(ncurve.x.mSE, 0,1)
+ncurve.x.mSE <- c(ncurve.x.mSE, max(ncurve.x.mSE), min(ncurve.x.mSE))
+ncurve.y.mSE <- c(ncurve.y.mSE, 0,0)
+polygon( ncurve.x.mSE, ncurve.y.mSE, col=rgb(1, 0, 0,.3), border=NA)
+par(OP)
+```
+
+The red line shows where our observed statistic (mean number of TV hours watched) lies on the hypothesized distribution of mean values defined by $H_o$. The grey dashed lines represent 1 $SE$ to the left and to the right of the hypothesized mean. Each tic mark interval represents a standard deviation. From the graph, it appears that the observed mean value of `r round(mean.x,2)` is almost 3 $SE$'s away from the hypothesized mean of `r Ho`. If we were to draw many samples from the population described by $H_o$ (i.e. a population whose mean number of TV hours watched equals `r Ho`), only a small fraction of the sample means would produce a $z$-value more extreme than the one calculated from our dataset. The area shaded in light red highlights the probability of $z$-values being more extreme than the one computed from our sample. We can quantify this probability $P$ by looking up its value in a _Normal distribution_ table (the old fashion way), or more simply, by passing the $z$ parameter `r round(z,2)` to the `R` function `pnorm`. 
+
+The `pnorm` function gives us the probability of a $z$ value "greater than" or "less than" the $z$ value computed from our data. In this case, we are interested in knowing the probability of having $z$ values more extreme than the one computed. Since our $z$ value is on the right side of the distribution curve, we will invoke the option `lower.tail=FALSE` to ensure that the probability returned is for the right tail-end section of the distribution (the pink area in the preceding figure).
+
+```{r tidy=FALSE}
+P.Ho  <- pnorm(z, lower.tail=FALSE)
+P.Ho
+```
+
+Here, $z$ is on the right side of the curve and the probability of getting a test statistic more extreme than our $z$ is about **`r round(P.Ho, 3)`** or `r round(P.Ho * 100, 2)`% . $P$ is called the **observed significance level** and is sometimes referred to as the $P$-value.  The _smaller_ this probability, the _stronger_ the evidence against $Ho$ meaning that the odds of the mean TV hours watched per household being `r Ho` is very small. Careful, $P$ **is not** the chance of $Ho$ being right, such statement is prevalent but is _wrong_.  
+
+Sometimes researchers will define a $P$ value for which $Ho$ will be rejected. Such value is usually referred to as the $\pmb{\alpha \; value}$. If such a test is requested, we must determine if the test is **one-tailed** or **two-tailed**. A test is _one-tailed_ if the alternate hypothesis, $H_a$, is of the form "greater than" or "less than" (e.g. the mean number of TV hours watched _are greater than_ 28.5). A test is _two-tailed_ if $H_a$ is _not_ of the form "greater than" or "less than" (e.g. the mean number of TV hours watched differs from 28.5). Here are a few examples:
+
+* If we chose an $\alpha$ value of 0.05 and we wanted to test the hypothesis that our observed mean hours is __different__ than $H_o$ we would define a __two-tailed__ test, meaning that we would have to define rejection regions associated with $P$ values of _less than_ 0.025 and  _greater than_ 0.975 (or $z$ values of -1.96 and 1.96 respectively). The reason we choose $p$ values of 0.025/0.975 and not 0.05/0.95 is because we need to split the 0.05 $\alpha$ value across _both_ tails of the curve (remember that we are rejecting the null if our $z$ value falls in _either_ tails of the curve). 
+ 
+```{r echo=FALSE, message=FALSE, fig.width=7, fig.height=3.0, warning=FALSE}
+OP <- par("mar"=c(2,3,3,2), xpd=NA)
+n        = 50
+obs      = 30.14
+ho       = 28.5
+se       = 0.599
+z        = 2.74  #z statistic
+ncurve.x = seq(-4, +4, length.out= 200)
+ncurve.y = dnorm(ncurve.x, mean=0, sd=1 )
+plot( ncurve.y ~ ncurve.x, type="l", ylab=NA, xlab=NA,axes=FALSE,main=NA)
+axis(1, family= "Architects Daughter", at=seq(-3,3,1),
+     labels=round(seq(-3,3,1)*se + ho,2), cex.axis=1.0)
+lines(x = c(z,z), y=c(0,dnorm(0,0,1)), col="red"  , lty=1, lw=1)
+lines(x = c(0,0), y=c(0,dnorm(0,0,1)), col="black", lty=2)
+lines(x = c(-1.96,-1.96)  , y=c(0,dnorm(-1.96,0,1)) , col="red", lty=2)
+lines(x = c(+1.96,+1.96)  , y=c(0,dnorm(+1.96,0,1)) , col="red", lty=2)
+text(x=0, y = max(ncurve.y), "Ho (28 . 5 hours)", col="black", pos=3, family= "Architects Daughter", cex=1.0)
+text(x=z, y = dnorm(0,0,1)/2, "Observed\nmean", col="red", pos=4, family= "Architects Daughter", cex=1.0)
+text(x=-1.96, y = dnorm(-1.96,0,1), "-1 .96 SE", col=rgb(1, 0, 0,.5), pos=4, family= "Architects Daughter", cex=1.0)
+text(x=+1.96, y = dnorm(+1.96,0,1), "+1 .96 SE", col=rgb(1, 0, 0,.5), pos=2, family= "Architects Daughter", cex=1.0)
+
+# Right rejection region at 0.975
+ncurve.x.mSE <- seq(1.96,4, by=.03)
+ncurve.y.mSE <- dnorm(ncurve.x.mSE, 0,1)
+ncurve.x.mSE <- c(ncurve.x.mSE, max(ncurve.x.mSE), min(ncurve.x.mSE))
+ncurve.y.mSE <- c(ncurve.y.mSE, 0,0)
+polygon( ncurve.x.mSE, ncurve.y.mSE, col=rgb(1, 0, 0,.3), border=NA)
+
+# Left rejection region at 0.975
+ncurve.x.mSE <- seq(-4,-1.96, by=.03)
+ncurve.y.mSE <- dnorm(ncurve.x.mSE, 0,1)
+ncurve.x.mSE <- c(ncurve.x.mSE, max(ncurve.x.mSE), min(ncurve.x.mSE))
+ncurve.y.mSE <- c(ncurve.y.mSE, 0,0)
+polygon( ncurve.x.mSE, ncurve.y.mSE, col=rgb(1, 0, 0,.3), border=NA)
+par(OP)
+``` 
+ 
+ * If we chose an $\alpha$ value of 0.05 and we wanted to test the hypothesis that our observed mean hours is __greater__ than $H_o$, we would define a __one-tailed__ test, meaning that we would have to define a rejection region associated with a $P$ value _greater than_ 0.95.
+ 
+```{r echo=FALSE, message=FALSE, fig.width=7, fig.height=3.0, warning=FALSE}
+OP <- par("mar"=c(2,3,3,2), xpd=NA)
+n        = 50
+obs      = 30.14
+ho       = 28.5
+se       = 0.599
+z        = 2.74  #z statistic
+ncurve.x = seq(-4, +4, length.out= 200)
+ncurve.y = dnorm(ncurve.x, mean=0, sd=1 )
+plot( ncurve.y ~ ncurve.x, type="l", ylab=NA, xlab=NA,axes=FALSE,main=NA)
+axis(1, family= "Architects Daughter", at=seq(-3,3,1),
+     labels=round(seq(-3,3,1)*se + ho,2), cex.axis=1.0)
+lines(x = c(z,z), y=c(0,dnorm(0,0,1)), col="red"  , lty=1, lw=1)
+lines(x = c(0,0), y=c(0,dnorm(0,0,1)), col="black", lty=2)
+lines(x = c(1.645,1.645)  , y=c(0,dnorm(1.645,0,1)) , col="red", lty=2)
+text(x=0, y = max(ncurve.y), "Ho (28 . 5 hours)", col="black", pos=3, family= "Architects Daughter", cex=1.0)
+text(x=z, y = dnorm(0,0,1)/2, "Observed\nmean", col="red", pos=4, family= "Architects Daughter", cex=1.0)
+text(x=+1.645, y = dnorm(+1.645,0,1), "1 .645 SE", col=rgb(1, 0, 0,.5), pos=2, family= "Architects Daughter", cex=1.0)
+
+# Right rejection region at 0.975
+ncurve.x.mSE <- seq(1.645,4, by=.03)
+ncurve.y.mSE <- dnorm(ncurve.x.mSE, 0,1)
+ncurve.x.mSE <- c(ncurve.x.mSE, max(ncurve.x.mSE), min(ncurve.x.mSE))
+ncurve.y.mSE <- c(ncurve.y.mSE, 0,0)
+polygon( ncurve.x.mSE, ncurve.y.mSE, col=rgb(1, 0, 0,.3), border=NA)
+par(OP)
+``` 
+
+ 
+In our working example, if we had chosen a two-tailed test, we would **reject** the null at a 5% and 1% $\alpha$ value (these would represent rejection regions associated with $z$ values of +/- 1.96 and +/- 2.58 respectively). However, if our $\alpha$ value was set at 0.005 (0.5%), we could not reject the null hypothesis since the $z$-value associated with a two-tailed test for $\alpha$=0.005 is 2.81 (greater than our observed $z$ value of `r round(z,2)`).
+
+The following table highlights popular $\alpha$ values and their associated $z$ values for a one-tailed and two-tailed test:
+
+           $\small\alpha=0.1$   $\small\alpha=0.05$    $\small\alpha=0.01$     $\small\alpha=0.005$  
+--------- -------------------- ---------------------  ---------------------   ----------------------
+1-tailed   -1.28 or 1.28        -1.645 or 1.645         -2.33 or 2.33             -2.58 or 2.58
+2-tailed   -1.645 & 1.645       -1.96 & 1.96            -2.58 & 2.58              -2.81 & 2.81
+
+Note that the one-tailed test requires that only **one** condition be met (only one of the rejection regions is of concern) whereas a two-tailed test requires that **two** conditions be met (both rejection regions are of concern).
+
+It's important to note that the $z$-test makes some restrictive assumptions:
+ * the sample size is reasonably large
+ * the normal (Gaussian) distribution can be used to approximate the distribution of the sample statistic (e.g. the mean) being investigated.
+ 
+An alternative to the $z$-test, the $t$-test, is discussed in the following section.
+
+## $t$-tests
+
+When working with small sample sizes (typically less than 30), the $z$-test has to be modified. For starters, the shape of the sampling distribution (i.e. the distribution of means one would compute from many different samples from the same underlying population) now depends on the shape of the underlying population distribution which must therefore be approximately normal in shape. These requirements can be quite restrictive because in most cases we do not know the population's distribution. 
+
+Continuing with our working example, let's assume that instead of a sample size of 50 we now have a sample size of 10. 
+
+```{r  tidy=FALSE}
+x2 <- c(37.13, 32.02, 26.05, 31.76, 31.90, 38.62, 21.63, 40.75, 31.36, 27.01)
+```
+
+Next we compute the mean and standard deviation of the sample. Note that the standard deviation can be computed in one of two ways: $TSS/\sqrt{n}$  or  $TSS/\sqrt{n-1}$ where $TSS$ is the _total sum of squares_, $\sum{(x - \bar{x})^2}$, and $n$ is the sample size. The latter formulation of $sd$ (i.e. the one with the $\sqrt{n-1}$ in the denominator) is recommended for small sample sizes but can be used for large sample sizes as well. `R`'s `sd()` function is computed using the $\sqrt{(n-1)}$ denominator. This is what we want to use with our small sample.
+
+```{r  tidy=FALSE}
+mean.x2 <- mean(x2)
+sd.x2   <- sd(x2) 
+```
+
+Next, we compute the standard error. Recall that the standard error tells us something about the confidence in the range of _mean_ values (or some other statistic) for the underlying population based on our sample; it's _not_ a measure of spread of our sample data.
+
+```{r  tidy=FALSE}
+SE.x2 <- sd(x2) / sqrt(length(x2)) 
+```
+
+The next step is to find the $P$-value. When working with large sample sizes, the normal (Gaussian) distribution curve does a good job in approximating the distribution of a sample statistic (such as the mean). It does not, however, do a good job in approximating the distribution of that same statistic when these are computed from small sample sizes. 
+
+```{r normal_vs_student, echo=FALSE, message=FALSE, fig.width=6, fig.height=3, warning=FALSE}
+OP <- par("mar"=c(3.2,1,1,1))
+plot(function(x) dt(x, df = 4), -4, 4,col="red",ylim = c(0,.4), ylab=NA, xlab=NA,axes=FALSE)
+lines( seq(-4,4,0.1), dnorm(seq(-4,4,0.1)))
+axis(1, family= "Architects Daughter",at=seq(-4,4,1), tck = -.025 , line = -.4,
+     labels= round((seq(-4,4,1) * SE.x2 + mean.x2),1) , cex.axis=1.0)
+mtext("Mean hours of TV watched (per sample)", side = 1, line=2, family= "Architects Daughter", cex=1.0)
+par(OP)
+```
+
+The black line represents the distribution of the _mean_ hours (from many hypothetical samples) of TV watched as approximated by the _normal_ curve. The red line represents the same parameter but represented this time by a _student_ distribution curve with a degree of freedom, $df$, of 4. The $df$ is computed by subtracting 1 from the total number of data points in the sample. 
+
+By convention when computing a test statistic for small sample sizes (and when a student curve is used), we refer to the test statistic as the $t$ statistic (or $t$ value). For our dataset $t$ can be computed as follows:
+
+```{r  tidy=FALSE}
+t.val <- (mean.x2 - Ho) / SE.x2
+```
+
+Here, we make a point not to name the $t$ value `t` in our code since `R` has a function with the same name, `t()` (a matrix transpose function). Had we named our variable `t`, than that variable name would have masked the internal function `t()`. This would not have been a big deal for our working example since we won't be using the _transpose_ function, but it's good practice to use variables not already in use in `R`.
+
+The next step is to compute the $P$-value. We will compute $P$ using both the normal distribution curve (which we normally do for a large sample) and _Student's_ curve (which is recommended for a small sample).
+
+```{r  tidy=FALSE}
+P.Ho.norm <- pnorm(t.val, lower.tail=FALSE)
+P.Ho.stud <- pt(t.val, df = length(x2) - 1, lower.tail = FALSE)
+```
+
+The $P$-value computed from the **normal curve** is **`r round(P.Ho.norm,3)`** and that computed from **Student's curve** is **`r round(P.Ho.stud,3)`**. If an $\alpha$ value of 5% was requested, the normal distribution approximation would suggest that chance variation alone could not explain the discrepancy between our hypothesized mean number of TV hours watched and that computed from our sample. Yet, if Student's approximation of the distribution is used (as it should be with the small sample), we could not reject the null (at least not at the 5% significance level).
+
+The following figure summarizes the decision tree one should follow in deciding which curve to use when calculating a $P$-value. This figure is adapted from Freedman _et al._ (p. 493).
+
+```{r fig.width=7.4, fig.height=6.7, warning=FALSE,tidy=FALSE,echo=FALSE}
+op <- par("mar"=c(1,3,1,1))
+plot.new()
+plot.window(xlim=c(0,.75), ylim=c(.4,1))
+lines( c(.1,.2,.3), c(.9,1,.9))
+text( .2, 1, "The sample size is", family= "Architects Daughter",  pos = 3, cex=1.0)
+text( c(.12, .27), c(.95,.95), c("large", "small"), family= "Architects Daughter", pos = 3, col="blue", cex=1.0)
+text( .1, .9, "use the normal\n approximation",family= "Architects Daughter",  pos = 1, cex=1.0)
+text( .3, .9, "and population's\n histogram\n is",family= "Architects Daughter", pos = 1, cex=1.0)
+
+lines( c(.2,.3,.4), c(.72,.82,.72))
+text( .24, .77, "unknown but close too\n the normal distribution", family= "Architects Daughter", pos = 2, col="blue", cex=0.9)
+text( .36, .77, "known", family= "Architects Daughter", pos = 4, col="blue", cex=1.0)
+text( .2, .72, "then use\n Student's curve",family= "Architects Daughter", pos = 1, cex=1.0)
+text( .4, .72, "... continue ...",family= "Architects Daughter", pos = 1, cex=1.0)
+
+lines( c(.3,.4,.5), c(.58,.68,.58))
+text( .34, .63, "and very close\n to normal", family= "Architects Daughter", pos = 2, col="blue", cex=1.0)
+text( .48, .63, "and quite different \nfrom the normal \ncurve", family= "Architects Daughter", pos = 4, col="blue", cex=1.0)
+text( .3, .58, "then use\n the normal\n approximation",family= "Architects Daughter", pos = 1, cex=1.0)
+text( .5, .58, "then use\n non-parametric\nmethods",family= "Architects Daughter", pos = 1, cex=1.0)
+
+par(op)
+```
+
+Many textbooks only cover the $t$-test and not the $z$-test. In fact , you may not find a $z$-test implementation in some statistical software. This is because the $t$-test results will converge with the $z$-test results as the sample size gets larger. 
+
+## Follow-up examples
+### Problem 1
+You conduct a survey where the respondent is to answer _yes_ or _no_ to a question. Of the **45** respondents, **20** answer yes. You want to know if the percentage of _yes'_ is significantly different from an expected value of **50%**. 
+
+### Solution to problem 1
+The data can be treated as a binomial proportion where the fraction of _yes'_ in our sample is $\hat{p} = 20/45 = 0.444$ and the fraction of _no's_ is $\hat{q} = 1 - \hat{p} = 1 - 0.444 = 0.555$ (the $\hat{ }$ symbol reminds us that these are estimate fractions of the true yes' and no's in the overall population). The hypothesis $H_o$ is that the number of _yes'_ in the population equals the number of _no's_ or $p_o = q_o = 0.5$. 
+
+We first need to compute $SE_{Ho}$ (The standard error for the null and _not_ the observed data). In this example, the standard deviation of the null hypothesis is given to us since we are told what the proportion of yes' and no's should be equal to in the hypothesized population (i.e. we know that the hypothesized population has 22.5 yes' and 22.5 no's). If we could not glean a standard deviation from the null, we would therefore have to rely on the sample's $SD$ instead. $SE_{Ho}$ can be computed as follows. 
+
+$SE_{Ho} = \sqrt{ \frac{\displaystyle (fraction\; of\; yes')(fraction\; of\; no's)}{\displaystyle n}}=\sqrt{\frac{\displaystyle (0.5)(0.5)}{\displaystyle 45}}=0.075$. 
+
+A way to interpret $SE_{Ho}$ is to say that if many surveys of 45 people were collected from a population defined by the null (i.e. a population where the number of _yes'_ equals the number of _no's_), 68% of the fraction of _yes'_ would fall between $q_o - 1SE_{Ho}$ and $q_o + 1SE_{Ho}$ or between the interval defined by the fractions (0.425, 0.575) or (42.5%, 57.5%).
+
+Next, we compute the test statistic, $z$:  
+
+$z = (\hat{p} - p_o)/SE_{Ho} = (.444 - 0.5)/0.075 = -0.75$,
+
+The observed fraction of _yes'_  is 0.75 $SE$'s _below_ the expected count of 22.5 (or 0.5 yes'). 
+
+```{r echo=FALSE, message=FALSE, fig.width=5, fig.height=3.0, warning=FALSE,}
+# Normal curve for fractions/binomial population proportions
+OP <- par("mar"=c(2,3,3,1), xpd=NA)
+n        = 45
+obs      = 0.444
+ho       = 0.5
+se       = 0.07454
+z        = 0.75  #z statistic
+ncurve.x = seq(ho - 3*(se), ho + 3*(se),length.out= 200)
+ncurve.y = dnorm(ncurve.x, mean=ho, sd=se )
+plot( ncurve.y ~ ncurve.x, type="l", ylab=NA, xlab=NA,axes=FALSE,main=NA)
+axis(1, family= "Architects Daughter", at=seq(round(min(ncurve.x)),ceiling(max(ncurve.x)),.1), cex.axis=1.0)
+lines(x = c(obs,obs), y=c(0,dnorm(obs,ho,se)), col="red"  , lty=1, lw=2)
+lines(x = c(ho,ho)  , y=c(0,dnorm(ho,ho,se)) , col="black", lty=2)
+lines(x = c(ho-se,ho-se)  , y=c(0,dnorm(ho-se,ho,se)) , col="grey", lty=2)
+lines(x = c(ho+se,ho+se)  , y=c(0,dnorm(ho+se,ho,se)) , col="grey", lty=2)
+text(x=ho, y = max(ncurve.y), "Ho", col="black", pos=3, family= "Architects Daughter", cex=1.4)
+text(x=obs, y = dnorm(obs,ho,se), "# of observed yes'", col="red", pos=2, family= "Architects Daughter", cex=1.0)
+text(x=ho+se, y = dnorm(ho+se,ho,se), "+1SE", col="#777777", pos=4, family= "Architects Daughter", cex=1.0)
+arrows(x0=ho, y0=max(ncurve.y)/2,x1=obs,y1=max(ncurve.y)/2,lty=1,col="blue", length=.15, code=3)
+text(x= obs -(obs - ho)/2, y = max(ncurve.y)/2, labels=sprintf("%.2f SE",z), 
+     col="blue", family= "Architects Daughter",pos=1, cex=1.0)
+ncurve.x.mSE <- seq(.2,obs, by=.0005)
+ncurve.y.mSE <- dnorm(ncurve.x.mSE, mean=ho,sd=se)
+ncurve.x.mSE <- c(ncurve.x.mSE, max(ncurve.x.mSE), min(ncurve.x.mSE))
+ncurve.y.mSE <- c(ncurve.y.mSE, 0,0)
+polygon( ncurve.x.mSE, ncurve.y.mSE, col=rgb(1, 0, 0,.3), border=NA)
+par(OP)
+```
+
+Since the sample size is relatively large, we can compute the $P$-value using the normal curve approximation using the function `pnorm(0.75, lower.tail=FALSE)` = `r pnorm(0.75, lower.tail=FALSE)`. 
+
+The entire `R` analysis for this example can be completed as follows:
+
+```{r warning=FALSE,tidy=FALSE}
+n   <- 45                        # number of individuals surveyed
+p   <- 0.444                     # The fraction of yes'
+q   <- 1 - p                     # The fraction of no's
+ho  <- 0.5                       # The null hypothesis
+SEo <- sqrt(0.5 * 0.5 / n)       # The standard error for Ho sample distribution
+z   <- ( p - ho ) / SEo          # The z-statistic
+P.z <- pnorm(z, lower.tail=TRUE) # Get the probability
+```
+Note that in the last line of code we set `lower.tail` to TRUE since we are interested in the portion of the curve to the _left_ of our test statistic. Had $z$ turned out positive (indicating that our observed fraction of yes' is greater than expected under the null), we would have focused on right tail of the curve (i.e. setting `lower.tail` to FALSE).
+
+Hence, there is a `r round(pnorm(0.75, lower.tail=FALSE),2 ) * 100`% chance that the fraction of _yes'_ one could expect to measure under $H_o$ could be more extreme than the one observed or, put differently, if 100 investigators were to conduct their own survey of 45 people from a population whose number of _yes'_ equals the number of _no's_, 23 of the survey results would have a percentage of _yes'_ more extreme than ours. So our observed fraction of _yes'_ is consistent with what one would expect under the null hypothesis. It would probably be safe then to state that we cannot reject the null hypothesis.
+
+### Problem 2
+
+Aldicarb, a pesticide substance, is measured from a sampling well **4** times over the course of a season. The concentrations measured are **6.3, 7.1, 5.8 and 6.9 ppb** (parts per billion). The maximum contaminant level (MCL) has been set at **7 ppb**.  We want to determine if the average concentrations observed are less than the MCL of 7 ppb at the **99% significance** level.
+
+### Solution to problem 2
+
+The question asks if the true mean concentration (from the four measurements) is less than or equal to 7 ppb. We do not have the luxury of monitoring this concentration continuously so we must contend with just four observations. These four observations are random variables that can be expected to fluctuate around the true mean concentration of the well (a value we are not privy to). We are hypothesizing that the true mean concentration is less than 7 ppb. We want to compare our observed mean concentration to the _range_ of mean concentrations we could expect _if_ we were to sample (with four concentration measurements) from a well whose mean concentration is indeed 7 ppb. If our observed concentration is not consistent with what we would expect to measure from a well whose true concentration is 7 ppb, we can than state that the _true_ mean concentration of aldicarb in the well is less than 7 ppb.
+
+This problem differs from the last one in that we are interested in a different parameter: the mean (of a concentration) instead of the fraction. It also differs from the last problem in that we are now defining a cutoff probability (aka a rejection region) of 0.99. In the last exercise, we were only seeking the _probability_ of finding a test statistic more extreme than expected under a null (and thus leaving the interpretation of what _is_ significant up to someone else).
+
+We need to compute the mean of the observed concentrations, $\hat{\mu}$, and the standard error of the mean concentrations we would observe if the null was the true state of things, $SE_{Ho}$. For the latter, we do not know the actual standard deviation of the null distribution (this is another difference between this example and the previous example where the standard deviation--and thus the standard error--was gleaned directly from null). We will therefore assume that $SD$ of the null is the same as $SD$ from our observed data. Note that we must therefore assume that the distribution of aldicarb sample mean concentrations follows a normal curve!
+
+$\hat{\mu} = \frac{\displaystyle 6.3 + 7.1 + 5.8 + 6.9}{\displaystyle 4}=6.525$
+
+$SE_{Ho} = \frac{\displaystyle SD_{wells}}{\sqrt{ \displaystyle n}}=\frac{\displaystyle 0.591}{\displaystyle \sqrt{4}} = 0.295$. 
+
+Note that we are using the $SD$ formula for small samples (i.e. the one with the $\sqrt{n-1}$ denominator) which just happens to be what `R` defaults to.
+
+The test statistic, $t$ is computed as follows:
+
+$t = (\hat{\mu} - \mu_o)/SE_{Ho} = (6.525 - 7)/0.295 = -1.6$,
+
+$t$ is negative implying that our observed concentration is to the left of the hypothesized value of 7. In this example, a 99% confidence interval implies that our observed mean concentration of 6.5 ppb should be at least 3 $SE$'s to the left of our MCL of 7 ppb.
+
+
+```{r echo=FALSE, message=FALSE, fig.width=5.1, fig.height=3, warning=FALSE}
+# Normal curve for fractions/binomial population proportions
+OP <- par("mar"=c(2,4,3,2), xpd=NA)
+n        = 4
+obs      = 6.525
+ho       = 7
+se       = 0.295
+z        = -1.6  #z statistic
+ncurve.x = seq(ho - 4*(se), ho + 4*(se),length.out= 200)
+ncurve.y = dnorm(ncurve.x, mean=ho, sd=se )
+plot( ncurve.y ~ ncurve.x, type="l", ylab=NA, xlab=NA,axes=FALSE,main=NA)
+axis(1, family= "Architects Daughter", at=seq(round(min(ncurve.x)),ceiling(max(ncurve.x)),.1), cex.axis=1.0)
+lines(x = c(obs,obs), y=c(0,dnorm(obs,ho,se)), col="red"  , lty=1, lw=2)
+lines(x = c(ho,ho)  , y=c(0,dnorm(ho,ho,se)) , col="black", lty=2)
+lines(x = c(ho-3*se,ho-3*se)  , y=c(0,dnorm(ho-2*se,ho,se)) , col="grey", lty=2)
+lines(x = c(ho+3*se,ho+3*se)  , y=c(0,dnorm(ho+2*se,ho,se)) , col="grey", lty=2)
+text(x=ho, y = max(ncurve.y), "Ho (7 ppb)", col="black", pos=3, family= "Architects Daughter", cex=1.0)
+text(x=obs, y = dnorm(obs,ho,se), "observed\nconcentration", col="red", pos=2, family= "Architects Daughter", cex=1.0)
+text(x=ho-3*se, y = dnorm(ho+2*se,ho,se), "-3SE", col="#777777", pos=2, family= "Architects Daughter", cex=1.0)
+arrows(x0=ho, y0=max(ncurve.y)/4,x1=obs,y1=max(ncurve.y)/4,lty=1,col="blue", length=.15, code=3)
+text(x= obs -(obs - ho)/2, y = max(ncurve.y)/4, labels=sprintf("%.2f SE",z), 
+     col="blue", family= "Architects Daughter",pos=1, cex=1.0)
+ncurve.x.mSE <- seq(.2,obs, by=.0005)
+ncurve.y.mSE <- dnorm(ncurve.x.mSE, mean=ho,sd=se)
+ncurve.x.mSE <- c(ncurve.x.mSE, max(ncurve.x.mSE), min(ncurve.x.mSE))
+ncurve.y.mSE <- c(ncurve.y.mSE, 0,0)
+polygon( ncurve.x.mSE, ncurve.y.mSE, col=rgb(1, 0, 0,.3), border=NA)
+par(OP)
+```
+
+
+This dataset is very small (only 4 observations). This implies that we will want to use the student curve as opposed to the normal curve when we calculate the the $P$-value.
+ 
+```{r warning=FALSE,tidy=FALSE}
+x   <-  c(6.3, 7.1, 5.8, 6.9)               # the four observed concentrations
+n   <- length(x)                            # number of observations 
+mu  <- mean(x)                              # the mean concentration
+ho  <- 7                                    # The null hypothesis
+SEo <- sd(x) / sqrt(n)                      # The standard error for Ho sample distribution
+t   <- ( mu - ho ) / SEo                    # The t-statistic
+P.z <- pt(t, df = n - 1, lower.tail = TRUE)# Get the probability
+```
+
+`P.z` returns a value of 0.10, or 10%. In other words, 10% of the mean concentrations from samples collected from a well whose (hypothesized) mean concentration is 7 ppb could be less than our observed concentration. This implies that our observed concentration could well be from a well whose concentration hovers around 7 ppb. If that's the case, and we were to collect more samples from the well, we could have values greater than 7 ppb (recall that the curve centered on 7 ppb represents the probability distribution of mean concentrations centered on 7 ppb). Given our $P$ value of 0.1, we cannot reject the null and therefore cannot state that our observed concentration is less than 7 ppb at a 99% significance level.
+
+## Using the built in **t.test** function 
+
+The six or seven lines of code used to compute the $t$-test can easily be replaced with  `R`'s `t.test()` function. Using _example 2_, we can compute the t-test as follows:
+
+```{r warning=FALSE,tidy=FALSE, eval=FALSE}
+t.test(x, mu=7, alternative="less", conf.level= 0.99)
+```
+
+Let's look at the `t.test()` parameters. `mu` is the hypothesized mean value. `alternative` determines if the test is is two-tailed (`="two.sided"`) or one-tailed (`="less"` or `="greater"`). The `less` option gives use the probability to the left of our test statistic while the `greater` option gives us the probability to the right of our test statistic. `conf.level` determines the alpha level set for $P$.
+
+Now let's look at the output.
+```{r warning=FALSE,tidy=FALSE, echo=FALSE}
+t.test(x, mu=7, alternative="less", conf.level= 0.99)
+```
+
+The output variables are, for the most part, self-explanatory. The value $t$ is the same as the one computed earlier. The $P$ value here gives us the probability to the _left_ of our test statistic.
+
+
+# Tests of Significance (two independent samples comparison)
+
+Up to now, we have focused on inferences about single samples. We will now focus on comparing _two_ independent samples using test statistics. The approach is very much the same except that we are no longer comparing a sample statistic to an external standard but to another sample statistic. 
+
+## $z$ test with two samples (large sample sizes)
+If the sample sizes in both samples are large (usually more than 30), then a $z$ test is appropriate.
+The $z$ statistic is computed as follows:
+$$
+z = \frac{observed\; difference - expected\; difference}{SE\; for\; difference}
+$$
+The standard error for the difference of the two samples is:
+$$
+SE = \sqrt{SE_{sample\; 1}^2 + SE_{sample\; 2}^2}
+$$
+
+### Example
+The National Assessment of Education Progress (NAEP) administered a reading test for 17 year-olds in 1990 and 2004. The _average_ score was **290** and **285** respectively; a slight decrease over the course of 14 years. The standard deviation, $SD$ was **40** and **37** respectively. The sample size for both years was **1000**. So this begs the question, was the drop in reading assessment just a chance variation or real?  
+_[This example is taken from Freedman et al., page 503]_
+
+### Solution
+The standard error for each sample can be computed as follows:
+$$
+SE_{1990} = \frac{SD_{1990}}{\sqrt{sample\; size}}=\frac{40}{\sqrt{1000}} = 1.26
+$$
+$$
+SE_{2004} = \frac{SD_{2000}}{\sqrt{sample\; size}}=\frac{37}{\sqrt{1000}} = 1.17
+$$
+The standard error for the difference can be computed as follows:
+$$
+SE = \sqrt{SE_{1990}^2 + SE_{2004}^2} = \sqrt{1.26^2 + 1.17^2} = 1.72
+$$
+Finally, we can compute $z$ as follows (keeping in mind that the _expected_ difference between both years is our null hypothesis, i.e. no difference, 0):
+$$
+z = \frac{(score_{2004} - score_{1990}) - (expected\; difference)}{SE\; of\; difference}=\frac{(285-290) - 0}{1.72} = -2.9
+$$
+So the difference is **2.9** $SE$'s below what would be expected if $Ho$ (i.e. no difference between years) was true. Looking up the $P$ value for an $SE$ of 2.9 on a normal curve is **0.002**. Put differently, if their was truly no difference in reading scores between both years, then the odds of getting a $z$ score as extreme as the one we just computed is 0.1%. If we had defined an $\alpha$ confidence value of 5% or even 1%, we could conclude that the difference between both years is real.
+
+The following figure illustrates the result.
+
+```{r echo=FALSE, message=FALSE, fig.width=6, fig.height=3.0, warning=FALSE,}
+# Normal curve for fractions/binomial population proportions
+OP  <- par("mar"=c(2,3,3,1), xpd=NA)
+n   <- 1000
+obs <- -5
+ho  <- 0
+se  <- 1.72
+z   <- -2.9  
+ncurve.x = seq(ho - 4*(se), ho + 4*(se),length.out= 200)
+ncurve.y = dnorm(ncurve.x, mean=ho, sd=se )
+plot( ncurve.y ~ ncurve.x, type="l", ylab=NA, xlab=NA,axes=FALSE,main=NA)
+axis(1, family= "Architects Daughter", at=seq(round(min(ncurve.x)),ceiling(max(ncurve.x)),1), cex.axis=1.0)
+lines(x = c(obs,obs), y=c(0,dnorm(-3,ho,se)), col="red"  , lty=1, lw=2)
+lines(x = c(ho,ho)  , y=c(0,dnorm(ho,ho,se)) , col="black", lty=2)
+text(x=ho, y = max(ncurve.y), "Ho (difference = 0)", col="black", pos=3, family= "Architects Daughter", cex=1.0)
+text(x=obs, y = dnorm(-3,ho,se), "observed difference", col="red", pos=3, family= "Architects Daughter", cex=1.0)
+arrows(x0=ho, y0=0,x1=obs,y1=0,lty=1,col="blue", length=.15, code=3)
+text(x= obs -(obs - ho)/2, y = 0, labels=sprintf("%.2f SE",z), 
+     col="blue", family= "Architects Daughter",pos=3, cex=1.0)
+ncurve.x.mSE <- seq(-7,obs, by=.005)
+ncurve.y.mSE <- dnorm(ncurve.x.mSE, mean=ho,sd=se)
+ncurve.x.mSE <- c(ncurve.x.mSE, max(ncurve.x.mSE), min(ncurve.x.mSE))
+ncurve.y.mSE <- c(ncurve.y.mSE, 0,0)
+polygon( ncurve.x.mSE, ncurve.y.mSE, col=rgb(1, 0, 0,.3), border=NA)
+par(OP)
+```
+
+The black curve encompasses the difference in scores between years one would _expect_ to observe from many samples drawn under the assumption that the _difference in scores between both years is only due to chance variability alone_. The red vertical line shows where our value lies; far into the left-end tail.
+
+The above can be coded in `R` as follows:
+
+```{r warning=FALSE,tidy=FALSE}
+SE.1990 <-  40 / sqrt(1000)               
+SE.2004 <-  37 / sqrt(1000)  
+SE      <- sqrt( SE.1990^2 + SE.2004^2)                        
+z       <- (285 - 290) / SE
+P.z     <- pnorm(z, lower.tail = TRUE) 
+```
+
+The variable `z` stores the test statistic and the variable `P.z` stores the probability $P$.
+
+## $t$ test with two samples (small sample sizes )
+If the sample sizes in at least one of the two samples is small (usually less than 30), then a $t$ test is appropriate. Note that a $t$ test can also be used with large samples as well, in some cases, statistical packages will only compute a $t$ test and not a $z$ test.
+
+To use the $t$-statistic, the two samples must be:
+
+ * from normally distributed populations,
+ * from populations with equal variances,
+ * uncensored.
+ 
+Many times, the aforementioned criteria are not known and may have to be assumed if theory allows. 
+
+If the assumption of equal variances is met, the standard error can be pooled from both sample's standard errors.
+$$
+SE_{pooled} = \sqrt{\frac{(n_1 - 1)SD_1^2+(n_2 - 1)SD_2^2}{n_1 + n_2 - 2}}
+$$
+
+Subscripts $1$ and $2$ denote samples 1 and 2. Note that we are using $SD_1$ and $SD_2$ in this equation as opposed to $SE_1$ and $SE_2$. The test statistic $t$ is therefore computed as follows:
+
+$$
+t = \frac{(observed\; difference - expected\; difference) - hypothesized\; difference}
+         {SE_{pooled}\sqrt{1/n_1 + 1/n_2}}
+$$
+
+The $t$ value is then used to look up the $P$ value on a Student curve using $n_1 + n_2 - 2$ degrees of freedom.
+
+### Example
+Groundwater sulfate concentrations are monitored at a contaminated site over the course of a year. Those concentrations are compared to ones measured at background sites for the same time period. You want to determine if the concentration at the contaminated site is significantly larger than that for the background site. The concentrations of sulfate (in ppm) for both sites are as follows:
+
+Contaminated     Background
+---------------  -------------------
+600              560
+590              550
+570              570
+570              550
+565              570
+580              590
+                 550
+                 580
+
+
+### Solution
+
+You will setup this problem as follows: the null hypothesis, $H_o$, states that the concentrations between both sites is the same; the alternative hypothesis, $H_a$, states that the contaminated site has a concentration greater than the background. 
+
+We will reference the contaminated site with the $1$ subscript and the background site with the subscript $2$. The means and standard deviations are $\mu_1 = 579.2$, $\mu_2 = 565$, $SD_1 = 13.6$ and $SD_2 = 15.1$.
+
+The pooled standard error of the mean is therefore:
+$$
+SE_{pooled} = \sqrt{\frac{(6 - 1)13.6^2+(8 - 1)15.1^2}{6 + 8 - 2}}=14.5
+$$
+
+and $t$ is:
+$$
+t = \frac{(579.2-565) - 0)}{14.5\sqrt{1/6 + 1/8}} = 1.8
+$$
+
+One $SE$ is $14.5\sqrt{1/6 + 1/8}=$ **7.8** ppm, therefore our observed difference of **14.2** ppm (computed from 579.2 - 565) is **1.8** $SE$ from the expected difference of 0 (recall that for a $t$-test $SE$ equals $SE_{pooled}\sqrt{1/n_1 + 1/n_2}$). Looking up the $P$ value on a Student curve gives us a probability of **0.048** (i.e. there is a 4.8% chance that, assuming there is no difference in concentrations between sites, the difference between means would be greater than that observed by chance variation alone).
+
+```{r echo=FALSE, message=FALSE, fig.width=7, fig.height=3.0, warning=FALSE}
+# Student curve for differences in means
+OP <- par("mar"=c(2,3,3,1), xpd=NA)
+df  = 12
+obs = 14.16  # Difference
+ho  = 0      # expected difference
+se  = 7.83
+t   = 1.8    # t statistic
+ncurve.x = seq(-3.5, 3.5,length.out= 200)
+ncurve.y = dt(ncurve.x, df = df, ncp=0 )
+plot( ncurve.y ~ ncurve.x, type="l", ylab=NA, xlab=NA,axes=FALSE,main=NA)
+axis(1, family= "Architects Daughter", at=seq(-3,3,1), labels=round(seq(-3,3,1)*se,1), cex.axis=1.0)
+lines(x = c(obs,obs)/se, y=c(0,dt(obs/se,df = df, ncp=0 )), col="red"  , lty=1, lw=2)
+lines(x = c(ho,ho)  , y=c(0,dt(ho,df = df, ncp=0 )) , col="black", lty=2)
+lines(x = c(ho-1,ho-1)  , y=c(0,dt(ho-1,df = df, ncp=0 )) , col="grey", lty=2)
+lines(x = c(ho+1,ho+1)  , y=c(0,dt(ho+1,df = df, ncp=0 )) , col="grey", lty=2)
+lines(x = c(ho-2,ho-2)  , y=c(0,dt(ho-2,df = df, ncp=0 )) , col="grey", lty=2)
+lines(x = c(ho+2,ho+2)  , y=c(0,dt(ho+2,df = df, ncp=0 )) , col="grey", lty=2)
+text(x=ho, y = max(ncurve.y), "Ho (no difference)", col="black", pos=3, family= "Architects Daughter", cex=1.0)
+text(x=obs/se, y = dt(obs/se,df = df, ncp=0 )/2, "observed\ndifference", col="red", pos=4, family= "Architects Daughter", cex=1.0)
+text(x=ho+1, y = dt(ho+1,df = df, ncp=0 ), "1 SE", col="#777777", pos=4, family= "Architects Daughter", cex=1.0)
+text(x=ho-1, y = dt(ho-1,df = df, ncp=0 ), "-1 SE", col="#777777", pos=2, family= "Architects Daughter", cex=1.0)
+text(x=ho-2, y = dt(ho-2,df = df, ncp=0 ), "-2 SE", col="#777777", pos=2, family= "Architects Daughter", cex=1.0)
+arrows(x0=ho, y0=max(ncurve.y)/5,x1=obs/se,y1=max(ncurve.y)/5,lty=1,col="blue", length=.15, code=3)
+text(x= (obs -(obs - ho)/2)/se, y = max(ncurve.y)/5, labels=sprintf("%.2f SE",t), 
+     col="blue", family= "Architects Daughter",pos=1, cex=1.0)
+ncurve.x.mSE <- seq(obs/se,3.5, by=.0005)
+ncurve.y.mSE <- dt(ncurve.x.mSE, df = df, ncp=0 )
+ncurve.x.mSE <- c(ncurve.x.mSE, max(ncurve.x.mSE), min(ncurve.x.mSE))
+ncurve.y.mSE <- c(ncurve.y.mSE, 0,0)
+polygon( ncurve.x.mSE, ncurve.y.mSE, col=rgb(1, 0, 0,.3), border=NA)
+par(OP)
+
+```
+
+The following block of code runs the entire analysis. Here, the data are entered manually. If data are loaded from a file into a data frame, you can set the variables `s1` and `s2` equal to the pertinent columns in the data frame.
+
+```{r tidy = FALSE}
+s1 <- c(600, 590, 570, 570, 565, 580)             # Contaminated site
+s2 <- c(560, 550, 570, 550, 570, 590, 550, 580)   # Background sites
+
+SD1 <- sd(s1)
+SD2 <- sd(s2)
+SE  <- sqrt(((length(s1) - 1) * SD1^2 + (length(s2) - 1) * SD2^2)/(length(s1) + length(s2) - 2))
+t   <- ((mean(s1) - mean(s2)) - 0) / (SE * sqrt(1/length(s1) + 1/length(s2)))
+P   <- pt(t, df = length(s1) + length(s2) - 2, lower.tail = FALSE)
+```
+The variable `P` stores the probability value `r round(P,4)` and variable `t` stores the value `r round(t,2)`.
+
+You can use the `t.test` function _if_ the data are used to compute  the $t$ test. If you only have the means, standard deviations and sample sizes at your disposal (and not the raw data), you must compute $t$ and $P$ as shown in the last code block. Since we have the original concentrations for both the contaminated and background sites in this example, we can run the `t.test` as follows:
+
+```{r tidy = FALSE, eval=FALSE}
+t.test(s1, s2, var.equal=TRUE, alternative = "greater")
+```
+This returns the following values:
+
+```{r tidy = FALSE, echo=FALSE}
+t.test(s1, s2, var.equal=TRUE, alternative = "greater")
+```
+
+Note that the `t.test` function can also be used to run a $z$-test between means if tabulated data are available.
+
+## Notes on z and t tests
+
+### Assumption of equal variance
+
+One assumption that needs to be met when conducting a test of significance with small sample sizes is the equality of variances between samples. This is an assumption we have made thus far in our working examples. But such an assumption may not be tenable in real life. If such is the case, you may want to resort to alternate techniques such as robust test of significance techniques. However, if you are working with the raw data, you can use the `t.test` function along with the parameter `var.equal=FALSE` option set. This option invokes [Welch's](http://en.wikipedia.org/wiki/Welch's_t_test) variance approximation which is believed to provide a more robust $t$-test analysis. Working with the last example, we can compute the $t$-test using Welch's approximation as demonstrated in the following line of code.
+
+```{r tidy = FALSE, eval=FALSE}
+t.test(s1, s2, var.equal=FALSE, alternative = "greater")
+```
+Note the `var.equal=FALSE` option (this is the default option if not explicitly defined). The output of this function is shown below.
+
+```{r tidy = FALSE, echo=FALSE}
+t.test(s1, s2, var.equal=FALSE, alternative = "greater")
+```
+
+Interestingly, the Welch's $t$-test returns a smaller $P$ value. It must be noted that Welch's $t$-test also has its limitations.  If in doubt, you might want to revert to more **robust** tests of significance such as the Wilcoxon rank-sum tests or permutation tests. 
+
+Note that equality of variances between two samples can be tested using the **$F$ test**.
+
+### Population distribution and small sample sizes
+If the sample size is small, the shape of the population distribution will influence the tests. If the population is not normally distributed, the data may need to be transformed prior to conducting a $t$-test. Many environmental data such as _concentrations of "something"_ tend to be positively skewed. If such is the case, a popular transformation for skewed data is the natural logarithm transformation, `log`.  Note that when you are conducting a $t$ or $z$ test on log transformed data, you are conducting a hypothesis test on the **ratio of the medians** and _not_ a hypothesis about the difference of the means (Millard _et al._, p. 416-417).
+
+For example, using TcCB concentration data between a background, `Ref`, and contaminated site, `Cont` (Millard et al., p.420),
+
+```{r tidy = FALSE, echo=TRUE}
+Ref <-  c(0.22,0.23,0.26,0.27,0.28,0.28,0.29,0.33,0.34,0.35,0.38,0.39,
+        0.39,0.42,0.42,0.43,0.45,0.46,0.48,0.5,0.5,0.51,0.52,0.54,
+        0.56,0.56,0.57,0.57,0.6,0.62,0.63,0.67,0.69,0.72,0.74,0.76,
+        0.79,0.81,0.82,0.84,0.89,1.11,1.13,1.14,1.14,1.2,1.33)
+Cont <- c(0.09,0.09,0.09,0.12,0.12,0.14,0.16,0.17,0.17,0.17,0.18,0.19,
+        0.2,0.2,0.21,0.21,0.22,0.22,0.22,0.23,0.24,0.25,0.25,0.25,
+        0.25,0.26,0.28,0.28,0.29,0.31,0.33,0.33,0.33,0.34,0.37,0.38,
+        0.39,0.4,0.43,0.43,0.47,0.48,0.48,0.49,0.51,0.51,0.54,0.6,
+        0.61,0.62,0.75,0.82,0.85,0.92,0.94,1.05,1.1,1.1,1.19,1.22,
+        1.33,1.39,1.39,1.52,1.53,1.73,2.35,2.46,2.59,2.61,3.06,3.29,
+        5.56,6.61,18.4,51.97,168.64)
+```
+
+we can test the null hypothesis that the concentrations between both wells are equal using the raw (un-transformed) data (to be conservative, we will assume that the variances are not equal and invoke Welch's assumption about the variance),
+
+```{r tidy = FALSE, echo=TRUE, eval=FALSE}
+t.test(Cont,Ref,alternative="greater", var.equal=FALSE)
+```
+which gives us the following:
+
+```{r tidy = FALSE, echo=FALSE, eval=TRUE}
+t.test(Cont,Ref,alternative="greater", var.equal=FALSE)
+```
+
+The test statitic of **1.45** indicates that there is a **7.5%** chance that we could see a test statistic more extreme under $H_o$ than the one computed. 
+
+If we log-transform the data, we get
+```{r tidy = FALSE, echo=TRUE, eval=FALSE}
+t.test(log(Cont),log(Ref),alternative="greater", var.equal=FALSE)
+```
+
+which gives us the following:
+```{r tidy = FALSE, echo=FALSE, eval=TRUE, }
+t.test(log(Cont),log(Ref),alternative="greater", var.equal=FALSE)
+```
+
+Notice the larger $P$ value of *%33.5* which indicates that we should not reject the null and that for all intents and purposes, we cannot dismiss the chance that the differences in _median_ concentrations (as expressed by a ratio) are due to variability alone. Remember that by log-transforming the data we are looking at the ratio of the _medians_, not the difference between means, so interpret these results with caution!
+
+
+Other methods used to test the normality of the data are tests of **skewness** and **kurtosis**.
+
+### Tests of paired samples (paired t-test)
+Suppose that you want to compare concentrations of ozone between two locations on a _set of dates_ (i.e. for each date, ozone concentrations are compared between two sites). This problem differs from the groundwater sulfate example shown earlier in that a sample from each location is paired. This violates one of the $z$ and $t$ test requirements in that samples from _both_ groups be independent of each other. In the case of the ozone concentration, this assumption does not hold. However, Freedman _et al._ (page 510) explain that the errors introduced (in estimating $SE$) when  violating this assumption tend to cancel each other out when applied to paired tests. Using data from Millard _et al._ (page 408) where ozone concentrations for two areas (Yonkers, NY and Stamford, CT) are collected on a daily bases the **paired $t$-test** can be computed by invoking the `paired = TRUE` option.
+
+```{r tidy = FALSE, echo=TRUE}
+# Ozone concentrations in ppb)
+yonkers <- c(47,37,45,52,51,22,27,25,55,72,132,106,42,45,80,
+            107,21,50,31,37,19,33,22,45,36,24,88,111,117,31,
+            37,93,106,64,83,97,79,36,51,75,104,107,68,19,67,
+            20,35,30,31,81,119,76,108,85,96,48,60,54,71,50,37,
+            47,71,46,41,49,59,25,45,40,13,46,62,80,39,74,66,
+            82,47,28,44,55,34,60,70,41,96,54,100,44,44,75,86,
+            70,53,36,117,43,27,77,75,87,47,114,66,18,25,14,27,
+            9,16,67,74,74,75,74,42,38,23,50,34,58,35,24,27,17,
+            21,14,32,51,15,21)
+stamford <- c(66,52,49,64,68,26,86,52,75,87,188,103,82,71,103,
+             240,31,40,47,51,31,47,14,71,61,47,196,131,173,37,
+             47,215,230,69,98,125,94,72,72,125,143,192,122,32,
+             114,32,23,71,38,136,169,152,201,134,206,92,101,119,
+             124,83,60,124,142,124,64,75,103,46,68,87,27,73,59,
+             119,64,111,80,68,24,24,82,100,55,91,87,64,170,86,202,
+             71,85,122,155,80,71,28,212,80,24,80,169,174,141,202,
+             113,38,38,28,52,14,38,94,89,99,150,146,113,66,38,80,
+             80,99,71,42,52,33,38,24,61,108,38,28)
+t.test(stamford, yonkers, alternative="greater", var.equal=FALSE, paired=T)
+```
+
+```{r tidy = FALSE, echo=FALSE}
+t.stat <- t.test(stamford, yonkers, alternative="greater", var.equal=FALSE, paired=T)
+```
+
+
+The $t$-test result can be interpreted in the same way. The test statistic of `r round(t.stat$statistic,2)` is way up in the right-tail end side of the curve. Its associated probability of nearly `r round(t.stat$p.value,3)` indicates that the differences in ozone concentrations between both locations cannot be explained by chance variability alone. Note that even though we invoked the $t$ test the results are identical to what we would have gotten had we performed a $z$ test since the sample size is large.
+
+# References
+
+Freedman D.A., Robert Pisani, Roger Purves. _Statistics_, 4th edition, 2007.  
+Millard S.P, Neerchal N.K., _Environmental Statistics with S-Plus_, 2001.  
+McClave J.T., Dietrich F.H., _Statistics_, 4th edition, 1988.  
+
+------
+
+**Session Info**:
+
+```{r,results='asis', echo=FALSE}
+#detach("package:extrafont")
+pander::pander(sessionInfo(), locale = FALSE)
+```
+
+
+[1]: http://www.amstat.org/sections/srms/pamphlet.pdf

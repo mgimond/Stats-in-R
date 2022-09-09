@@ -1,0 +1,21 @@
+---
+title: "Basic stats explained (in R)"
+---
+
+* [Confidence intervals](CI.html)
+
+* [Comparing means between two batches: z and t tests](z_t_tests.html)
+
+* [Comparing means between two or more batches: ANOVA](ANOVA.html)
+
+* [Comparing variances: Fisher’s F-test](F_test.html)
+
+* [Comparing frequencies: Chi-Square tests](ChiSquare_test.html)
+
+* [Regression analysis (OLS method)](regression.html)
+
+* [Logistic regression](Logistic.html)
+
+
+
+

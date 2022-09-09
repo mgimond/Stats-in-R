@@ -1,0 +1,42 @@
+project:
+  type: website
+  output-dir: docs
+  
+website:
+  title: "Basic stats explained (in R)"
+  navbar:
+    left:
+      - href: CI.qmd
+        text: "Confidence intervals"
+      - href: z_t_tests.qmd
+        text: "Z and T tests"
+      - href: F_test.qmd
+        text: "F-test: Test for difference in spread"
+      - href: ChiSquare_test.qmd
+        text: "ChiSquare"
+      - href: regression.qmd
+        text: "Ordinary least squares Regression"
+      - href: ANOVA.qmd
+        text: "Analysis of variance (ANOVA)"
+      - href: Logistic.qmd
+        text: "Logistic regression"
+  page-footer: 
+    right: "Creative Commons License, Manny Gimond, 2022" 
+
+
+
+format:
+  html:
+    theme:
+      - cosmo
+      - custom.scss
+    css: styles.css
+    toc: true
+    minimal: true
+    number-sections: true
+    code-copy: hover
+
+execute:
+  cache: false
+  warning: false
+  error: false
