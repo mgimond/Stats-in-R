@@ -1,400 +1,301 @@
 <!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.36">
 
-<head>
-
-<meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-
-
-<title>Confidence intervals</title>
-
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
-<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
-<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
-<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
-<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
-<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
-<script src="site_libs/navigation-1.1/tabsets.js"></script>
-
-
-<style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-code > span.kw { color: #0000ff; } /* Keyword */
-code > span.ch { color: #008080; } /* Char */
-code > span.st { color: #008080; } /* String */
-code > span.co { color: #008000; } /* Comment */
-code > span.ot { color: #ff4000; } /* Other */
-code > span.al { color: #ff0000; } /* Alert */
-code > span.er { color: #ff0000; font-weight: bold; } /* Error */
-code > span.wa { color: #008000; font-weight: bold; } /* Warning */
-code > span.cn { } /* Constant */
-code > span.sc { color: #008080; } /* SpecialChar */
-code > span.vs { color: #008080; } /* VerbatimString */
-code > span.ss { color: #008080; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { } /* Variable */
-code > span.cf { color: #0000ff; } /* ControlFlow */
-code > span.op { } /* Operator */
-code > span.bu { } /* BuiltIn */
-code > span.ex { } /* Extension */
-code > span.pp { color: #ff4000; } /* Preprocessor */
-code > span.do { color: #008000; } /* Documentation */
-code > span.an { color: #008000; } /* Annotation */
-code > span.cv { color: #008000; } /* CommentVar */
-code > span.at { } /* Attribute */
-code > span.in { color: #008000; } /* Information */
-</style>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
+<title>Basic stats explained (in R) - Confidence intervals</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
   }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
 
-<link rel="stylesheet" href="libs\style2.css" type="text/css" />
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
+<link rel="stylesheet" href="styles.css">
 </head>
 
-<body>
+<body class="nav-fixed">
 
-<style type = "text/css">
-.main-container {
-  max-width: 940px;
-  margin-left: auto;
-  margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
-}
-img {
-  max-width:100%;
-  height: auto;
-}
-.tabbed-pane {
-  padding-top: 12px;
-}
-button.code-folding-btn:focus {
-  outline: none;
-}
-</style>
-
-
-<style type="text/css">
-/* padding for bootstrap navbar */
-body {
-  padding-top: 45px;
-  padding-bottom: 40px;
-}
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 50px;
-  margin-top: -50px;
-}
-
-.section h2 {
-  padding-top: 50px;
-  margin-top: -50px;
-}
-.section h3 {
-  padding-top: 50px;
-  margin-top: -50px;
-}
-.section h4 {
-  padding-top: 50px;
-  margin-top: -50px;
-}
-.section h5 {
-  padding-top: 50px;
-  margin-top: -50px;
-}
-.section h6 {
-  padding-top: 50px;
-  margin-top: -50px;
-}
-</style>
-
-<script>
-// manage active state of menu based on current page
-$(document).ready(function () {
-  // active menu anchor
-  href = window.location.pathname
-  href = href.substr(href.lastIndexOf('/') + 1)
-  if (href === "")
-    href = "index.html";
-  var menuAnchor = $('a[href="' + href + '"]');
-
-  // mark it active
-  menuAnchor.parent().addClass('active');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
-});
-</script>
-
-
-<div class="container-fluid main-container">
-
-<!-- tabsets -->
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-</script>
-
-<!-- code folding -->
-
-
-
-
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
-
-<style type="text/css">
-
-#TOC {
-  margin: 25px 0px 20px 0px;
-}
-@media (max-width: 768px) {
-#TOC {
-  position: relative;
-  width: 100%;
-}
-}
-
-
-.toc-content {
-  padding-left: 30px;
-  padding-right: 40px;
-}
-
-div.main-container {
-  max-width: 1200px;
-}
-
-div.tocify {
-  width: 20%;
-  max-width: 260px;
-  max-height: 85%;
-}
-
-@media (min-width: 768px) and (max-width: 991px) {
-  div.tocify {
-    width: 25%;
-  }
-}
-
-@media (max-width: 767px) {
-  div.tocify {
-    width: 100%;
-    max-width: none;
-  }
-}
-
-.tocify ul, .tocify li {
-  line-height: 20px;
-}
-
-.tocify-subheader .tocify-item {
-  font-size: 0.90em;
-  padding-left: 25px;
-  text-indent: 0;
-}
-
-.tocify .list-group-item {
-  border-radius: 0px;
-}
-
-
-</style>
-
-<!-- setup 3col/9col grid for toc_float and main content  -->
-<div class="row-fluid">
-<div class="col-xs-12 col-sm-4 col-md-3">
-<div id="TOC" class="tocify">
-</div>
-</div>
-
-<div class="toc-content col-xs-12 col-sm-8 col-md-9">
-
-
-
-
-<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="index.html">Stats in R</a>
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Basic stats explained (in R)</span>
+  </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./CI.html" aria-current="page">Confidence intervals</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./z_t_tests.html">Z and T tests</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./F_test.html">F-test: Test for difference in spread</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./ChiSquare_test.html">ChiSquare</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./regression.html">Ordinary least squares Regression</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./ANOVA.html">Analysis of variance (ANOVA)</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./Logistic.html">Logistic regression</a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"> <span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#estimate-of-a-population-statistic-from-many-samples" id="toc-estimate-of-a-population-statistic-from-many-samples" class="nav-link" data-scroll-target="#estimate-of-a-population-statistic-from-many-samples"> <span class="header-section-number">2</span> Estimate of a population statistic from many samples</a></li>
+  <li><a href="#estimate-of-a-population-statistic-from-a-single-sample" id="toc-estimate-of-a-population-statistic-from-a-single-sample" class="nav-link" data-scroll-target="#estimate-of-a-population-statistic-from-a-single-sample"> <span class="header-section-number">3</span> Estimate of a population statistic from a single sample</a></li>
+  <li><a href="#a-universal-approach-to-computing-the-standard-error-the-bootstrap" id="toc-a-universal-approach-to-computing-the-standard-error-the-bootstrap" class="nav-link" data-scroll-target="#a-universal-approach-to-computing-the-standard-error-the-bootstrap"> <span class="header-section-number">4</span> A universal approach to computing the standard error: the bootstrap</a></li>
+  <li><a href="#confidence-intervals" id="toc-confidence-intervals" class="nav-link" data-scroll-target="#confidence-intervals"> <span class="header-section-number">5</span> Confidence intervals</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"> <span class="header-section-number">6</span> References</a></li>
+  </ul>
+</nav>
     </div>
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-        <li>
-  <a href="CI.html">CI</a>
-</li>
-<li>
-  <a href="z_t_tests.html">T-test</a>
-</li>
-<li>
-  <a href="F_test.html">F-test</a>
-</li>
-<li>
-  <a href="ChiSquare_test.html">ChiSquare</a>
-</li>
-<li>
-  <a href="regression.html">Regression</a>
-</li>
-<li>
-  <a href="ANOVA.html">ANOVA</a>
-</li>
-<li>
-  <a href="Logistic.html">Logistic</a>
-</li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        
-      </ul>
-    </div><!--/.nav-collapse -->
-  </div><!--/.container -->
-</div><!--/.navbar -->
+<!-- main -->
+<main class="content" id="quarto-document-content">
 
-<div class="fluid-row" id="header">
-
-
-
-<h1 class="title toc-ignore">Confidence intervals</h1>
-
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Confidence intervals</h1>
 </div>
 
 
-<p><em>Last modified on 2017-07-21</em></p>
-<div id="introduction" class="section level1">
-<h1><span class="header-section-number">1</span> Introduction</h1>
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<p><em>Last modified on 2022-09-09</em></p>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<section id="introduction" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
 <p>Most data, or <em>batches</em>, are subsets of some underlying population. From these batches, we attempt to infer about the state of the population. For example, we may want to determine how many hours of TV are watched in each household each week. Since we seldom have the resources needed to collect the data for <em>all</em> households, we opt to collect data for a small subset of the population. From this sampled survey, we compute a summary statistic (such as the mean hours of TV watched each week). We then use this sample statistic as an estimate of the number of hours watched by <em>all</em> households in the population.</p>
 <p>Now, if another investigator were to sample other households at random, she will probably come up with a slightly different summary statistic. Likewise, if a hundred other investigators were to sample households at random, they would come up with a hundred slightly different means of TV hours watched. Let’s explore this idea with a simulated data set:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">num.samp   &lt;-<span class="st"> </span><span class="dv">1000</span>                      <span class="co"># Number of samples to collect</span>
-samp.size  &lt;-<span class="st"> </span><span class="dv">50</span>                        <span class="co"># Size of each sample</span>
-samp.mean  &lt;-<span class="st"> </span><span class="kw">vector</span>(<span class="dt">length =</span> num.samp) <span class="co"># Create an empty vector array</span>
-
-<span class="co"># Sample the population &#39;num.samp&#39; of times then compute the sample mean</span>
-for (i in <span class="dv">1</span>:num.samp){
-  samp.mean[i] &lt;-<span class="st"> </span><span class="kw">mean</span>(<span class="kw">rbeta</span>(samp.size,<span class="dv">20</span>,<span class="dv">20</span>,<span class="dt">ncp=</span><span class="dv">0</span>)*<span class="dv">60</span>)
-}</code></pre></div>
-<p>In the above code, the first two lines define the number of samples to collect, 1000, and the number of households to survey in <em>each</em> sample, 50. In other words, we have 1000 investigators each sampling 50 households. The <code>for</code> loop collects a new sample (of 50 households) at each iteration 1000 times. The function <code>rbeta(samp.size,20,20,ncp=0)*60</code> randomly generates 50 values from a predefined distribution (think of this as <em>simulating</em> the number of hours of TV watched in each household 50 times). The <strong>sample mean</strong> of TV hours watched for each 50 household sample is then calculated using the <code>mean()</code> function. So each investigator computes a single value that represents the mean hours of TV watched in the 50 households. Since we have 1000 investigators, we have 1000 <em>sample means</em>. We can plot the distribution of the <em>sample means</em> using a histogram.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">hist</span>(samp.mean, <span class="dt">xlab=</span><span class="st">&quot;Mean TV hours per week&quot;</span>)</code></pre></div>
-<p><img src="CI_files/figure-html/plot1_executed-1.png" width="480" /></p>
-<p>Note that the distribution of the underlying population mean need not be normally distributed to produce a normally distributed sample mean distribution. That said, the histogram just presented does <em>not</em> represent the distribution of mean hours of TV watched for the population, but the distribution of the <em>sample averages</em>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>num.samp   <span class="ot">&lt;-</span> <span class="dv">1000</span>                      <span class="co"># Number of samples to collect</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>samp.size  <span class="ot">&lt;-</span> <span class="dv">50</span>                        <span class="co"># Size of each sample</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>samp.mean  <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">length =</span> num.samp) <span class="co"># Create an empty vector array</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Sample the population 'num.samp' of times then compute the sample mean</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>num.samp){</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  samp.mean[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">rbeta</span>(samp.size,<span class="dv">20</span>,<span class="dv">20</span>,<span class="at">ncp=</span><span class="dv">0</span>)<span class="sc">*</span><span class="dv">60</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="estimate-of-a-population-statistic-from-many-samples" class="section level1">
-<h1><span class="header-section-number">2</span> Estimate of a population statistic from many samples</h1>
+<p>In the above code, the first two lines define the number of samples to collect, 1000, and the number of households to survey in <em>each</em> sample, 50. In other words, we have 1000 investigators each sampling 50 households. The <code>for</code> loop collects a new sample (of 50 households) at each iteration 1000 times. The function <code>rbeta(samp.size,20,20,ncp=0)*60</code> randomly generates 50 values from a predefined distribution (think of this as <em>simulating</em> the number of hours of TV watched in each household 50 times). The <strong>sample mean</strong> of TV hours watched for each 50 household sample is then calculated using the <code>mean()</code> function. So each investigator computes a single value that represents the mean hours of TV watched in the 50 households. Since we have 1000 investigators, we have 1000 <em>sample means</em>. We can plot the distribution of the <em>sample means</em> using a histogram.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(samp.mean, <span class="at">xlab=</span><span class="st">"Mean TV hours per week"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="CI_files/figure-html/plot1_executed-1.png" width="480"></p>
+</div>
+</div>
+<p>Note that the distribution of the underlying population mean need not be normally distributed to produce a normally distributed sample mean distribution. That said, the histogram just presented does <em>not</em> represent the distribution of mean hours of TV watched for the population, but the distribution of the <em>sample averages</em>.</p>
+</section>
+<section id="estimate-of-a-population-statistic-from-many-samples" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Estimate of a population statistic from many samples</h1>
 <p>From the histogram it seems that, out of the 1000 samples, most sample means are centered around 30. In fact, we can compute the arithmetic mean from the 1000 samples. This statistic is referred to as the <strong>grand mean</strong> (not to be confused with each individual <em>sample mean</em> of which there are 1000 in our example).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">grand.mean &lt;-<span class="st"> </span><span class="kw">mean</span>(samp.mean)
-grand.mean</code></pre></div>
-<pre><code>[1] 29.99018</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>grand.mean <span class="ot">&lt;-</span> <span class="fu">mean</span>(samp.mean)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>grand.mean</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 29.98705</code></pre>
+</div>
+</div>
 <p>From the <em>grand mean</em>, we might be tempted to infer that the mean hours of TV watched by each household in the <em>entire</em> population is 29.99 hours. But note from the histogram that there is some variability in the <em>means</em> computed from each 50 household samples. It might behoove us to assess the chance that this estimate (the grand mean) is not representative of the whole <em>population</em> mean. We can find out how big the chance error might be by calculating the <em>standard error</em>.</p>
 <p>The <strong>standard error</strong> is the <em>standard deviation</em> of the sampling distribution of a statistic; it’s the likely size of chance error when estimating a statistic. In our case the standard error of our sample means, <span class="math inline">\(SE\)</span>, is computed by taking the standard deviation of the 1000 sample means:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">SE &lt;-<span class="st"> </span><span class="kw">sd</span>(samp.mean)
-SE</code></pre></div>
-<pre><code>[1] 0.6568007</code></pre>
-<p>We can now state that the average number of hours of TV watched per household per week is <em>29.99</em> <span class="math inline">\(\pm\)</span> <em>0.66</em>. It’s important to note that <span class="math inline">\(SE\)</span> is <em>not</em> an estimate of the population standard deviation but a measure of uncertainty in the population mean estimate.</p>
-<p>In most cases, we do not have the luxury of collecting hundreds or thousands of samples. We usually only have a <em>single</em> sample to work with (hence a single sample from which to make inferences about the whole population). Methods in <em>estimating</em> the sample variability given a single sample is covered next.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>SE <span class="ot">&lt;-</span> <span class="fu">sd</span>(samp.mean)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>SE</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.6524902</code></pre>
 </div>
-<div id="estimate-of-a-population-statistic-from-a-single-sample" class="section level1">
-<h1><span class="header-section-number">3</span> Estimate of a population statistic from a single sample</h1>
-<p>let’s assume that we only have a single sample of 50 households to work with. Let’s store these values in a vector we’ll call <code>x</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="fl">25.7</span>, <span class="fl">38.5</span>, <span class="fl">29.3</span>, <span class="fl">25.1</span>, <span class="fl">30.6</span>, <span class="fl">34.6</span>, <span class="fl">30.0</span>, <span class="fl">39.0</span>, <span class="fl">33.7</span>, <span class="fl">31.6</span>, 
-       <span class="fl">25.9</span>, <span class="fl">34.4</span>, <span class="fl">26.9</span>, <span class="fl">23.0</span>, <span class="fl">31.1</span>, <span class="fl">29.3</span>, <span class="fl">34.5</span>, <span class="fl">35.1</span>, <span class="fl">31.2</span>, <span class="fl">33.2</span>, 
-       <span class="fl">30.2</span>, <span class="fl">36.4</span>, <span class="fl">37.5</span>, <span class="fl">27.6</span>, <span class="fl">24.6</span>, <span class="fl">23.9</span>, <span class="fl">27.0</span>, <span class="fl">29.5</span>, <span class="fl">30.1</span>, <span class="fl">29.6</span>, 
-       <span class="fl">27.3</span>, <span class="fl">31.2</span>, <span class="fl">32.5</span>, <span class="fl">25.7</span>, <span class="fl">30.1</span>, <span class="fl">24.2</span>, <span class="fl">24.1</span>, <span class="fl">26.4</span>, <span class="fl">31.0</span>, <span class="fl">20.7</span>, 
-       <span class="fl">33.5</span>, <span class="fl">32.2</span>, <span class="fl">34.7</span>, <span class="fl">32.6</span>, <span class="fl">33.5</span>, <span class="fl">32.7</span>, <span class="fl">25.6</span>, <span class="fl">31.1</span>, <span class="fl">32.9</span>, <span class="fl">25.9</span>)</code></pre></div>
+</div>
+<p>We can now state that the average number of hours of TV watched per household per week is <em>29.99</em> <span class="math inline">\(\pm\)</span> <em>0.65</em>. It’s important to note that <span class="math inline">\(SE\)</span> is <em>not</em> an estimate of the population standard deviation but a measure of uncertainty in the population mean estimate.</p>
+<p>In most cases, we do not have the luxury of collecting hundreds or thousands of samples. We usually only have a <em>single</em> sample to work with (hence a single sample from which to make inferences about the whole population). Methods in <em>estimating</em> the sample variability given a single sample is covered next.</p>
+</section>
+<section id="estimate-of-a-population-statistic-from-a-single-sample" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Estimate of a population statistic from a single sample</h1>
+<p>Let’s assume that we only have a single sample of 50 households to work with. Let’s store these values in a vector we’ll call <code>x</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">25.7</span>, <span class="fl">38.5</span>, <span class="fl">29.3</span>, <span class="fl">25.1</span>, <span class="fl">30.6</span>, <span class="fl">34.6</span>, <span class="fl">30.0</span>, <span class="fl">39.0</span>, <span class="fl">33.7</span>, <span class="fl">31.6</span>, </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>       <span class="fl">25.9</span>, <span class="fl">34.4</span>, <span class="fl">26.9</span>, <span class="fl">23.0</span>, <span class="fl">31.1</span>, <span class="fl">29.3</span>, <span class="fl">34.5</span>, <span class="fl">35.1</span>, <span class="fl">31.2</span>, <span class="fl">33.2</span>, </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>       <span class="fl">30.2</span>, <span class="fl">36.4</span>, <span class="fl">37.5</span>, <span class="fl">27.6</span>, <span class="fl">24.6</span>, <span class="fl">23.9</span>, <span class="fl">27.0</span>, <span class="fl">29.5</span>, <span class="fl">30.1</span>, <span class="fl">29.6</span>, </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>       <span class="fl">27.3</span>, <span class="fl">31.2</span>, <span class="fl">32.5</span>, <span class="fl">25.7</span>, <span class="fl">30.1</span>, <span class="fl">24.2</span>, <span class="fl">24.1</span>, <span class="fl">26.4</span>, <span class="fl">31.0</span>, <span class="fl">20.7</span>, </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>       <span class="fl">33.5</span>, <span class="fl">32.2</span>, <span class="fl">34.7</span>, <span class="fl">32.6</span>, <span class="fl">33.5</span>, <span class="fl">32.7</span>, <span class="fl">25.6</span>, <span class="fl">31.1</span>, <span class="fl">32.9</span>, <span class="fl">25.9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>The standard error of the mean from the <em>one</em> sample, can be estimated using the following formula:</p>
 <p><span class="math display">\[
 SE_{mean} = \frac{SD}{\sqrt{sample\; size}}
 \]</span></p>
-<p>where <span class="math inline">\(SD\)</span> is the standard deviation of number of hours watched for the <em>entire population</em> (i.e. <em>all</em> households, not just those sampled). The standard error of the mean is sometimes represented as <span class="math inline">\(\sigma_{\bar X}\)</span>. It’s important to note two things here: * this approximation applies only to the uncertainty associated with the estimate of the <strong>population mean</strong> (and not other statistics like the median, count or percentage–these are treated later), * this approximation holds for a <em>large</em> sample sizes only (usually 30 or greater).</p>
-<p>However, there’s a problem. We usually don’t know the population’s <span class="math inline">\(SD\)</span> (if we did, we would not need to bother with sampling in the first place!) so, for a <em>large</em> sample size, we can estimate <span class="math inline">\(SD\)</span> using the sample means’ standard deviation, <span class="math inline">\(SD_{sample}\)</span> giving us <span class="math display">\[
+<p>where <span class="math inline">\(SD\)</span> is the standard deviation of number of hours watched for the <em>entire population</em> (i.e.&nbsp;<em>all</em> households, not just those sampled). The standard error of the mean is sometimes represented as <span class="math inline">\(\sigma_{\bar X}\)</span>. It’s important to note two things here: * this approximation applies only to the uncertainty associated with the estimate of the <strong>population mean</strong> (and not other statistics like the median, count or percentage–these are treated later), * this approximation holds for a <em>large</em> sample sizes only (usually 30 or greater).</p>
+<p>However, there’s a problem. We usually don’t know the population’s <span class="math inline">\(SD\)</span> (if we did, we would not need to bother with sampling in the first place!) so, for a <em>large</em> sample size, we can estimate <span class="math inline">\(SD\)</span> using the sample means’ standard deviation, <span class="math inline">\(SD_{sample}\)</span> giving us</p>
+<p><span class="math display">\[
 SE_{mean} = \frac{SD_{sample}}{\sqrt{sample\; size}}.
 \]</span></p>
 <p>So following up with our single sample example, we can estimate the population mean and the standard error of the mean from our sample as:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mean.x &lt;-<span class="st"> </span><span class="kw">mean</span>(x)
-SE.x   &lt;-<span class="st"> </span><span class="kw">sd</span>(x) /<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">length</span>(x))</code></pre></div>
-<p>where <code>length(x)</code> is an <code>R</code> function that gives us the number of values in the vector <code>x</code> (i.e. our sample size <span class="math inline">\(n\)</span>). In this example, the population mean estimate is 30.14 hours with a standard error, <span class="math inline">\(\sigma_{\bar X}\)</span>, of 0.6 hours.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>mean.x <span class="ot">&lt;-</span> <span class="fu">mean</span>(x)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>SE.x   <span class="ot">&lt;-</span> <span class="fu">sd</span>(x) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">length</span>(x))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>where <code>length(x)</code> is an <code>R</code> function that gives us the number of values in the vector <code>x</code> (i.e.&nbsp;our sample size <span class="math inline">\(n\)</span>). In this example, the population mean estimate is 30.14 hours with a standard error, <span class="math inline">\(\sigma_{\bar X}\)</span>, of 0.6 hours.</p>
 <p>So how exactly do we interpret <span class="math inline">\(SE\)</span> ? As noted earlier, <span class="math inline">\(SE\)</span> is <em>not</em> an estimate of the population standard deviation. It’s a measure of how likely the interval, defined by <span class="math inline">\(SE\)</span>, encompasses the true (population) mean. In the following figure, the sample means for 30 samples are plotted along with error bars depicting their <span class="math inline">\(\pm\)</span> 1 <span class="math inline">\(SE\)</span> (another way to interpret a <span class="math inline">\(SE\)</span> is to say that we are ~68% confident that the <span class="math inline">\(\pm\)</span> 1 <span class="math inline">\(SE\)</span> interval encompasses the true population mean). The blue vertical line represents the true population mean of 30, the <em>expected value</em> (the unknown parameter we are usually seeking). Batches of data (samples) whose <span class="math inline">\(\pm\)</span> 1 <span class="math inline">\(SE\)</span> range does not contain the true population mean are plotted in red.</p>
-<p><img src="CI_files/figure-html/unnamed-chunk-2-1.png" width="480" /></p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="CI_files/figure-html/unnamed-chunk-2-1.png" width="480"></p>
+</div>
+</div>
 <p>It’s clear from the figure that 12 samples have a 68% confidence interval that do not contain the true population mean. If we want to increase our confidence that the sample mean contain the true mean value, we can widen our confidence from 1 <span class="math inline">\(SE\)</span> to 2 <span class="math inline">\(SE\)</span> which covers about 95% of each sample distribution.</p>
-<p><img src="CI_files/figure-html/unnamed-chunk-3-1.png" width="480" /></p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="CI_files/figure-html/unnamed-chunk-3-1.png" width="480"></p>
+</div>
+</div>
 <p>Now, only three of the 30 samples have a confidence interval that does not contain the true population mean of 30 hours of TV watched per week.</p>
-<p>One <span class="math inline">\(SE\)</span> on both sides of the sample mean encompasses a probability of about 68% (34% on either side of the mean). This is our 68% <em>confidence interval</em> (i.e. there is a 68% chance that this interval contains the true population mean). If we want to increase our confidence that the interval contains the population mean, we can widen it by say 2 <span class="math inline">\(SE\)</span> which provides us with about 95% confidence.</p>
+<p>One <span class="math inline">\(SE\)</span> on both sides of the sample mean encompasses a probability of about 68% (34% on either side of the mean). This is our 68% <em>confidence interval</em> (i.e.&nbsp;there is a 68% chance that this interval contains the true population mean). If we want to increase our confidence that the interval contains the population mean, we can widen it by say 2 <span class="math inline">\(SE\)</span> which provides us with about 95% confidence.</p>
 <p>The following figure displays the histogram from 1000 sample means superimposed with a Gaussian curve. The (red) shaded areas represent the fraction of the sample mean values that fall within each SE ranges. Note that fewer and fewer sample means fall within SE intervals as the sample means diverge from the <em>grand mean</em>.</p>
-<p><img src="CI_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="CI_files/figure-html/unnamed-chunk-4-1.png" width="672"></p>
+</div>
+</div>
 <p>So, given our most recent example, we can state that there is a ~ 68% chance that the interval (30.14 - 0.6) and (30.14 + 0.6) contains the true population mean of hours of TV watched each week or, put more succinctly, there is a 68% chance that the mean hours of TV watched by the population is 30.14 <span class="math inline">\(\pm\)</span> 0.6.</p>
 <p>Note that we are making a statement about the probability that the interval <em>includes</em> the population mean and <strong>not</strong> the probability that the population mean <em>falls</em> between this interval. The latter would imply that the population mean is a random variable which it’s not, it’s static!</p>
 <p>The standard error equation used thus far only applies to the <em>mean</em>, if another population statistic is to be estimated, then other <span class="math inline">\(SE\)</span> formulas have to be used. Other types of <span class="math inline">\(SE\)</span>’s include the standard error of <strong>sum</strong> of samples, and <strong>fractions</strong> (of a binary output) of samples (<em>Freedman et al., p.422</em>):</p>
@@ -402,125 +303,175 @@ SE.x   &lt;-<span class="st"> </span><span class="kw">sd</span>(x) /<span class=
 SE_{sum} = \sqrt{sample\; size} \times SD
 \]</span></p>
 <p><span class="math display">\[
-SE_{fraction} = \frac{\sqrt{(fraction\; of\; 1&#39;s)(fraction\; of\; 0&#39;s)}}{\sqrt{sample\; size}}
+SE_{fraction} = \frac{\sqrt{(fraction\; of\; 1's)(fraction\; of\; 0's)}}{\sqrt{sample\; size}}
 \]</span></p>
-</div>
-<div id="a-universal-approach-to-computing-the-standard-error-the-bootstrap" class="section level1">
-<h1><span class="header-section-number">4</span> A universal approach to computing the standard error: the bootstrap</h1>
-<p>The preceding section highlighted a few formulae for SE and some restricting assumptions such as the sample size. What if we want to to estimate the population median, mode, etc.. for which a formula may be illusive or non-existent? The solution to this problem is a technique called <em>bootstrap</em>. A bootstrap is a computer simulation often used to compute measures of accuracy to statistical estimates. The idea is simple: re-sample from the sample many times, then calculate the statistic for each sub-sample. The re-sampling is usually done with replacement (i.e. a same value can be picked more than once). The bootstrap standard estimated error <em>is</em> the standard deviation of the bootstrap samples.</p>
+</section>
+<section id="a-universal-approach-to-computing-the-standard-error-the-bootstrap" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> A universal approach to computing the standard error: the bootstrap</h1>
+<p>The preceding section highlighted a few formulae for SE and some restricting assumptions such as the sample size. What if we want to to estimate the population median, mode, etc.. for which a formula may be illusive or non-existent? The solution to this problem is a technique called <em>bootstrap</em>. A bootstrap is a computer simulation often used to compute measures of accuracy to statistical estimates. The idea is simple: re-sample from the sample many times, then calculate the statistic for each sub-sample. The re-sampling is usually done with replacement (i.e.&nbsp;a same value can be picked more than once). The bootstrap standard estimated error <em>is</em> the standard deviation of the bootstrap samples.</p>
 <p>Continuing with the 50 household sample, we can apply the bootstrap technique to estimate the population <em>median</em> in R as follows:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">median.boot &lt;-<span class="st"> </span><span class="kw">numeric</span>()   <span class="co"># Create an empty vector</span>
-for (i in <span class="dv">1</span>:<span class="dv">10000</span>){
-  sample.boot    &lt;-<span class="st"> </span><span class="kw">sample</span>(x, <span class="dt">size =</span> <span class="kw">length</span>(x), <span class="dt">replace=</span><span class="ot">TRUE</span>)
-  median.boot[i] &lt;-<span class="st"> </span><span class="kw">median</span>(sample.boot)
-}
-SE.boot &lt;-<span class="st"> </span><span class="kw">sd</span>(median.boot)
-SE.boot</code></pre></div>
-<pre><code>[1] 0.7066932</code></pre>
-<p>In this example, the sample <code>x</code> is re-sampled 10,000 times (each sample having a size equal to the original sample, <code>length(x)</code>). The function <code>sample()</code> samples anew from the sample <code>x</code> <em>with</em> replacement each time. The median of each re-sampled batch is stored in the variable <code>median.boot[i]</code>. The variable <code>SE.boot</code> stores the standard error for the bootstrap sample medians, or 0.7066932 in this working example (note that your result may differ slightly given that the re-sampling process is random).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>median.boot <span class="ot">&lt;-</span> <span class="fu">numeric</span>()   <span class="co"># Create an empty vector</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10000</span>){</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  sample.boot    <span class="ot">&lt;-</span> <span class="fu">sample</span>(x, <span class="at">size =</span> <span class="fu">length</span>(x), <span class="at">replace=</span><span class="cn">TRUE</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  median.boot[i] <span class="ot">&lt;-</span> <span class="fu">median</span>(sample.boot)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>SE.boot <span class="ot">&lt;-</span> <span class="fu">sd</span>(median.boot)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>SE.boot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.7048915</code></pre>
+</div>
+</div>
+<p>In this example, the sample <code>x</code> is re-sampled 10,000 times (each sample having a size equal to the original sample, <code>length(x)</code>). The function <code>sample()</code> samples anew from the sample <code>x</code> <em>with</em> replacement each time. The median of each re-sampled batch is stored in the variable <code>median.boot[i]</code>. The variable <code>SE.boot</code> stores the standard error for the bootstrap sample medians, or 0.7048915 in this working example (note that your result may differ slightly given that the re-sampling process is random).</p>
 <p>Another way to implement the bootstrap technique is to use the function <code>boot()</code> from the <code>boot</code> library. This reduces the code to:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(boot)
-f.med       &lt;-<span class="st"> </span>function(Y,i) <span class="kw">median</span>(Y[i])
-median.boot &lt;-<span class="st"> </span><span class="kw">boot</span>(x, <span class="dt">R =</span> <span class="dv">10000</span>, <span class="dt">statistic =</span> f.med)
-SE.boot     &lt;-<span class="st"> </span><span class="kw">sd</span>( <span class="kw">as.vector</span>(median.boot$t))
-SE.boot</code></pre></div>
-<pre><code>[1] 0.6780954</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(boot)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>f.med       <span class="ot">&lt;-</span> <span class="cf">function</span>(Y,i) <span class="fu">median</span>(Y[i])</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>median.boot <span class="ot">&lt;-</span> <span class="fu">boot</span>(x, <span class="at">R =</span> <span class="dv">10000</span>, <span class="at">statistic =</span> f.med)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>SE.boot     <span class="ot">&lt;-</span> <span class="fu">sd</span>( <span class="fu">as.vector</span>(median.boot<span class="sc">$</span>t))</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>SE.boot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.6993753</code></pre>
+</div>
+</div>
 <p>In this example, we are defining a function called <code>f.med</code> where the function returns the <em>median</em> value for an array. This is a simple example of a function, but this demonstrates how one can create a customized statistic for which <span class="math inline">\(SE\)</span> is sought. The function <code>boot</code> returns a <em>list</em> and not a numeric vector. To view the contents of a list, you can invoke the structure function <code>str()</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(median.boot)</code></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(median.boot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
 <pre><code>List of 11
  $ t0       : num 30.4
- $ t        : num [1:10000, 1] 29.8 31.1 30.1 30.8 29.6 ...
+ $ t        : num [1:10000, 1] 30.6 30.1 30.8 30.1 30.1 ...
  $ R        : num 10000
  $ data     : num [1:50] 25.7 38.5 29.3 25.1 30.6 34.6 30 39 33.7 31.6 ...
- $ seed     : int [1:626] 403 328 -986067110 -159805141 -1436842664 856158602 -2105953327 -2028689650 565466580 149568920 ...
+ $ seed     : int [1:626] 10403 339 -2039064027 -1230412158 2083235002 -724891796 1960552843 -748753637 1288892054 -1864264827 ...
  $ statistic:function (Y, i)  
-  ..- attr(*, &quot;srcref&quot;)=Class &#39;srcref&#39;  atomic [1:8] 2 16 2 41 16 41 2 2
-  .. .. ..- attr(*, &quot;srcfile&quot;)=Classes &#39;srcfilecopy&#39;, &#39;srcfile&#39; &lt;environment: 0x0000000007f2e1d8&gt; 
- $ sim      : chr &quot;ordinary&quot;
+  ..- attr(*, "srcref")= 'srcref' int [1:8] 2 16 2 41 16 41 2 2
+  .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x0000014345e4e540&gt; 
+ $ sim      : chr "ordinary"
  $ call     : language boot(data = x, statistic = f.med, R = 10000)
- $ stype    : chr &quot;i&quot;
+ $ stype    : chr "i"
  $ strata   : num [1:50] 1 1 1 1 1 1 1 1 1 1 ...
  $ weights  : num [1:50] 0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02 ...
- - attr(*, &quot;class&quot;)= chr &quot;boot&quot;</code></pre>
-<p>The list contains close to a dozen components. The component of interest to us is <code>t</code> which stores the median values from all 10,000 sub-samples. This component is accessed by adding the <code>$</code> symbol to the end of the list name <code>median.boot</code> (i.e. <code>median.boot$t</code>). If you type <code>median.boot$t</code> at a command prompt, you will note that the data are stored as a matrix (and not a vector). Hence, if you want to compute the standard deviation of this matrix by invoking <code>sd(median.boot$t)</code>, you will be presented with a warning along the lines of <code>Warning: sd(&lt;matrix&gt;) is deprecated...</code>. To circumvent this warning, you can convert the matrix to a vector using the <code>as.vector()</code> function (i.e. <code>sd( as.vector(meadian.boot$t) )</code>.</p>
+ - attr(*, "class")= chr "boot"
+ - attr(*, "boot_type")= chr "boot"</code></pre>
 </div>
-<div id="confidence-intervals" class="section level1">
-<h1><span class="header-section-number">5</span> Confidence intervals</h1>
+</div>
+<p>The list contains close to a dozen components. The component of interest to us is <code>t</code> which stores the median values from all 10,000 sub-samples. This component is accessed by adding the <code>$</code> symbol to the end of the list name <code>median.boot</code> (i.e.&nbsp;<code>median.boot$t</code>). If you type <code>median.boot$t</code> at a command prompt, you will note that the data are stored as a matrix (and not a vector). Hence, if you want to compute the standard deviation of this matrix by invoking <code>sd(median.boot$t)</code>, you will be presented with a warning along the lines of <code>Warning: sd(&lt;matrix&gt;) is deprecated...</code>. To circumvent this warning, you can convert the matrix to a vector using the <code>as.vector()</code> function (i.e.&nbsp;<code>sd( as.vector(meadian.boot$t) )</code>.</p>
+</section>
+<section id="confidence-intervals" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Confidence intervals</h1>
 <p>The idea of a <strong>confidence interval</strong>, CI, is a natural extension of the standard error. It allows us to define a level of confidence in our population parameter estimate gleaned from a sample. For example, if we wanted to be 95% confident that the range of mean TV hours per week computed from our sample encompasses the true mean value for <em>all</em> households in the population we would compute this interval by adding and subtracting <span class="math inline">\(1.96\; SE\)</span> to/from the sample mean. But beware, people will sometimes state this as <em>“… there is a 95% chance that the population mean falls between such and such values…”</em> which is problematic as noted earlier since it implies that the population mean is a random variable when in fact it’s not. The confidence interval reminds us that the chances are in the sampling and not the population parameter.</p>
 <p>A confidence interval of 68% and 95% are easily estimated from <span class="math inline">\(1 SE\)</span> or <span class="math inline">\(1.96 SE\)</span> respectively, but what if we want to define some other confidence interval such as 85% or 90%? To estimate the confidence interval for any other value, simply invoke the Student’s <em>t</em> quantile function <code>qt()</code> in conjunction with <span class="math inline">\(SE\)</span>. For example, to generate a 90% confidence interval for the <em>mean</em> hours of TV watched per household:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mean.int<span class="fl">.90</span> &lt;-<span class="st"> </span>mean.x +<span class="st"> </span><span class="kw">qt</span>( <span class="kw">c</span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>), <span class="kw">length</span>(x) -<span class="st"> </span><span class="dv">1</span>) *<span class="st"> </span>SE.x
-mean.int<span class="fl">.90</span></code></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>mean.int<span class="fl">.90</span> <span class="ot">&lt;-</span> mean.x <span class="sc">+</span> <span class="fu">qt</span>( <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>), <span class="fu">length</span>(x) <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> SE.x</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>mean.int<span class="fl">.90</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
 <pre><code>[1] 29.13527 31.14473</code></pre>
+</div>
+</div>
 <p>In this example, we can state that we are 90% confident that the range [29.14, 31.14] encompasses the true population <em>mean</em>. The function <code>qt</code> finds the two-tailed critical values from Student’s <em>t</em> distribution with <code>length(x) -1</code> degrees of freedom (or df = 49 in our working example). Note that using Student’s <em>t</em> value is recommended over the <em>normal distribution’s</em> <em>z</em> value when sample size is small. If the sample size is large, Student’s <em>t</em> value and the <em>normal</em>’s <em>z</em> values converge.</p>
 <p>In the following figure, the 90% confidence range is shaded in the light red color. Recall that the distribution is for the many different sample means that could be drawn from the population and <em>not</em> the distribution of the raw (sampled) data.</p>
-<p><img src="CI_files/figure-html/CI_explained-1.png" width="672" /></p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="CI_files/figure-html/CI_explained-1.png" width="672"></p>
+</div>
+</div>
 <p>Likewise, we can compute the 90% confidence interval from the bootstrap <span class="math inline">\(SE\)</span> estimate of the <em>median</em>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">median.int<span class="fl">.90</span> &lt;-<span class="st"> </span><span class="kw">mean</span>(median.boot$t) +<span class="st"> </span><span class="kw">qt</span>( <span class="kw">c</span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>), <span class="kw">length</span>(x) -<span class="st"> </span><span class="dv">1</span>) *<span class="st"> </span>SE.boot
-median.int<span class="fl">.90</span></code></pre></div>
-<pre><code>[1] 29.34539 31.61912</code></pre>
-<p>This example suggests that there is a 90% chance that the range of median values [29.35, 31.62] encompasses the true population <em>median</em>. Note that using standard bootstrap techniques to estimate <span class="math inline">\(CI\)</span> requires that the bootstrap distribution of a statistic follow a normal distribution. If it does not, the computed <span class="math inline">\(CI\)</span> may over- or under-estimate the true confidence interval. A safer (and more robust) bootstrap based measure of <span class="math inline">\(CI\)</span> is the <em>bias corrected</em> bootstrap method, <strong>BCa</strong>, which can be easily computed using the <code>boot.ci</code> function in the <code>boot</code> library. The parameter <code>conf</code> defines the confidence interval sought.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">median.int<span class="fl">.90</span>.BCa &lt;-<span class="st"> </span><span class="kw">boot.ci</span>(median.boot, <span class="dt">conf =</span> .<span class="dv">90</span>, <span class="dt">type=</span><span class="st">&quot;bca&quot;</span>)
-median.int<span class="fl">.90</span>.BCa</code></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>median.int<span class="fl">.90</span> <span class="ot">&lt;-</span> <span class="fu">mean</span>(median.boot<span class="sc">$</span>t) <span class="sc">+</span> <span class="fu">qt</span>( <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>), <span class="fu">length</span>(x) <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> SE.boot</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>median.int<span class="fl">.90</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 29.31089 31.65597</code></pre>
+</div>
+</div>
+<p>This example suggests that there is a 90% chance that the range of median values [29.31, 31.66] encompasses the true population <em>median</em>. Note that using standard bootstrap techniques to estimate <span class="math inline">\(CI\)</span> requires that the bootstrap distribution of a statistic follow a normal distribution. If it does not, the computed <span class="math inline">\(CI\)</span> may over- or under-estimate the true confidence interval. A safer (and more robust) bootstrap based measure of <span class="math inline">\(CI\)</span> is the <em>bias corrected</em> bootstrap method, <strong>BCa</strong>, which can be easily computed using the <code>boot.ci</code> function in the <code>boot</code> library. The parameter <code>conf</code> defines the confidence interval sought.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>median.int.<span class="fl">90.</span>BCa <span class="ot">&lt;-</span> <span class="fu">boot.ci</span>(median.boot, <span class="at">conf =</span> .<span class="dv">90</span>, <span class="at">type=</span><span class="st">"bca"</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>median.int.<span class="fl">90.</span>BCa</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
 <pre><code>BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
 Based on 10000 bootstrap replicates
 
 CALL : 
-boot.ci(boot.out = median.boot, conf = 0.9, type = &quot;bca&quot;)
+boot.ci(boot.out = median.boot, conf = 0.9, type = "bca")
 
 Intervals : 
 Level       BCa          
 90%   (29.4, 31.2 )  
 Calculations and Intervals on Original Scale</code></pre>
+</div>
+</div>
 <p>The BCa interval values can be extracted from the variable by typing <code>median.int.90.BCa$bca[4:5]</code> at the prompt.</p>
 <p>On a final note, the <strong>margin of error (MoE)</strong> can be used interchangeably with the confidence interval. The [American Statistical Association][1] (page 64) defines the MoE as a 95% confidence interval, but this definition is not consistent across the literature. So if given estimates with a measure of confidence defined as a MoE make sure to ask for the provider’s definition of the MoE!</p>
-</div>
-<div id="references" class="section level1">
-<h1><span class="header-section-number">6</span> References</h1>
-<p>Freedman D.A., Robert Pisani, Roger Purves. <em>Statistics</em>, 4th edition, 2007.<br />
+</section>
+<section id="references" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> References</h1>
+<p>Freedman D.A., Robert Pisani, Roger Purves. <em>Statistics</em>, 4th edition, 2007.<br>
 McClave J.T., Dietrich F.H., <em>Statistics</em>, 4th edition, 1988.</p>
-<hr />
+<hr>
 <p><strong>Session Info</strong>:</p>
-<p><strong>R version 3.4.0 (2017-04-21)</strong></p>
-<p>**<a href="Platform:**" class="uri">Platform:**</a> x86_64-w64-mingw32/x64 (64-bit)</p>
+<div class="cell-output-display">
+<p><strong>R version 4.2.1 (2022-06-23 ucrt)</strong></p>
+<p><strong>Platform:</strong> x86_64-w64-mingw32/x64 (64-bit)</p>
 <p><strong>attached base packages:</strong> <em>stats</em>, <em>graphics</em>, <em>grDevices</em>, <em>utils</em>, <em>datasets</em>, <em>methods</em> and <em>base</em></p>
-<p><strong>other attached packages:</strong> <em>boot(v.1.3-19)</em>, <em>gplots(v.3.0.1)</em>, <em>MASS(v.7.3-47)</em> and <em>tidyr(v.0.6.3)</em></p>
-<p><strong>loaded via a namespace (and not attached):</strong> <em>Rcpp(v.0.12.12)</em>, <em>Rttf2pt1(v.1.3.4)</em>, <em>knitr(v.1.16)</em>, <em>bindr(v.0.1)</em>, <em>magrittr(v.1.5)</em>, <em>R6(v.2.2.2)</em>, <em>rlang(v.0.1.1)</em>, <em>stringr(v.1.2.0)</em>, <em>dplyr(v.0.7.2)</em>, <em>caTools(v.1.17.1)</em>, <em>tools(v.3.4.0)</em>, <em>KernSmooth(v.2.23-15)</em>, <em>extrafontdb(v.1.0)</em>, <em>gtools(v.3.5.0)</em>, <em>htmltools(v.0.3.6)</em>, <em>yaml(v.2.1.14)</em>, <em>rprojroot(v.1.2)</em>, <em>digest(v.0.6.12)</em>, <em>assertthat(v.0.2.0)</em>, <em>tibble(v.1.3.3)</em>, <em>bookdown(v.0.4)</em>, <em>bindrcpp(v.0.2)</em>, <em>bitops(v.1.0-6)</em>, <em>glue(v.1.1.1)</em>, <em>evaluate(v.0.10.1)</em>, <em>rmarkdown(v.1.6)</em>, <em>gdata(v.2.18.0)</em>, <em>stringi(v.1.1.5)</em>, <em>pander(v.0.6.0)</em>, <em>compiler(v.3.4.0)</em>, <em>backports(v.1.1.0)</em>, <em>extrafont(v.0.17)</em> and <em>pkgconfig(v.2.0.1)</em></p>
+<p><strong>other attached packages:</strong> <em>boot(v.1.3-28)</em> and <em>gplots(v.3.1.3)</em></p>
+<p><strong>loaded via a namespace (and not attached):</strong> <em>Rcpp(v.1.0.9)</em>, <em>gtools(v.3.9.3)</em>, <em>digest(v.0.6.29)</em>, <em>bitops(v.1.0-7)</em>, <em>Rttf2pt1(v.1.3.8)</em>, <em>jsonlite(v.1.8.0)</em>, <em>magrittr(v.2.0.3)</em>, <em>evaluate(v.0.16)</em>, <em>KernSmooth(v.2.23-20)</em>, <em>rlang(v.1.0.4)</em>, <em>stringi(v.1.7.8)</em>, <em>cli(v.3.3.0)</em>, <em>rstudioapi(v.0.14)</em>, <em>extrafontdb(v.1.0)</em>, <em>rmarkdown(v.2.16)</em>, <em>extrafont(v.0.18)</em>, <em>tools(v.4.2.1)</em>, <em>pander(v.0.6.5)</em>, <em>stringr(v.1.4.1)</em>, <em>xfun(v.0.32)</em>, <em>yaml(v.2.3.5)</em>, <em>fastmap(v.1.1.0)</em>, <em>compiler(v.4.2.1)</em>, <em>caTools(v.1.18.2)</em>, <em>htmltools(v.0.5.3)</em> and <em>knitr(v.1.40)</em></p>
 </div>
 
 
-<div class="footer">
-<hr/>
-<a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/80x15.png" /></a>  Manny Gimond 
-</br>
+</section>
 
-
-</div>
-</div>
-
-</div>
-
-<script>
-
-// add bootstrap table styles to pandoc tables
-function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
-}
-$(document).ready(function () {
-  bootstrapStylePandocTables();
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
 });
-
-
 </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-right">Creative Commons License, Manny Gimond, 2022</div>
+  </div>
+</footer>
 
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
 
-</body>
-</html>
+
+</body></html>
