@@ -25,7 +25,7 @@ Packages used in this tutorial:
 ```{r packages, message=FALSE, results='hide'}
 library(car) 
 library(boot) 
-library(scatterplot3d) # Used to extract p-value from logistic model
+library(scatterplot3d)
 ```
 
 # The simple model

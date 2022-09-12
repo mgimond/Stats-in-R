@@ -21,9 +21,9 @@ source("libs/Common.R")
 Packages used in this tutorial:
 
 ```{r packages, message=FALSE, results='hide'}
-library(ggplot2) # USed for plotting data
-library(dplyr) # Used to extract columns in the data
-library(rms) # Used to extract p-value from logistic model
+library(ggplot2) # Used for plotting data
+library(dplyr)   # Used for data manipulation
+library(rms)     # Used to extract p-value from logistic model
 ```
 
 Another package used in this tutorial is `gdata`, but its function will be called directly from the package (e.g. `gdata::mapLevels`) in section 2.

@@ -22,6 +22,9 @@ website:
         text: "Logistic regression"
   page-footer: 
     right: "Creative Commons License, Manny Gimond, 2022" 
+  search: 
+    location: navbar
+    type: overlay
 
 
 
