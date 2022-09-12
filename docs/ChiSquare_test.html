@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Basic stats explained (in R) - Comparing frequencies: Chi-Square tests</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Basic stats explained (in R)</span>
+  </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./CI.html">Confidence intervals</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./z_t_tests.html">Z and T tests</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./F_test.html">F-test: Test for difference in spread</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./ChiSquare_test.html" aria-current="page">ChiSquare</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./regression.html">Ordinary least squares Regression</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./ANOVA.html">Analysis of variance (ANOVA)</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./Logistic.html">Logistic regression</a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"> <span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#single-factor-classification" id="toc-single-factor-classification" class="nav-link" data-scroll-target="#single-factor-classification"> <span class="header-section-number">2</span> Single factor classification</a>
+  <ul class="collapse">
+  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example"> <span class="header-section-number">2.1</span> Example</a>
+  <ul class="collapse">
+  <li><a href="#problem" id="toc-problem" class="nav-link" data-scroll-target="#problem"> <span class="header-section-number">2.1.1</span> Problem</a></li>
+  <li><a href="#solution" id="toc-solution" class="nav-link" data-scroll-target="#solution"> <span class="header-section-number">2.1.2</span> Solution</a></li>
+  </ul></li>
+  <li><a href="#the-chi2-curve-explained" id="toc-the-chi2-curve-explained" class="nav-link" data-scroll-target="#the-chi2-curve-explained"> <span class="header-section-number">2.2</span> The <span class="math inline">\(\chi^2\)</span> curve explained</a></li>
+  <li><a href="#can-the-chi2-value-be-too-good" id="toc-can-the-chi2-value-be-too-good" class="nav-link" data-scroll-target="#can-the-chi2-value-be-too-good"> <span class="header-section-number">2.3</span> Can the <span class="math inline">\(\chi^2\)</span> value be ‘too’ good?</a></li>
+  </ul></li>
+  <li><a href="#two-factor-classification" id="toc-two-factor-classification" class="nav-link" data-scroll-target="#two-factor-classification"> <span class="header-section-number">3</span> Two factor classification</a>
+  <ul class="collapse">
+  <li><a href="#example-1" id="toc-example-1" class="nav-link" data-scroll-target="#example-1"> <span class="header-section-number">3.1</span> Example</a>
+  <ul class="collapse">
+  <li><a href="#problem-1" id="toc-problem-1" class="nav-link" data-scroll-target="#problem-1"> <span class="header-section-number">3.1.1</span> Problem</a></li>
+  <li><a href="#solution-1" id="toc-solution-1" class="nav-link" data-scroll-target="#solution-1"> <span class="header-section-number">3.1.2</span> Solution</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#three-or-more-factor-classification" id="toc-three-or-more-factor-classification" class="nav-link" data-scroll-target="#three-or-more-factor-classification"> <span class="header-section-number">4</span> Three or more factor classification</a></li>
+  <li><a href="#inferences-about-population-variance" id="toc-inferences-about-population-variance" class="nav-link" data-scroll-target="#inferences-about-population-variance"> <span class="header-section-number">5</span> Inferences about population variance</a>
+  <ul class="collapse">
+  <li><a href="#computing-confidence-intervals-for-variances" id="toc-computing-confidence-intervals-for-variances" class="nav-link" data-scroll-target="#computing-confidence-intervals-for-variances"> <span class="header-section-number">5.1</span> Computing confidence intervals for variances</a>
+  <ul class="collapse">
+  <li><a href="#example-2" id="toc-example-2" class="nav-link" data-scroll-target="#example-2"> <span class="header-section-number">5.1.1</span> Example</a></li>
+  <li><a href="#solution-2" id="toc-solution-2" class="nav-link" data-scroll-target="#solution-2"> <span class="header-section-number">5.1.2</span> Solution</a></li>
+  </ul></li>
+  <li><a href="#test-hypotheses-on-population-variances" id="toc-test-hypotheses-on-population-variances" class="nav-link" data-scroll-target="#test-hypotheses-on-population-variances"> <span class="header-section-number">5.2</span> Test hypotheses on population variances</a>
+  <ul class="collapse">
+  <li><a href="#example-3" id="toc-example-3" class="nav-link" data-scroll-target="#example-3"> <span class="header-section-number">5.2.1</span> Example</a></li>
+  <li><a href="#solution-3" id="toc-solution-3" class="nav-link" data-scroll-target="#solution-3"> <span class="header-section-number">5.2.2</span> Solution</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"> <span class="header-section-number">6</span> References</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Comparing frequencies: Chi-Square tests</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<p><em>Last modified on 2022-09-12</em></p>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<p>Packages used in this tutorial:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="introduction" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
+<p>One important assumption made when using this test is that none of the <strong>expected</strong> frequencies be less than <strong>5</strong>. If this assumption does not hold, then <strong>Yate’s correction</strong> should be applied using the <code>correct=TRUE</code> option in the <code>chissq.test()</code> function. Note that this setting is the default, i.e.&nbsp;the Yates correction gets applied unless <code>correct</code> is set to <code>FALSE</code>.</p>
+<p>Also, if your contingency table has just two rows and two columns, then <strong>Fisher’s exact test</strong> (<code>fisher.test</code>) may be more appropriate.</p>
+</section>
+<section id="single-factor-classification" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Single factor classification</h1>
+<p>Pearson’s <strong>Chi-square test (<span class="math inline">\(\pmb\chi^2\)</span>)</strong> tells us if the observed frequencies from a sample are consistent with a defined expected frequencies.</p>
+<section id="example" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="example"><span class="header-section-number">2.1</span> Example</h2>
+<section id="problem" class="level3" data-number="2.1.1">
+<h3 data-number="2.1.1" class="anchored" data-anchor-id="problem"><span class="header-section-number">2.1.1</span> Problem</h3>
+<p>If a survey of <strong>200</strong> individuals is conducted where the respondents are asked to select one of five answers, one might want to determine if all answers have an equal chance of being chosen, in other words, does each answer get selected about one fifth of the time (one out of five possible answers). So out of 200 respondents, we would expect to see each answer selected about <strong>40</strong> times given our null hypothesis that each answer had an equal chance of being selected. The observed and expected values can be summarized in a <strong>frequency table</strong>:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th></th>
+<th style="text-align: center;">Observed frequency</th>
+<th style="text-align: right;">Expected frequency</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Answer 1</td>
+<td style="text-align: center;">36</td>
+<td style="text-align: right;">40</td>
+</tr>
+<tr class="even">
+<td>Answer 2</td>
+<td style="text-align: center;">44</td>
+<td style="text-align: right;">40</td>
+</tr>
+<tr class="odd">
+<td>Answer 3</td>
+<td style="text-align: center;">38</td>
+<td style="text-align: right;">40</td>
+</tr>
+<tr class="even">
+<td>Answer 4</td>
+<td style="text-align: center;">37</td>
+<td style="text-align: right;">40</td>
+</tr>
+<tr class="odd">
+<td>Answer 5</td>
+<td style="text-align: center;">45</td>
+<td style="text-align: right;">40</td>
+</tr>
+<tr class="even">
+<td></td>
+<td style="text-align: center;">——————–</td>
+<td style="text-align: right;">——————-</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td style="text-align: center;">200</td>
+<td style="text-align: right;">200</td>
+</tr>
+</tbody>
+</table>
+<p>Note that the totals in both the observed and expected columns should equal 200 (the number of respondents in this sample).</p>
+</section>
+<section id="solution" class="level3" data-number="2.1.2">
+<h3 data-number="2.1.2" class="anchored" data-anchor-id="solution"><span class="header-section-number">2.1.2</span> Solution</h3>
+<p>The <span class="math inline">\(\pmb\chi^2\)</span><strong>-statistic</strong> is the sum of the squared difference between observed and expected counts divided by the expected frequency, or,</p>
+<p><span class="math display">\[
+\chi^2 = \sum{\frac{(observed frequency - expected frequency)^2}{expected frequency}}
+\]</span></p>
+<p>Computing <span class="math inline">\(\chi^2\)</span> for our data we get:</p>
+<p><span class="math display">\[
+\chi^2 = \frac{(36-40)^2}{40} + \frac{(44-40)^2}{40} + \frac{(38-40)^2}{40} + \frac{(37-40)^2}{40} + \frac{(45-40)^2}{40} = 1.75
+\]</span></p>
+<p>Next, we need to see where our <span class="math inline">\(\chi^2\)</span> value lies on a <span class="math inline">\(\pmb\chi^2\)</span><strong>-curve</strong>. The shape of the <span class="math inline">\(\chi^2\)</span> curve is defined by the <strong>degrees of freedom</strong>, <span class="math inline">\(df\)</span> (this is analogous to the <em>Student</em> curve). <span class="math inline">\(df\)</span> is computed from the number of possible outcomes minus one or <span class="math inline">\(df = 5 -1 = 4\)</span> for our working example. The shape of the <span class="math inline">\(\chi^2\)</span> curve for 5 <span class="math inline">\(df\)</span> ’s and the placement of our <span class="math inline">\(\chi^2\)</span> statistic on that curve are shown below:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="ChiSquare_test_files/figure-html/unnamed-chunk-2-1.png" width="672"></p>
+</div>
+</div>
+<p>The area highlighted in light red to the right of the <span class="math inline">\(\chi^2\)</span> statistic shows the probability of a <span class="math inline">\(\chi^2\)</span> value more extreme than the one observed. In other words, if the expected outcome was true (i.e.&nbsp;all answers having equal probability of being selected) the probability of coming up with a <span class="math inline">\(\chi^2\)</span> more extreme than ours is 78%. Therefore we have a difficult time rejecting the null hypothesis and conclude that our observed frequencies are consistent with our null hypothesis and that any variability can be explained by chance alone.</p>
+<p>The <span class="math inline">\(\chi^2\)</span> can be easily implemented in <code>R</code> using the <code>chisq.test()</code> function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">36</span>, <span class="dv">44</span>, <span class="dv">38</span>, <span class="dv">37</span>, <span class="dv">45</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>exp <span class="ot">&lt;-</span> <span class="fu">c</span>(.<span class="dv">20</span>, .<span class="dv">20</span>, .<span class="dv">20</span>, .<span class="dv">20</span>, .<span class="dv">20</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">chisq.test</span>(obs, <span class="at">p=</span>exp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The output of the <code>chisq.test</code> function looks like this:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Chi-squared test for given probabilities
+
+data:  obs
+X-squared = 1.75, df = 4, p-value = 0.7816</code></pre>
+</div>
+</div>
+<p>The expected frequency values stored in the variable <code>exp</code> must be presented as fractions and <em>not</em> counts. Since all expected frequencies are equal, they all take on the fraction value of <span class="math inline">\(40/200 = 0.20\)</span>. The sum of the expected fraction must be 1 or <code>R</code> will return an error message. This ends our example.</p>
+</section>
+</section>
+<section id="the-chi2-curve-explained" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="the-chi2-curve-explained"><span class="header-section-number">2.2</span> The <span class="math inline">\(\chi^2\)</span> curve explained</h2>
+<p>To understand what the <span class="math inline">\(\chi^2\)</span> curve represents, we will run a simulation where one of the 5 answers is selected at random (assuming that all answers have equal probability of being picked as defined by <span class="math inline">\(H_o\)</span>). Think of the simulation as consisting of 999 investigators who each survey 200 individuals at random. Also assume that we know that each answer has equal probability of being picked; this implies that only chance variability will generate counts of answers slightly off from what would be expected.</p>
+<p>For each of the the 999 simulated samples, we compute <span class="math inline">\(\chi^2\)</span> as was done in the previous example. We end up with 999 <span class="math inline">\(\chi^2\)</span> values which we then plot using a histogram.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>n     <span class="ot">&lt;-</span> <span class="dv">999</span>                    <span class="co"># Number of times to collect a sample</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>size  <span class="ot">&lt;-</span> <span class="dv">200</span>                    <span class="co"># Sample size (i.e. number of respondents)</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>exp   <span class="ot">&lt;-</span> <span class="fu">c</span>(.<span class="dv">2</span>, .<span class="dv">2</span>, .<span class="dv">2</span>, .<span class="dv">2</span>, .<span class="dv">2</span>)  <span class="co"># Expected fractions</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>chi.t <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">length =</span> n)     <span class="co"># An empty vector that will store the Chi-sq values</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  survey.results <span class="ot">&lt;-</span> <span class="fu">sample</span>( <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>), <span class="at">size =</span> size, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  survey.sum     <span class="ot">&lt;-</span> <span class="fu">table</span>(survey.results)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  chi.t[i]       <span class="ot">&lt;-</span> <span class="fu">chisq.test</span>(survey.sum, <span class="at">p=</span>exp)<span class="sc">$</span>statistic</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(chi.t, <span class="at">breaks=</span><span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This simulation consists of a <code>for</code> loop (think of each iteration of the loop as representing the survey results from one of the 999 investigators). For each iteration, one answer (out of five, each identified as <code>c(1,2,3,4,5)</code> in the code) is selected at random 200 times (this is what the <code>sample()</code> function does). The results are tallied in the variable <code>survey.results</code>. The <code>table()</code> function tallies the frequency of each selected answer. The <code>chisq.test()</code> function computes the <span class="math inline">\(\chi^2\)</span> test and the <code>$statistic</code> parameter extracts the <span class="math inline">\(\chi^2\)</span> statistic from the <code>chisq.test()</code> result. This statistic is tallied, resulting in 999 <span class="math inline">\(\chi^2\)</span> values, which are then past to the <code>hist()</code> plotting function. The resulting histogram should look something like this:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="ChiSquare_test_files/figure-html/unnamed-chunk-6-1.png" width="672"></p>
+</div>
+</div>
+<p>The shape of the histogram is very close to the one defined by the <span class="math inline">\(\chi^2\)</span> curve for 4 <span class="math inline">\(df\)</span> (displayed as a red curve below).</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="ChiSquare_test_files/figure-html/unnamed-chunk-7-1.png" width="672"></p>
+</div>
+</div>
+</section>
+<section id="can-the-chi2-value-be-too-good" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="can-the-chi2-value-be-too-good"><span class="header-section-number">2.3</span> Can the <span class="math inline">\(\chi^2\)</span> value be ‘too’ good?</h2>
+<p>You’ll note that the <span class="math inline">\(\chi^2\)</span> curve is positively skewed (and strongly so when the <span class="math inline">\(df\)</span> is small), hence the probability of computing a very small <span class="math inline">\(\chi^2\)</span> value diminishes precipitously when the test statistic approaches 0. The following graph shows the bottom and top 10% probability regions.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="ChiSquare_test_files/figure-html/unnamed-chunk-8-1.png" width="672"></p>
+</div>
+</div>
+<p><a href="http://en.wikipedia.org/wiki/Gregor_Mendel">Gregor Mendel</a> is credited with having set the ground work for modern day genetics by explaining heredity using garden peas in the mid 1800’s. He bred a pure yellow strain of peas and a pure green strain of peas. He then cross-pollinated the two colored peas to generate a 1st generation of hybrid peas. The result was a batch of <em>all</em> yellow peas (i.e.&nbsp;no <em>visible</em> trace of the green parent pea). Mendel then cross-pollinated the 1st generation peas to produce a second generation of peas. This second batch produced both green and yellow peas (about 25% green and 75% yellow).</p>
+<p>In addition to color, Mendel also studied the physical characteristics of the peas, noting that peas were either smooth or wrinkled. Following the same experimental setup as that for the colored peas, Mendel noted that the second generation of peas produced roughly 25% wrinkled peas and 75% smooth peas.</p>
+<p>One of his trials which mixed pea color and texture produced the following outcome (Freedman <em>et al.</em>, p 470):</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Type of pea</th>
+<th style="text-align: right;">Observed number</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Smooth yellow</td>
+<td style="text-align: right;">315</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Wrinkled yellow</td>
+<td style="text-align: right;">101</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Smooth green</td>
+<td style="text-align: right;">108</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Wrinkled green</td>
+<td style="text-align: right;">32</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: right;">—————</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: right;">sum = 556</td>
+</tr>
+</tbody>
+</table>
+<p>Given the theory (based on the recessive/dominant nature of genes) that 75% of the peas would be yellow and that 75% of the peas would be smooth, we can come up with expected outcomes based on the following probability table (<span class="math inline">\(y\)</span> = yellow, <span class="math inline">\(g\)</span> = green, <span class="math inline">\(s\)</span> = smooth and <span class="math inline">\(w\)</span> = wrinkled):</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Color</th>
+<th style="text-align: center;">Texture</th>
+<th style="text-align: center;">Probability</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">y</td>
+<td style="text-align: center;">s</td>
+<td style="text-align: center;">0.75 * 0.75 = 0.5625</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">y</td>
+<td style="text-align: center;">w</td>
+<td style="text-align: center;">0.75 * 0.25 = 0.1875</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">g</td>
+<td style="text-align: center;">s</td>
+<td style="text-align: center;">0.25 * 0.75 = 0.1875</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">g</td>
+<td style="text-align: center;">w</td>
+<td style="text-align: center;">0.25 * 0.25 = 0.0625</td>
+</tr>
+</tbody>
+</table>
+<p>So, out of 556 peas, we would expect <span class="math inline">\(0.5625 \times 556 = 313\)</span> peas having a <span class="math inline">\(y\)</span>/<span class="math inline">\(s\)</span> combination. Likewise, we would expect <span class="math inline">\(0.1875 \times 556 = 104\)</span> peas having a <span class="math inline">\(y\)</span>/<span class="math inline">\(w\)</span> combination. We can compute the other two probabilities and create the following frequency table:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Type of pea</th>
+<th style="text-align: center;">Observed number</th>
+<th style="text-align: right;">Expected</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Smooth yellow</td>
+<td style="text-align: center;">315</td>
+<td style="text-align: right;">313</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Wrinkled yellow</td>
+<td style="text-align: center;">101</td>
+<td style="text-align: right;">104</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Smooth green</td>
+<td style="text-align: center;">108</td>
+<td style="text-align: right;">104</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Wrinkled green</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: right;">35</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: center;">—————–</td>
+<td style="text-align: right;">——–</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: center;">556</td>
+<td style="text-align: right;">556</td>
+</tr>
+</tbody>
+</table>
+<p>In the early 1900’s, the statistician <a href="http://en.wikipedia.org/wiki/R._A._Fisher">Ronald Fisher</a> was skeptical of Mendel’s experimental results. He used a <span class="math inline">\(\chi^2\)</span> test to prove the point. The <span class="math inline">\(\chi^2\)</span>-statistic for the color/texture experiment can be computed in <code>R</code> as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">315</span>, <span class="dv">101</span>, <span class="dv">108</span>, <span class="dv">32</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>exp <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.5625</span>, <span class="fl">0.1875</span>, <span class="fl">0.1875</span>, <span class="fl">0.0625</span>) </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">chisq.test</span>(obs, <span class="at">p =</span> exp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Chi-squared test for given probabilities
+
+data:  obs
+X-squared = 0.47002, df = 3, p-value = 0.9254</code></pre>
+</div>
+</div>
+<p>By default, <code>chisq.test</code>’s probability is given for the area to the <em>right</em> of the test statistic. Fisher was concerned with how <em>well</em> the observed data agreed with the expected values suggesting bias in the experimental setup. So we want to know how likely we are to calculate a <span class="math inline">\(\chi^2\)</span> smaller than what would be expected by chance variation alone. The area of interest is highlighted in red in the following figure:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="ChiSquare_test_files/figure-html/unnamed-chunk-10-1.png" width="672"></p>
+</div>
+</div>
+<p>There is a 7.5% chance (<span class="math inline">\(1 - 0.9254 = 0.075\)</span>) that an observed <span class="math inline">\(\chi^2\)</span> would be smaller (i.e.&nbsp;one that is in even better agreement with the expect value) than the one observed if chance variability alone were to explain the difference. To Fisher, this small probability suggested that Mendel’s experimental setup may have been somewhat biased (but it must be noted the Mendel’s theory is sound and has been proven many times in separate experiments, but not with <span class="math inline">\(\chi^2\)</span> probabilities as good as Mendel’s).</p>
+</section>
+</section>
+<section id="two-factor-classification" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Two factor classification</h1>
+<p>In the previous section, we looked at single factor multinomial distribution. In this section we will focus on two-factor analysis.</p>
+<p>Note that if there are only two categories in both factors (i.e.&nbsp;a 2x2 contingency matrix), you should use the <code>fisher.test()</code> function instead. The workflow should match the one shown here except that the <code>fisher.test</code> function should be called instead of the <code>chisq.test</code> function.</p>
+<section id="example-1" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="example-1"><span class="header-section-number">3.1</span> Example</h2>
+<section id="problem-1" class="level3" data-number="3.1.1">
+<h3 data-number="3.1.1" class="anchored" data-anchor-id="problem-1"><span class="header-section-number">3.1.1</span> Problem</h3>
+<p>Were passengers/crew members of different class status (i.e.&nbsp;1st, 2nd, 3rd or crew) equally likely to perish in the Titanic?</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th></th>
+<th style="text-align: center;">Perished</th>
+<th style="text-align: center;">Survived</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1st</td>
+<td style="text-align: center;">122</td>
+<td style="text-align: center;">203</td>
+</tr>
+<tr class="even">
+<td>2nd</td>
+<td style="text-align: center;">167</td>
+<td style="text-align: center;">118</td>
+</tr>
+<tr class="odd">
+<td>3rd</td>
+<td style="text-align: center;">528</td>
+<td style="text-align: center;">178</td>
+</tr>
+<tr class="even">
+<td>crew</td>
+<td style="text-align: center;">673</td>
+<td style="text-align: center;">212</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="solution-1" class="level3" data-number="3.1.2">
+<h3 data-number="3.1.2" class="anchored" data-anchor-id="solution-1"><span class="header-section-number">3.1.2</span> Solution</h3>
+<p>This problem is a test of independence where we are testing whether the observed categorical counts are consistent with what we would expect if <span class="math inline">\(H_o\)</span> (i.e.&nbsp;all classes of passengers/crew members had equal chance of perishing) was true.</p>
+<p>The first step is to create what is a called a <strong>contingency table</strong> where we sum all rows and columns</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th></th>
+<th style="text-align: center;">Perished</th>
+<th style="text-align: center;">Survived</th>
+<th style="text-align: center;">Row sums</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1st</td>
+<td style="text-align: center;">122</td>
+<td style="text-align: center;">203</td>
+<td style="text-align: center;">325</td>
+</tr>
+<tr class="even">
+<td>2nd</td>
+<td style="text-align: center;">167</td>
+<td style="text-align: center;">118</td>
+<td style="text-align: center;">285</td>
+</tr>
+<tr class="odd">
+<td>3rd</td>
+<td style="text-align: center;">528</td>
+<td style="text-align: center;">178</td>
+<td style="text-align: center;">706</td>
+</tr>
+<tr class="even">
+<td>crew</td>
+<td style="text-align: center;">673</td>
+<td style="text-align: center;">212</td>
+<td style="text-align: center;">885</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td style="text-align: center;">———-</td>
+<td style="text-align: center;">———-</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td></td>
+<td style="text-align: center;">1490</td>
+<td style="text-align: center;">711</td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p>Summing either the row sums or column sums gives us a total number of souls on the Titanic of <strong>2201</strong>. This will be the value <span class="math inline">\(n\)</span> in the next steps.</p>
+<p>Next, we will compute the expected counts assuming that all classes of passenger and crew members had an equal probability of perishing. The formula to compute the expectation is simple. It’s the product of the row sum and column sum divided by the total number of souls. For example, for <span class="math inline">\(row\; 1\)</span>/<span class="math inline">\(col\; 1\)</span> (i.e.&nbsp;the total number of 1st class passengers that perished), the expected count assuming <span class="math inline">\(H_o\)</span> is at play here is,</p>
+<p><span class="math display">\[
+E(n_{11}) = \frac{r_1c_1}{n} = \frac{(325)(1490)}{2201} = 220
+\]</span></p>
+<p>where <span class="math inline">\(N_{11}\)</span> refers to cell <span class="math inline">\(row\; 1\)</span>/<span class="math inline">\(col\; 1\)</span>. Likewise, we can compute the expected value for <span class="math inline">\(row\; 1\)</span>/<span class="math inline">\(col\; 2\)</span> as follows,</p>
+<p><span class="math display">\[
+E(n_{12}) = \frac{r_1c_2}{n} = \frac{(325)(711)}{2201} = 105
+\]</span></p>
+<p>The above procedure can be repeated for the remaining six cells giving the <strong>expected</strong> table:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th></th>
+<th style="text-align: center;">Perished</th>
+<th style="text-align: center;">Survived</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1st</td>
+<td style="text-align: center;">220</td>
+<td style="text-align: center;">105</td>
+</tr>
+<tr class="even">
+<td>2nd</td>
+<td style="text-align: center;">193</td>
+<td style="text-align: center;">92</td>
+</tr>
+<tr class="odd">
+<td>3rd</td>
+<td style="text-align: center;">478</td>
+<td style="text-align: center;">228</td>
+</tr>
+<tr class="even">
+<td>crew</td>
+<td style="text-align: center;">599</td>
+<td style="text-align: center;">286</td>
+</tr>
+</tbody>
+</table>
+<p>Note that if you round the numbers (this is not required, you can work with decimal values as well), it is good practice to check that the <strong>total</strong> count adds up to <span class="math inline">\(n\)</span> (i.e.&nbsp;2201 in our working example).</p>
+<p>The next step is to compute the <span class="math inline">\(\chi^2\)</span> statistic between the observed and expected values.</p>
+<p><span class="math display">\[
+\chi^2 = \frac{(122 - 220)^2}{220} + \frac{(203-105)^2}{105} + ... + \frac{(212-286)^2}{286} = 190.4
+\]</span></p>
+<p>The shape of the <span class="math inline">\(\chi^2\)</span> curve is determined by the degrees of freedom, <span class="math inline">\(df\)</span>. For a two-factor analysis, <span class="math inline">\(df\)</span> is the product of the number of rows minus one and the number of columns minus one or,</p>
+<p><span class="math display">\[
+df = (rows - 1)(columns - 1)
+\]</span></p>
+<p>For our working example, the <span class="math inline">\(df\)</span> is <span class="math inline">\((4-1)(2-1)=3\)</span>. Our observed <span class="math inline">\(\chi^2\)</span> value falls to the very far right side of the <span class="math inline">\(\chi^2\)</span> curve. It’s clear that the probability of coming up with a <span class="math inline">\(\chi^2\)</span> value as extreme as ours is nearly 0, in other words it’s very likely that the observed discrepancy in survival rates between classes and crew members is <em>not</em> due to chance variability.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="ChiSquare_test_files/figure-html/unnamed-chunk-11-1.png" width="672"></p>
+</div>
+</div>
+<p>The <span class="math inline">\(\chi^2\)</span> value (and associated <span class="math inline">\(P\)</span> value) can be easily computed in <code>R</code> as demonstrated in the following blocks of code. First, we create the data frame that will store the counts.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the data frame</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Perished  =</span> <span class="fu">c</span>(<span class="dv">122</span>,<span class="dv">167</span>,<span class="dv">528</span>,<span class="dv">673</span>), </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">Survived  =</span> <span class="fu">c</span>(<span class="dv">203</span>,<span class="dv">118</span>,<span class="dv">178</span>,<span class="dv">212</span>), </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">row.names =</span> <span class="fu">c</span>(<span class="st">"1st"</span>, <span class="st">"2nd"</span>, <span class="st">"3rd"</span>, <span class="st">"crew"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The data frame can be viewed by calling the data frame <code>dat</code>,</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>dat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     Perished Survived
+1st       122      203
+2nd       167      118
+3rd       528      178
+crew      673      212</code></pre>
+</div>
+</div>
+<p>The <span class="math inline">\(\chi^2\)</span> test can then be computed as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chisq.test</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's Chi-squared test
+
+data:  dat
+X-squared = 190.4, df = 3, p-value &lt; 0.00000000000000022</code></pre>
+</div>
+</div>
+<p>If you want to see the expected count table along with additional contingency table data, you can store the output of the <code>chisq.test()</code> to a variable, then extract additional information from the function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>chi.t <span class="ot">&lt;-</span> <span class="fu">chisq.test</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The expected values can be extract from the variable <code>chi.t</code> as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>chi.t<span class="sc">$</span>expected</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     Perished  Survived
+1st  220.0136 104.98637
+2nd  192.9350  92.06497
+3rd  477.9373 228.06270
+crew 599.1140 285.88596</code></pre>
+</div>
+</div>
+<p>We can also visualize the frequencies between expected and observed using the <code>mosaicplot()</code> function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>OP <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="st">"mar"</span><span class="ot">=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">1</span>))</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mosaicplot</span>(chi.t<span class="sc">$</span>observed, <span class="at">cex.axis =</span><span class="dv">1</span> , <span class="at">main =</span> <span class="st">"Observed counts"</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mosaicplot</span>(chi.t<span class="sc">$</span>expected, <span class="at">cex.axis =</span><span class="dv">1</span> , <span class="at">main =</span> <span class="st">"Expected counts</span><span class="sc">\n</span><span class="st">(if class had no influence)"</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(OP)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="ChiSquare_test_files/figure-html/unnamed-chunk-17-1.png" width="768"></p>
+</div>
+</div>
+<p>The polygons are proportional to the count values. Note how many more 1st class passengers survived the sinking of the Titanic then what would have been expected had class not played a role in who perished and who survived.</p>
+</section>
+</section>
+</section>
+<section id="three-or-more-factor-classification" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Three or more factor classification</h1>
+<p>When data are broken down across three or more factors, a <strong>loglinear</strong> model needs to be implemented.</p>
+<p>A three (or more) factor table is a bit more difficult to tabulate. Such data can be stored as a long format table, or as an n-dimensional table. For example, <code>R</code> has a built in dataset called <code>Titanic</code> that breaks down the survive/perish count across 4 dimensions/factors. The data are stored as a <code>table</code> and can be displayed by simply typing the dataset at the command prompt:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>Titanic</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>, , Age = Child, Survived = No
+
+      Sex
+Class  Male Female
+  1st     0      0
+  2nd     0      0
+  3rd    35     17
+  Crew    0      0
+
+, , Age = Adult, Survived = No
+
+      Sex
+Class  Male Female
+  1st   118      4
+  2nd   154     13
+  3rd   387     89
+  Crew  670      3
+
+, , Age = Child, Survived = Yes
+
+      Sex
+Class  Male Female
+  1st     5      1
+  2nd    11     13
+  3rd    13     14
+  Crew    0      0
+
+, , Age = Adult, Survived = Yes
+
+      Sex
+Class  Male Female
+  1st    57    140
+  2nd    14     80
+  3rd    75     76
+  Crew  192     20</code></pre>
+</div>
+</div>
+<p>You can also use the <code>ftable</code> function to generate a more attractive output:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ftable</span>(Titanic)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   Survived  No Yes
+Class Sex    Age                   
+1st   Male   Child            0   5
+             Adult          118  57
+      Female Child            0   1
+             Adult            4 140
+2nd   Male   Child            0  11
+             Adult          154  14
+      Female Child            0  13
+             Adult           13  80
+3rd   Male   Child           35  13
+             Adult          387  75
+      Female Child           17  14
+             Adult           89  76
+Crew  Male   Child            0   0
+             Adult          670 192
+      Female Child            0   0
+             Adult            3  20</code></pre>
+</div>
+</div>
+<p>The number of dimensions can be extracted from a table using the <code>dim</code> function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(Titanic)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4 2 2 2</code></pre>
+</div>
+</div>
+<p>There are four dimensions, each having for levels: 4, 2, 2 and 2.</p>
+<p>We can extract the names of the dimensions along with the names of each dimension’s factors using the <code>dimnames</code> function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dimnames</span>(Titanic)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$Class
+[1] "1st"  "2nd"  "3rd"  "Crew"
+
+$Sex
+[1] "Male"   "Female"
+
+$Age
+[1] "Child" "Adult"
+
+$Survived
+[1] "No"  "Yes"</code></pre>
+</div>
+</div>
+<p>For example, the first dimension, <code>Class</code>, has four factors: <code>1st</code>, <code>2nd</code>, <code>3rd</code> and <code>Crew</code>.</p>
+<p>Note that you can convert an n-dimensional table to an <code>R</code> data frame as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.data.frame</span>(Titanic)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Class    Sex   Age Survived Freq
+1    1st   Male Child       No    0
+2    2nd   Male Child       No    0
+3    3rd   Male Child       No   35
+4   Crew   Male Child       No    0
+5    1st Female Child       No    0
+6    2nd Female Child       No    0
+7    3rd Female Child       No   17
+8   Crew Female Child       No    0
+9    1st   Male Adult       No  118
+10   2nd   Male Adult       No  154
+11   3rd   Male Adult       No  387
+12  Crew   Male Adult       No  670
+13   1st Female Adult       No    4
+14   2nd Female Adult       No   13
+15   3rd Female Adult       No   89
+16  Crew Female Adult       No    3
+17   1st   Male Child      Yes    5
+18   2nd   Male Child      Yes   11
+19   3rd   Male Child      Yes   13
+20  Crew   Male Child      Yes    0
+21   1st Female Child      Yes    1
+22   2nd Female Child      Yes   13
+23   3rd Female Child      Yes   14
+24  Crew Female Child      Yes    0
+25   1st   Male Adult      Yes   57
+26   2nd   Male Adult      Yes   14
+27   3rd   Male Adult      Yes   75
+28  Crew   Male Adult      Yes  192
+29   1st Female Adult      Yes  140
+30   2nd Female Adult      Yes   80
+31   3rd Female Adult      Yes   76
+32  Crew Female Adult      Yes   20</code></pre>
+</div>
+</div>
+<p>Conversely, if your data is in a dataframe format, you can convert to an n-dimensional table using the <code>xtabs()</code> function (e.g.&nbsp;<code>xtabs( Freq ~ Class+Survived+Age+Sex , as.data.frame(Titanic))</code>).</p>
+<p>It turns out that Pearson’s <span class="math inline">\(\chi^2\)</span> test can be expressed as a linear regression model where each dimension level is coded as a dummy variable. However, since we are using categorical data, we need to apply a log transformation to the values, hence the use of a <strong>loglinear model</strong>.</p>
+<p>For example, using the two-category table from the last section, we can express the relationship between variables and counts as follows:</p>
+<p><span class="math display">\[
+ln(count) = b_0 + \color{blue}{b_1Class2 + b_2Class3 + b_3Crew + b_4Survived} + \\
+            \color{red}{b_5Class2 \times Survived + b_6Class3 \times Survived +
+            b_7Crew \times Survived} + ln(error)
+\]</span></p>
+<p>where each variable can take on one of two values: 0 (no) or 1 (yes). The terms highlighted in blue are the main effects and the variables highlighted in red are the interactive terms (these are the terms of interest to us).</p>
+<p>For example, the number of passengers in 1st class who survived the accident is 203. This case can be expressed as:</p>
+<p><span class="math display">\[
+ln(203) = (1) + \color{blue}{b_1(0) + b_2(0) + b_3(0) + b_4(1)} + \\
+            \color{red}{b_5(0) \times (1) + b_6(0) \times (0) +
+            b_7(0) \times (1)} + ln(error)
+\]</span></p>
+<p>Note that there is no <span class="math inline">\(Class1\)</span> variable, this is simply because this variable would be superfluous since <span class="math inline">\(Class2=Class3=Crew=0\)</span> implies that the passenger was in 1st class.</p>
+<p>What we are interested in doing here is to find the most parsimonious loglinear model (i.e.&nbsp;the one with the fewest terms possible) that will faithfully recreate the counts in our table. The aforementioned model is referred to as a <strong>saturated</strong> model in the sense that it has all the terms needed to reproduce our output exactly. Our interest lies in seeing if eliminating the interactive terms produces a model that still does a decent job in predicting the counts. If it does not, then this implies that the different categories have an influence on the observed counts (i.e.&nbsp;there is lack of independence).</p>
+<p>There are several functions in <code>R</code> that can perform this analysis, one of which is the function <code>loglm()</code> from the <code>MASS</code> package.</p>
+<p>We will first create a data matrix from the <code>Titanic</code> dataset:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>Tit1 <span class="ot">&lt;-</span> <span class="fu">apply</span>(Titanic, <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">4</span>), sum)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Remember that the <code>Titanic</code> dataset is a multi-category table. Typing <code>str(Titanic)</code> will list all the attributes associated with that table. The function <code>apply</code> is aggregating the counts of passengers by <em>Class</em> (first attribute in the table <code>Titanic</code>) and by <em>Survived</em> (fourth attribute in the table).</p>
+<p>The content of <code>Tit1</code> is a matrix.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>      Survived
+Class   No Yes
+  1st  122 203
+  2nd  167 118
+  3rd  528 178
+  Crew 673 212</code></pre>
+</div>
+</div>
+<p>We will first create the saturated model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="fu">loglm</span>( <span class="sc">~</span> Class <span class="sc">*</span> Survived, <span class="at">dat=</span>Tit1, <span class="at">fit=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The model is defined by the expression <code>~ Class * Survived</code>. The multiplier <code>*</code> is not a true multiplier in this context. It’s just an <code>R</code> syntax that tells the function <code>loglm</code> that both the main effects <em>and</em> interactive effects are to be included in the model (the alternative is to type out the full expression <code>~ Class + Survived + Class:Survived</code>). You might want to refer to the linear regression section for more information on model syntax.</p>
+<p>Now let’s look at the model output (i.e.&nbsp;the object <code>M</code>).</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+loglm(formula = ~Class * Survived, data = Tit1, fit = TRUE)
+
+Statistics:
+                 X^2 df P(&gt; X^2)
+Likelihood Ratio   0  0        1
+Pearson            0  0        1</code></pre>
+</div>
+</div>
+<p>Note the Pearson <span class="math inline">\(\chi^2\)</span> <span class="math inline">\(P\)</span> value of 1. This indicates that their is no difference between the model output and our observed counts. This is to be expected since we are accounting for <strong>all</strong> parameters in the model.</p>
+<p>Next, we will modify the model to see if the interactive term contributes significantly to the model’s ability to predict the true observed counts. Again, there are several ways this can be done. The simplest is to take the last model <code>M</code> and omit the interactive term <code>Class:Survived</code> using the function <code>update()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>M2 <span class="ot">&lt;-</span> <span class="fu">update</span>( M, <span class="sc">~</span> . <span class="sc">-</span> Class<span class="sc">:</span>Survived)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The syntax <code>~ .</code> simply tells <code>R</code> to use the last model and the syntax <code>- Class:Survived</code> (note the minus sign) tells <code>R</code> to omit this variable from the model. <code>update</code> reruns the model defined by <code>M</code> <em>without</em> the interactive term <code>Class:Survived</code>.</p>
+<p>Let’s look at the <code>M2</code> output:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+loglm(formula = ~Class + Survived, data = Tit1, fit = TRUE)
+
+Statistics:
+                      X^2 df P(&gt; X^2)
+Likelihood Ratio 180.9014  3        0
+Pearson          190.4011  3        0</code></pre>
+</div>
+</div>
+<p>If the output looks familiar (as it should) this is because Pearson <span class="math inline">\(\chi^2\)</span> value of 190.4 and the associated <span class="math inline">\(P\)</span> value of <span class="math inline">\(\approx0\)</span> is exactly what we computed in the last section when we used the <code>chisq.test</code> function. This result tells us that when we remove the interactive categories, the model (<code>M2</code>) output gives predicted passenger counts significantly different from what was observed. To see the predicted values, type the following:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>M2<span class="sc">$</span>fitted</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      Survived
+Class        No       Yes
+  1st  220.0136 104.98637
+  2nd  192.9350  92.06497
+  3rd  477.9373 228.06270
+  Crew 599.1140 285.88596</code></pre>
+</div>
+</div>
+<p>These are the same <em>expected</em> values as those computed in the last section (see variable <code>chi.t$expected</code>). The model <code>M2</code> predicts the counts of passengers assuming that there is no difference between categories. Had the interactive terms <code>Class:Survived</code> not been a factor (i.e.&nbsp;had the observed counts in our table not been biased by any category), we would have had a Pearson <span class="math inline">\(\chi^2\)</span> <span class="math inline">\(P\)</span> value much larger in the <span class="math inline">\(M2\)</span> output.</p>
+<p>Let’s now test for independence on a more complicated table; i.e.&nbsp;one with three categories (where gender is added tot he mix):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>Tit2 <span class="ot">&lt;-</span> <span class="fu">apply</span>(Titanic, <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">4</span>), sum)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can view the table subset using the <code>ftable()</code> function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ftable</span>(Tit2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             Survived  No Yes
+Class Sex                    
+1st   Male            118  62
+      Female            4 141
+2nd   Male            154  25
+      Female           13  93
+3rd   Male            422  88
+      Female          106  90
+Crew  Male            670 192
+      Female            3  20</code></pre>
+</div>
+</div>
+<p>Now lets generate our saturated model to ensure that we can reproduce the observed counts exactly. Don’t forget to add the third term, <code>Sex</code>, to the model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="fu">loglm</span>( <span class="sc">~</span> Class <span class="sc">*</span> Survived <span class="sc">*</span> Sex, <span class="at">dat=</span>Tit2, <span class="at">fit=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>A quick check of the model output should confirm that we have a saturated model.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+loglm(formula = ~Class * Survived * Sex, data = Tit2, fit = TRUE)
+
+Statistics:
+                 X^2 df P(&gt; X^2)
+Likelihood Ratio   0  0        1
+Pearson            0  0        1</code></pre>
+</div>
+</div>
+<p>Because we now have three categories (i.e.&nbsp;<code>Class</code>, <code>Survived</code> and <code>Sex</code>) as opposed to two (i.e.&nbsp;<code>Class</code> and <code>Survived</code>) we now have <strong>three</strong> interaction terms. Two two-way terms, <code>Class:Survived</code> and <code>Class:Sex</code>, and one three-way term, <code>Class:Survived:Sex</code>. In this case, we will first remove the three-way interaction term.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>M2 <span class="ot">&lt;-</span> <span class="fu">update</span>( M, <span class="sc">~</span> . <span class="sc">-</span> Class<span class="sc">:</span>Survived<span class="sc">:</span>Sex)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Checking the model output indicates that without the three-way interaction term we have model that does a very poor job in predicting our observed counts:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+loglm(formula = ~Class + Survived + Sex + Class:Survived + Class:Sex + 
+    Survived:Sex, data = Tit2, fit = TRUE)
+
+Statistics:
+                      X^2 df               P(&gt; X^2)
+Likelihood Ratio 65.17985  3 0.00000000000004596323
+Pearson          60.87114  3 0.00000000000038291592</code></pre>
+</div>
+</div>
+<p>This implies that all three categories have disproportionate influence on the number of passengers who survived or perished in the Titanic accident. At this point we stop the analysis. Had we had a large <span class="math inline">\(P\)</span> value in <span class="math inline">\(M2\)</span>, then we would have continued scaling back the model by removing one of the two-way interaction terms then looking at <em>new</em> model output. You continue this until you find a model with a small <span class="math inline">\(\chi^2\)</span> <span class="math inline">\(P\)</span> value (at which point you can say that the last term removed contributes significantly to the model’s count prediction).</p>
+<p>Before reporting the results, it is a good idea to compare the saturated model with model <code>M1</code> (the model we ended up rejecting) using the <code>anova()</code> function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(M, M2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>LR tests for hierarchical log-linear models
+
+Model 1:
+ ~Class + Survived + Sex + Class:Survived + Class:Sex + Survived:Sex 
+Model 2:
+ ~Class * Survived * Sex 
+
+          Deviance df Delta(Dev) Delta(df) P(&gt; Delta(Dev)
+Model 1   65.17985  3                                    
+Model 2    0.00000  0   65.17985         3              0
+Saturated  0.00000  0    0.00000         0              1</code></pre>
+</div>
+</div>
+<p>The <code>anova()</code> function computes the difference in likelihoods for the two models (look for the <code>Delta(Dev)</code> term in the output which is 65.2 in our working example). The <span class="math inline">\(P\)</span> value associated with this difference is significant (<code>P(&gt;Delta(Dev))</code> = <span class="math inline">\(0\)</span>). We can therefore report this three-way loglinear analysis by stating that <em>the highest order interaction Class<em>Survived</em>Sex was signifcant with a <span class="math inline">\(\chi^2\)</span> of 65.2 and a <span class="math inline">\(P\)</span> value less than 0.001.</em></p>
+</section>
+<section id="inferences-about-population-variance" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Inferences about population variance</h1>
+<p>The <span class="math inline">\(\chi^2\)</span> test can also be used to estimate uncertainty in our estimate of the population <em>variance</em> just as we sometimes want to make inferences about a population mean using confidence intervals. An important assumption that must be met here is that the population follows a normal (Gaussian) curve. If such an assumption cannot be made, alternate (non-parametric) methods should be used.</p>
+<p><span class="math inline">\(\chi^2\)</span> is computed a bit differently,</p>
+<p><span class="math display">\[
+\chi^2 = \frac{(n-1)s^2}{\sigma^2}
+\]</span></p>
+<p>where <span class="math inline">\(n-1\)</span> is the degrees of freedom, <span class="math inline">\(s^2\)</span> is the sample’s variance (or the square of the standard deviation,<span class="math inline">\(s\)</span>) and <span class="math inline">\(\sigma^2\)</span> is the population variance.</p>
+<section id="computing-confidence-intervals-for-variances" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="computing-confidence-intervals-for-variances"><span class="header-section-number">5.1</span> Computing confidence intervals for variances</h2>
+<section id="example-2" class="level3" data-number="5.1.1">
+<h3 data-number="5.1.1" class="anchored" data-anchor-id="example-2"><span class="header-section-number">5.1.1</span> Example</h3>
+<p>If a sample of size <strong>100</strong> has a standard deviation, <span class="math inline">\(s\)</span>, of <strong>10.95</strong>. What is the standard deviation’s confidence interval for an <span class="math inline">\(\alpha\)</span> of <strong>0.05</strong>?</p>
+</section>
+<section id="solution-2" class="level3" data-number="5.1.2">
+<h3 data-number="5.1.2" class="anchored" data-anchor-id="solution-2"><span class="header-section-number">5.1.2</span> Solution</h3>
+<p>To compute the <span class="math inline">\(\chi^2\)</span>-statistics that will define the confidence interval, <span class="math inline">\(CI\)</span>, we need to identify the probabilities (<span class="math inline">\(P\)</span>-values) that define the ‘rejection’ regions of the <span class="math inline">\(\chi^2\)</span> curve. Given that we can compute the degrees of freedom (100 -1 = 99) and that we are given an <span class="math inline">\(\alpha\)</span> value of 0.05, we can draw the <span class="math inline">\(\chi^2\)</span> curve and identify the ‘rejection’ regions. This problem can be treated as a two-tailed test with a lower <span class="math inline">\(P\)</span> value of <span class="math inline">\(0.05/2=0.025\)</span> and an upper <span class="math inline">\(P\)</span> value of <span class="math inline">\(1 - 0.05/2=0.975\)</span>, however, unlike a hypothesis test where we seek <em>one</em> <span class="math inline">\(\chi^2\)</span> value, we are looking for <em>two</em> <span class="math inline">\(\chi^2\)</span> values.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="ChiSquare_test_files/figure-html/unnamed-chunk-37-1.png" width="672"></p>
+</div>
+</div>
+<p>The two <span class="math inline">\(\chi^2\)</span> values that define the interval can now be computed using the <code>qchisq()</code> function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qchisq</span>(<span class="at">p =</span> <span class="fl">0.025</span>, <span class="at">df =</span> <span class="dv">99</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 73.36108</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qchisq</span>(<span class="at">p =</span> <span class="fl">0.975</span>, <span class="at">df =</span> <span class="dv">99</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 128.422</code></pre>
+</div>
+</div>
+<p>Now that we have our <span class="math inline">\(\chi^2\)</span> values, we can find the <span class="math inline">\(\sigma^2\)</span> values (and by extension the standard deviation <span class="math inline">\(\sigma\)</span>) that define the <span class="math inline">\(CI\)</span>. We simply solve the <span class="math inline">\(\chi^2\)</span> equation for <span class="math inline">\(\sigma^2\)</span>:</p>
+<p><span class="math display">\[
+\sigma^2 = \frac{(n-1)s^2}{\chi^2}
+\]</span></p>
+<p>The confidence interval <span class="math inline">\(CI\)</span> for the population <em>variance</em> is thus:</p>
+<p><span class="math display">\[
+\frac{(n-1)s^2}{\chi_{0.925}^2} &lt; \sigma^2 &lt; \frac{(n-1)s^2}{\chi_{0.025}^2}
+\]</span></p>
+<p>or</p>
+<p><span class="math display">\[
+\frac{(99)10.95^2}{128.4} &lt; \sigma^2 &lt;  \frac{(99)10.95^2}{73.36}
+\]</span></p>
+<p>giving us</p>
+<p><span class="math display">\[
+92.4 &lt; \sigma^2 &lt;  161.8
+\]</span></p>
+<p>and the confidence interval for the population <em>standard deviation</em>, <span class="math inline">\(\sigma\)</span> is:</p>
+<p><span class="math display">\[
+\sqrt{92.4} &lt; \sigma &lt; \sqrt{161.8}
+\]</span></p>
+<p>or</p>
+<p><span class="math display">\[
+9.6 &lt; \sigma &lt;  12.72
+\]</span></p>
+</section>
+</section>
+<section id="test-hypotheses-on-population-variances" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="test-hypotheses-on-population-variances"><span class="header-section-number">5.2</span> Test hypotheses on population variances</h2>
+<section id="example-3" class="level3" data-number="5.2.1">
+<h3 data-number="5.2.1" class="anchored" data-anchor-id="example-3"><span class="header-section-number">5.2.1</span> Example</h3>
+<p>A machine shop is manufacturing a part whose width must be 19”. The customer requires that the width have a standard deviation no greater than 2.0 <span class="math inline">\(\mu m\)</span> with a confidence of 95%. <strong>15</strong> parts are sampled at random and their widths are measured. The sample standard deviation, <span class="math inline">\(s\)</span>, is <strong>1.7</strong> <span class="math inline">\(\mu m\)</span>. Is the standard deviation for all the parts, <span class="math inline">\(\sigma\)</span>, less than <strong>2.0</strong>? (i.e.&nbsp;given that the sample’s <span class="math inline">\(s\)</span> is susceptible to natural variability about its true value, can we be confident that the true population <span class="math inline">\(\sigma\)</span> is less than 2.0)</p>
+</section>
+<section id="solution-3" class="level3" data-number="5.2.2">
+<h3 data-number="5.2.2" class="anchored" data-anchor-id="solution-3"><span class="header-section-number">5.2.2</span> Solution</h3>
+<p>The question asks that we test the null hypothesis, <span class="math inline">\(H_o\)</span>, that the standard deviation from the population, <span class="math inline">\(\sigma_o\)</span>, is less than <span class="math inline">\(2.0\)</span>. The sample standard deviation, <span class="math inline">\(s\)</span>, is 1.7. We need to test whether or not the difference between <span class="math inline">\(s\)</span> and <span class="math inline">\(\sigma_o\)</span> is do to chance variability or if the difference is real. Since we will be using the <span class="math inline">\(\chi^2\)</span> test, we will need to work with variances and not standard deviations, so <span class="math inline">\(H_o\)</span> must be stated in terms of <span class="math inline">\(\sigma_o^2\)</span> and not <span class="math inline">\(\sigma_o\)</span>. Our test statistic is therefore computed as follows:</p>
+<p><span class="math display">\[
+\chi^2 = \frac{(n-1)s^2}{\sigma_o^2} = \frac{(15-1)1.7^2}{2.0^2} = 10.1
+\]</span></p>
+<p>The probability of getting a <span class="math inline">\(\chi^2\)</span> of 10.1 is 0.246 (or 24.6%). So if chance variability alone were to explain the difference between our observed <span class="math inline">\(\chi^2\)</span> value and the hypothesized <span class="math inline">\(\chi^2\)</span> value associated with <span class="math inline">\(\sigma_o^2\)</span>, there would be a 24.6% chance of getting a <span class="math inline">\(\chi^2\)</span> as extreme as ours. Now the customer wants to be 95% confident that the difference between our observed <span class="math inline">\(s\)</span> and the threshold <span class="math inline">\(\sigma_o\)</span> of 2.0 is real (i.e.&nbsp;that it’s less than 2.0) and not due to chance variability. This is tantamount to a one-sided hypothesis test where</p>
+<p><span class="math display">\[
+H_o: \sigma^2 = 2.0^2
+\]</span></p>
+<p><span class="math display">\[
+H_a: \sigma^2 &lt; 2.0^2
+\]</span></p>
+<p>where <span class="math inline">\(\sigma\)</span> is the standard deviation of the width for all parts being manufactured. The customer wants to be 95% confident that <span class="math inline">\(\sigma\)</span> is less than 2.0. This translates to having an observed <span class="math inline">\(P\)</span> closer to the left tail of the distribution. The exact cutoff is 95% from the right-hand side, or 5% from the left hand side (dashed line in the following graph). Our observed <span class="math inline">\(P\)</span> value of 0.246 is greater than the desired <span class="math inline">\(\alpha\)</span> value of 0.05 meaning that there is a good chance that our observed difference in width variance is due to chance variability (at least at the 5% confidence level). We therefore cannot reject the null and must inform the customer that the machined parts do not meet the desired criteria.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="ChiSquare_test_files/figure-html/unnamed-chunk-39-1.png" width="672"></p>
+</div>
+</div>
+<p>The test can easily be implemented in <code>R</code> as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>chi.t <span class="ot">&lt;-</span> (<span class="dv">15</span> <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="fl">1.7</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="fl">2.0</span><span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pchisq</span>(chi.t, <span class="dv">15-1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.2462718</code></pre>
+</div>
+</div>
+<p>where the <code>pchisq()</code> function returns the probability for our observed <span class="math inline">\(\chi^2\)</span> value with a <span class="math inline">\(df\)</span> of <span class="math inline">\((15-1)\)</span>.</p>
+</section>
+</section>
+</section>
+<section id="references" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> References</h1>
+<p>Freedman D.A., Robert Pisani, Roger Purves. <em>Statistics</em>, 4th edition, 2007.<br>
+McClave J.T., Dietrich F.H., <em>Statistics</em>, 4th edition, 1988.</p>
+<hr>
+<p><strong>Session Info</strong>:</p>
+<div class="cell-output-display">
+<p><strong>R version 4.2.1 (2022-06-23 ucrt)</strong></p>
+<p><strong>Platform:</strong> x86_64-w64-mingw32/x64 (64-bit)</p>
+<p><strong>attached base packages:</strong> <em>stats</em>, <em>graphics</em>, <em>grDevices</em>, <em>utils</em>, <em>datasets</em>, <em>methods</em> and <em>base</em></p>
+<p><strong>other attached packages:</strong> MASS(v.7.3-57)</p>
+<p><strong>loaded via a namespace (and not attached):</strong> <em>Rcpp(v.1.0.9)</em>, <em>digest(v.0.6.29)</em>, <em>Rttf2pt1(v.1.3.8)</em>, <em>jsonlite(v.1.8.0)</em>, <em>magrittr(v.2.0.3)</em>, <em>evaluate(v.0.16)</em>, <em>rlang(v.1.0.4)</em>, <em>stringi(v.1.7.8)</em>, <em>cli(v.3.3.0)</em>, <em>rstudioapi(v.0.14)</em>, <em>extrafontdb(v.1.0)</em>, <em>rmarkdown(v.2.16)</em>, <em>extrafont(v.0.18)</em>, <em>tools(v.4.2.1)</em>, <em>pander(v.0.6.5)</em>, <em>stringr(v.1.4.1)</em>, <em>xfun(v.0.32)</em>, <em>yaml(v.2.3.5)</em>, <em>fastmap(v.1.1.0)</em>, <em>compiler(v.4.2.1)</em>, <em>htmltools(v.0.5.3)</em> and <em>knitr(v.1.40)</em></p>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-right">Creative Commons License, Manny Gimond, 2022</div>
+  </div>
+</footer>
+
+
+
+</body></html>

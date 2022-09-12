@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Basic stats explained (in R) - Logistic regression</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Basic stats explained (in R)</span>
+  </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./CI.html">Confidence intervals</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./z_t_tests.html">Z and T tests</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./F_test.html">F-test: Test for difference in spread</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./ChiSquare_test.html">ChiSquare</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./regression.html">Ordinary least squares Regression</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./ANOVA.html">Analysis of variance (ANOVA)</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./Logistic.html" aria-current="page">Logistic regression</a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"> <span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#the-logistic-regression-model" id="toc-the-logistic-regression-model" class="nav-link" data-scroll-target="#the-logistic-regression-model"> <span class="header-section-number">2</span> The logistic regression model</a></li>
+  <li><a href="#assessing-the-fit-with-a-pseudo-r2" id="toc-assessing-the-fit-with-a-pseudo-r2" class="nav-link" data-scroll-target="#assessing-the-fit-with-a-pseudo-r2"> <span class="header-section-number">3</span> Assessing the fit with a pseudo R<sup>2</sup></a>
+  <ul class="collapse">
+  <li><a href="#alternative-pseudo-r2" id="toc-alternative-pseudo-r2" class="nav-link" data-scroll-target="#alternative-pseudo-r2"> <span class="header-section-number">3.1</span> Alternative pseudo R<sup>2</sup></a></li>
+  </ul></li>
+  <li><a href="#assessing-the-significance" id="toc-assessing-the-significance" class="nav-link" data-scroll-target="#assessing-the-significance"> <span class="header-section-number">4</span> Assessing the significance</a>
+  <ul class="collapse">
+  <li><a href="#model-significance" id="toc-model-significance" class="nav-link" data-scroll-target="#model-significance"> <span class="header-section-number">4.1</span> Model significance</a></li>
+  <li><a href="#parameter-significance" id="toc-parameter-significance" class="nav-link" data-scroll-target="#parameter-significance"> <span class="header-section-number">4.2</span> Parameter significance</a></li>
+  </ul></li>
+  <li><a href="#multi-variable-model" id="toc-multi-variable-model" class="nav-link" data-scroll-target="#multi-variable-model"> <span class="header-section-number">5</span> Multi-variable model</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Logistic regression</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<p><em>Last modified on 2022-09-12</em></p>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<hr>
+<p>Packages used in this tutorial:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2) <span class="co"># Used for plotting data</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)   <span class="co"># Used for data manipulation</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rms)     <span class="co"># Used to extract p-value from logistic model</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Another package used in this tutorial is <code>gdata</code>, but its function will be called directly from the package (e.g.&nbsp;<code>gdata::mapLevels</code>) in section 2.</p>
+<section id="introduction" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
+<p>We’ll be making use of median per-capita income data aggregated at the county level for the state of Maine. We will focus on the relationship between income and whether or not the county is on the coast.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load dataset</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"http://mgimond.github.io/Stats-in-R/Data/Income_and_education.csv"</span>, <span class="at">stringsAsFactors =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Limit the dataset to the two columns of interest</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">select</span>(dat, Coast, <span class="at">Income =</span> Per.capita.income )</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Coast Income
+1     no  23663
+2     no  20659
+3    yes  32277
+4     no  21595
+5    yes  27227
+6     no  25023
+7    yes  26504
+8    yes  28741
+9     no  21735
+10    no  23366
+11    no  20871
+12   yes  28370
+13    no  21105
+14   yes  22706
+15   yes  19527
+16   yes  28321</code></pre>
+</div>
+</div>
+<p>One approach to exploring this dataset is to see <em>how</em> per capita income varies as a function of the county’s coastal status (i.e.&nbsp;whether or not the county borders the ocean or not). A t-test statistic could be used to assess if incomes differ between coastal and non-coastal communities.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="Logistic_files/figure-html/unnamed-chunk-3-1.png" width="240"></p>
+</div>
+</div>
+<p>Or, if one wanted to model that relationship, a <a href="regression.html#4_including_categorical_predictor_variables">categorical regression analysis</a> could be implemented.</p>
+<p>But what if we are interested in flipping the relationship? In other words, what if we wanted to see how the coastal status of a county related to per capita income? More specifically, what if we wanted to see if county level income could predict whether a county is on the coast or not. Visually, this relationship would look like:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="Logistic_files/figure-html/unnamed-chunk-4-1.png" width="240"></p>
+</div>
+</div>
+<p>This does not look like a <em>typical</em> scatter plot one sees in a regression analysis, but the relationship we are exploring is similar in concept–i.e.&nbsp;we are seeking a model of the form <code>Y = a + bX</code>. We could, of course, fit a <code>linear</code> model to the data as follows:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="Logistic_files/figure-html/unnamed-chunk-5-1.png" width="240"></p>
+</div>
+</div>
+<p>The model to the above fit is of the form <em>Coast = -1.6 + 8.7e-05 Income</em>. Now, you may see a couple of issues with this model. For starters, the model implies that there are <code>coast</code> values other than <code>yes</code> and <code>no</code> (e.g.&nbsp;what does the model return for an income value of $24,000?). In fact, the model is treating <code>coast</code> as a numeric value where <code>no</code> is coded as <code>0</code> (no probability) and <code>yes</code> is coded as <code>1</code> (maximum probability). This makes sense when you re-frame the question along the lines of <em>what is the probability that the county is on the coast given the county’s median per capita income?</em></p>
+<p>Another problem with the above model is that the straight line does a very poor job in <em>fitting</em> the data and, if we are treating the <code>coast</code> axis as a probability limited to the range of 0 and 1, the model implies that we can have a probability greater than <code>1</code> (e.g.&nbsp;and income value of $32,000 suggests a probability of about 1.17). A workaround is to fit a different model–one that is bounded by the minimum and maximum probabilities. Such a shape is called a <strong>logistic curve</strong>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="Logistic_files/figure-html/unnamed-chunk-6-1.png" width="240"></p>
+</div>
+</div>
+</section>
+<section id="the-logistic-regression-model" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> The logistic regression model</h1>
+<p>The logistic regression model can be presented in one of two ways:</p>
+<p><span class="math display">\[
+log(\frac{p}{1-p}) = b_0 + b_1 x
+\]</span></p>
+<p>or, solving for <code>p</code> (and noting that the <code>log</code> in the above equation is the <em>natural</em> log) we get,</p>
+<p><span class="math display">\[
+p = \frac{1}{1+e^{-(b_0 + b_1 x)}}
+\]</span></p>
+<p>where <code>p</code> is the probability of <code>y</code> occurring given a value <code>x</code>. In our example this translates to the probability of a county being on the coast given its median per capita income value. In the first equation, fraction <span class="math inline">\(\frac{p}{1-p}\)</span> is referred to as the <strong>odds ratio</strong> which gives us the odds in favor of a <code>yes</code> (or <code>1</code> when represented using binomial values). The log of the <em>odds ratio</em>, <span class="math inline">\(log(\frac{p}{1-p})\)</span>, is referred to as the <strong>logit</strong>. Note that the probability can be computed from the odds ratio as <span class="math inline">\(\frac{odds}{1 + odds}\)</span>. Note too that there is not error term as is the case with a linear regression model.</p>
+<p>Whereas the linear regression parameters are estimated using the least-squares method, the logistic regression model parameters are estimated using the <strong>maximum-likelihood</strong> method. For our dataset, these parameters can be estimated in R using the <code>glm()</code> function as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>M1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Coast <span class="sc">~</span> Income, df, <span class="at">family =</span> binomial)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>M1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:  glm(formula = Coast ~ Income, family = binomial, data = df)
+
+Coefficients:
+(Intercept)       Income  
+-12.2177062    0.0005048  
+
+Degrees of Freedom: 15 Total (i.e. Null);  14 Residual
+Null Deviance:      22.18 
+Residual Deviance: 14.81    AIC: 18.81</code></pre>
+</div>
+</div>
+<p>Thus, our model looks like:</p>
+<p><span class="math display">\[
+P_{coast} = \frac{1}{1+e^{-(-12.2 + 0.0005 Income)}}
+\]</span></p>
+<p>where <span class="math inline">\(P_{coast}\)</span> is the probability of a county being on the coast. To see what the relationship looks like for a range of income values, we can use the <code>predict()</code> function as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a range of income values (we'll cover a wider range then the dataset)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># The range of values must be saved in a data frame and must have the same column</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># name as that given in the original dataset</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>M.df       <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Income =</span> <span class="fu">seq</span>(<span class="dv">10000</span>, <span class="dv">40000</span>, <span class="dv">1000</span>))</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#Predict the Coast values (as a probability) using the above data</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>M.df<span class="sc">$</span>Coast <span class="ot">&lt;-</span> <span class="fu">predict</span>(M1, <span class="at">newdata=</span>M.df, <span class="at">type=</span><span class="st">"response"</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the modeled probability values</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(M.df, <span class="fu">aes</span>(<span class="at">x=</span>Income, <span class="at">y=</span>Coast)) <span class="sc">+</span> <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Logistic_files/figure-html/unnamed-chunk-8-1.png" width="240"></p>
+</div>
+</div>
+<p>Note how the logistic regression model converted the categorical variable <code>Coast</code> into a numeric one by assigning <code>0</code> to <code>no</code> and <code>1</code> to <code>yes</code>.</p>
+<p>A simpler way to plot the model is to make use of <code>ggplot</code>’s <code>stat_smooth</code> function. However, this will require that we convert the <code>Coast</code> factor to numeric values manually since <code>ggplot</code> will not do this for us automatically like <code>glm</code>. One quick way to do this is to wrap the <code>Coast</code> factor with <code>as.numeric</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.numeric</span>(df<span class="sc">$</span>Coast)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 1 1 2 1 2 1 2 2 1 1 1 2 1 2 2 2</code></pre>
+</div>
+</div>
+<p>Instead of seeing <code>yes</code>’s and <code>no</code>’s, we now have numbers (<code>1</code> and <code>2</code>). But which number is mapped to which factor? One easy way to map the levels is to use the <code>mapLevels</code> function from the package <code>gdata</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>gdata<span class="sc">::</span><span class="fu">mapLevels</span>(df<span class="sc">$</span>Coast)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> no yes 
+  1   2 </code></pre>
+</div>
+</div>
+<p>The label <code>no</code> is mapped to <code>1</code> and the label <code>yes</code> is mapped to <code>2</code>.</p>
+<p>However, since we are modeling the probability as a fraction that ranges from <code>0</code> to <code>1</code> we will need to subtract <code>1</code> from the converted values as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.numeric</span>(df<span class="sc">$</span>Coast) <span class="sc">-</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 0 0 1 0 1 0 1 1 0 0 0 1 0 1 1 1</code></pre>
+</div>
+</div>
+<p>So the label <code>no</code> is now mapped to <code>0</code> and the label <code>yes</code> is now mapped to <code>1</code>.</p>
+<p>Next, we’ll plot the values while making sure to map the numeric representation of <code>Coast</code> to the y-axis (and not the x-axis).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x=</span>Income, <span class="at">y=</span><span class="fu">as.numeric</span>(df<span class="sc">$</span>Coast) <span class="sc">-</span> <span class="dv">1</span>)) <span class="sc">+</span> </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha=</span>.<span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_smooth</span>(<span class="at">method=</span><span class="st">"glm"</span>, <span class="at">se=</span><span class="cn">FALSE</span>, <span class="at">method.args =</span> <span class="fu">list</span>(<span class="at">family=</span>binomial)) <span class="sc">+</span> </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Coast"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Logistic_files/figure-html/unnamed-chunk-12-1.png" width="240"></p>
+</div>
+</div>
+<p>The logistic curve does not follow the complete sigmoid shape when limited to the original <code>Income</code> range. To see the full shape, we can increase the x-axis range using <code>xlim</code>, but this will also require that we instruct <code>stat_smooth</code> to extend the logistic curve to the new x-axis range by setting <code>fullrange</code> to <code>TRUE</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x=</span>Income, <span class="at">y=</span><span class="fu">as.numeric</span>(df<span class="sc">$</span>Coast) <span class="sc">-</span> <span class="dv">1</span>)) <span class="sc">+</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha=</span>.<span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_smooth</span>(<span class="at">method=</span><span class="st">"glm"</span>, <span class="at">se=</span><span class="cn">FALSE</span>, <span class="at">fullrange=</span><span class="cn">TRUE</span>, </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">method.args =</span> <span class="fu">list</span>(<span class="at">family=</span>binomial)) <span class="sc">+</span> </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Coast"</span>) <span class="sc">+</span> <span class="fu">xlim</span>(<span class="dv">10000</span>, <span class="dv">40000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Logistic_files/figure-html/unnamed-chunk-13-1.png" width="240"></p>
+</div>
+</div>
+</section>
+<section id="assessing-the-fit-with-a-pseudo-r2" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Assessing the fit with a pseudo R<sup>2</sup></h1>
+<blockquote class="blockquote">
+<p>Note that even though many statistical software will compute a pseudo-R<sup>2</sup> for logistic regression models, this measure of fit is not directly comparable to the R<sup>2</sup> computed for linear regression models. In fact, some statisticians recommend avoiding publishing R<sup>2</sup> since it can be misinterpreted in a logistic model context.</p>
+</blockquote>
+<p>To assess how well a logistic model fits the data, we make use of the <strong>log-likelihood</strong> method (this is similar to the Pearson’s correlation coefficient used with linear regression models). A <em>large</em> log-likelihood statistic indicates a poor fit (similar in idea to a large residual sum of squares statistic for a linear model). What we seek, therefore, is a <em>small</em> log-likelihood statistic. What constitutes a small or large statistic is determined by the log likelihood statistic of a base model (aka <em>null</em> model) where <em>none</em> of the predictive terms are added to he equation, i.e.:</p>
+<p><span class="math display">\[
+p_{null} = \frac{1}{1+e^{-(b_0)}}
+\]</span></p>
+<p>In our working example, the log-likelihood statistic (often labeled as <strong>-2LL</strong> in some statistical packages) for the null model is,</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>M1<span class="sc">$</span>null.deviance</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 22.18071</code></pre>
+</div>
+</div>
+<p>What we want is -2LL for the full model (i.e.&nbsp;the model with the <code>Income</code> predictor variable) to be smaller than that of the null model. To extract -2LL from the model, type:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>M1<span class="sc">$</span>deviance</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 14.80722</code></pre>
+</div>
+</div>
+<p>This value is smaller than that of the null model–a good thing!</p>
+<p>The difference between both log-likelihood values is referred to as the <strong>model Chi-square</strong>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>modelChi <span class="ot">&lt;-</span> M1<span class="sc">$</span>null.deviance <span class="sc">-</span> M1<span class="sc">$</span>deviance</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Dividing the model Chi-square by the null log-likelihood value gives us one measure of the <strong>pseudo R-square</strong> (note that there is no exact way to compute the R-square value with a logistic regression model).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>pseudo.R2 <span class="ot">&lt;-</span> modelChi <span class="sc">/</span> M1<span class="sc">$</span>null.deviance</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>pseudo.R2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.3324281</code></pre>
+</div>
+</div>
+<p>In this working example, the model can account for 33.2% of the variability in the <code>Coast</code> variable. This pseudo R-square calculation is referred to as the <strong>Hosmer and Lemeshow</strong> R-square.</p>
+<section id="alternative-pseudo-r2" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="alternative-pseudo-r2"><span class="header-section-number">3.1</span> Alternative pseudo R<sup>2</sup></h2>
+<p>Here, we’ll make use of the <code>rms</code> package’s <code>lrm</code> function to compute another form of the pseudo R<sup>2</sup> called the <strong>Nagelkerke R<sup>2</sup></strong>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lrm</span>(Coast <span class="sc">~</span> Income, df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Logistic Regression Model
+ 
+ lrm(formula = Coast ~ Income, data = df)
+ 
+                     Model Likelihood    Discrimination    Rank Discrim.    
+                           Ratio Test           Indexes          Indexes    
+ Obs          16    LR chi2      7.37    R2       0.492    C       0.828    
+  no           8    d.f.            1    R2(1,16) 0.329    Dxy     0.656    
+  yes          8    Pr(&gt; chi2) 0.0066    R2(1,12) 0.412    gamma   0.656    
+ max |deriv| 0.4                         Brier    0.143    tau-a   0.350    
+ 
+           Coef     S.E.   Wald Z Pr(&gt;|Z|)
+ Intercept -12.2176 5.7646 -2.12  0.0341  
+ Income      0.0005 0.0002  2.10  0.0355  
+ </code></pre>
+</div>
+</div>
+<p>Note how this value of 0.49 differs from that of the <em>Hosmer and Lemeshow</em> R<sup>2</sup> whose value is 0.33.</p>
+</section>
+</section>
+<section id="assessing-the-significance" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Assessing the significance</h1>
+<section id="model-significance" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="model-significance"><span class="header-section-number">4.1</span> Model significance</h2>
+<p>A p-value for the logistic model can be approximated (note that it is difficult to associate an exact p-value with a logistic regression model).</p>
+<p>First, pull the the difference in degrees of freedom between the null and full model:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>Chidf <span class="ot">&lt;-</span> M1<span class="sc">$</span>df.null <span class="sc">-</span> M1<span class="sc">$</span>df.residual</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Then, compute the p-value using the chi-square statistic. This pseudo p-value is also called the <strong>likelihood ratio p-value</strong>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>chisq.prob <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">pchisq</span>(modelChi, Chidf)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>chisq.prob</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.006619229</code></pre>
+</div>
+</div>
+<p>If the p-value is small then we can reject the null hypothesis that the current model does not improve on the base model. Here, the p-value is 0.01 suggesting that the model is a significant improvement over the base model.</p>
+</section>
+<section id="parameter-significance" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="parameter-significance"><span class="header-section-number">4.2</span> Parameter significance</h2>
+<p>If we want to assess the significance of a parameter as it compares to the base model simply wrap the model object with the <code>summary</code> function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(M1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Coast ~ Income, family = binomial, data = df)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-1.3578  -0.6948  -0.1863   0.5207   2.2137  
+
+Coefficients:
+               Estimate  Std. Error z value Pr(&gt;|z|)  
+(Intercept) -12.2177062   5.7646456  -2.119   0.0341 *
+Income        0.0005048   0.0002401   2.102   0.0355 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 22.181  on 15  degrees of freedom
+Residual deviance: 14.807  on 14  degrees of freedom
+AIC: 18.807
+
+Number of Fisher Scoring iterations: 5</code></pre>
+</div>
+</div>
+<p>The <code>Income</code> coefficient p-value is 0.036.</p>
+</section>
+</section>
+<section id="multi-variable-model" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Multi-variable model</h1>
+<p>So far, we’ve worked with a single variable model. We can augment the model by adding more variables. For example, we will add the fraction of the population that has attained a bachelor’s degree to the model (we’ll ignore the possibility of co-dependence between variables for pedagogical sake).</p>
+<p>The entire workflow follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Grab variables of interest</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>df2 <span class="ot">&lt;-</span> <span class="fu">select</span>(dat, Coast, <span class="at">Income =</span> Per.capita.income, <span class="at">Edu =</span> Fraction.with.Bachelor.s.or.greater)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Run regression model</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>M2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Coast <span class="sc">~</span> Income <span class="sc">+</span> Edu, df2, <span class="at">family =</span> binomial)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute pseudo R-square</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>modelChi <span class="ot">&lt;-</span> M2<span class="sc">$</span>null.deviance <span class="sc">-</span> M2<span class="sc">$</span>deviance</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>pseudo.R2 <span class="ot">&lt;-</span> modelChi <span class="sc">/</span> M2<span class="sc">$</span>null.deviance</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>pseudo.R2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.5422743</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the pseudo p-value</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>Chidf <span class="ot">&lt;-</span> M2<span class="sc">$</span>df.null <span class="sc">-</span> M2<span class="sc">$</span>df.residual</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>modelChi <span class="ot">&lt;-</span> M2<span class="sc">$</span>null.deviance <span class="sc">-</span> M2<span class="sc">$</span>deviance</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">-</span> <span class="fu">pchisq</span>(modelChi, Chidf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.002444256</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Assess each parameter's significance</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(M2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Coast ~ Income + Edu, family = binomial, data = df2)
+
+Deviance Residuals: 
+     Min        1Q    Median        3Q       Max  
+-1.52529  -0.22960  -0.04039   0.37393   1.83053  
+
+Coefficients:
+              Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept) -5.9978478  6.8723294  -0.873    0.383
+Income      -0.0004927  0.0005829  -0.845    0.398
+Edu         73.8296049 46.8728758   1.575    0.115
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 22.181  on 15  degrees of freedom
+Residual deviance: 10.153  on 13  degrees of freedom
+AIC: 16.153
+
+Number of Fisher Scoring iterations: 6</code></pre>
+</div>
+</div>
+<p>Note the change in the <code>Income</code> coefficient p-value when adding another variable that may well be explaining the same variability in <code>Coast</code> (i.e.&nbsp;<code>Income</code> and <code>Edu</code> are very likely correlated).</p>
+<hr>
+<p><strong>Session Info</strong>:</p>
+<div class="cell-output-display">
+<p><strong>R version 4.2.1 (2022-06-23 ucrt)</strong></p>
+<p><strong>Platform:</strong> x86_64-w64-mingw32/x64 (64-bit)</p>
+<p><strong>attached base packages:</strong> <em>stats</em>, <em>graphics</em>, <em>grDevices</em>, <em>utils</em>, <em>datasets</em>, <em>methods</em> and <em>base</em></p>
+<p><strong>other attached packages:</strong> <em>rms(v.6.3-0)</em>, <em>SparseM(v.1.81)</em>, <em>Hmisc(v.4.7-1)</em>, <em>Formula(v.1.2-4)</em>, <em>survival(v.3.3-1)</em>, <em>lattice(v.0.20-45)</em>, <em>dplyr(v.1.0.9)</em> and <em>ggplot2(v.3.3.6)</em></p>
+<p><strong>loaded via a namespace (and not attached):</strong> <em>jsonlite(v.1.8.0)</em>, <em>splines(v.4.2.1)</em>, <em>gtools(v.3.9.3)</em>, <em>assertthat(v.0.2.1)</em>, <em>latticeExtra(v.0.6-30)</em>, <em>pander(v.0.6.5)</em>, <em>yaml(v.2.3.5)</em>, <em>pillar(v.1.8.1)</em>, <em>backports(v.1.4.1)</em>, <em>quantreg(v.5.94)</em>, <em>glue(v.1.6.2)</em>, <em>digest(v.0.6.29)</em>, <em>RColorBrewer(v.1.1-3)</em>, <em>checkmate(v.2.1.0)</em>, <em>colorspace(v.2.0-3)</em>, <em>sandwich(v.3.0-2)</em>, <em>htmltools(v.0.5.3)</em>, <em>Matrix(v.1.4-1)</em>, <em>pkgconfig(v.2.0.3)</em>, <em>purrr(v.0.3.4)</em>, <em>mvtnorm(v.1.1-3)</em>, <em>scales(v.1.2.1)</em>, <em>gdata(v.2.18.0.1)</em>, <em>jpeg(v.0.1-9)</em>, <em>MatrixModels(v.0.5-0)</em>, <em>htmlTable(v.2.4.1)</em>, <em>tibble(v.3.1.8)</em>, <em>mgcv(v.1.8-40)</em>, <em>generics(v.0.1.3)</em>, <em>farver(v.2.1.1)</em>, <em>ellipsis(v.0.3.2)</em>, <em>TH.data(v.1.1-1)</em>, <em>withr(v.2.5.0)</em>, <em>nnet(v.7.3-17)</em>, <em>cli(v.3.3.0)</em>, <em>magrittr(v.2.0.3)</em>, <em>deldir(v.1.0-6)</em>, <em>polspline(v.1.1.20)</em>, <em>evaluate(v.0.16)</em>, <em>fansi(v.1.0.3)</em>, <em>nlme(v.3.1-157)</em>, <em>MASS(v.7.3-57)</em>, <em>foreign(v.0.8-82)</em>, <em>tools(v.4.2.1)</em>, <em>data.table(v.1.14.2)</em>, <em>lifecycle(v.1.0.1)</em>, <em>multcomp(v.1.4-20)</em>, <em>stringr(v.1.4.1)</em>, <em>interp(v.1.1-3)</em>, <em>munsell(v.0.5.0)</em>, <em>cluster(v.2.1.3)</em>, <em>compiler(v.4.2.1)</em>, <em>rlang(v.1.0.4)</em>, <em>grid(v.4.2.1)</em>, <em>rstudioapi(v.0.14)</em>, <em>htmlwidgets(v.1.5.4)</em>, <em>base64enc(v.0.1-3)</em>, <em>labeling(v.0.4.2)</em>, <em>rmarkdown(v.2.16)</em>, <em>gtable(v.0.3.0)</em>, <em>codetools(v.0.2-18)</em>, <em>DBI(v.1.1.3)</em>, <em>R6(v.2.5.1)</em>, <em>gridExtra(v.2.3)</em>, <em>zoo(v.1.8-10)</em>, <em>knitr(v.1.40)</em>, <em>fastmap(v.1.1.0)</em>, <em>utf8(v.1.2.2)</em>, <em>stringi(v.1.7.8)</em>, <em>Rcpp(v.1.0.9)</em>, <em>vctrs(v.0.4.1)</em>, <em>rpart(v.4.1.16)</em>, <em>png(v.0.1-7)</em>, <em>tidyselect(v.1.1.2)</em> and <em>xfun(v.0.32)</em></p>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-right">Creative Commons License, Manny Gimond, 2022</div>
+  </div>
+</footer>
+
+
+
+</body></html>

@@ -1,0 +1,2200 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Basic stats explained (in R) - Regression analysis (OLS method)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Basic stats explained (in R)</span>
+  </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./CI.html">Confidence intervals</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./z_t_tests.html">Z and T tests</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./F_test.html">F-test: Test for difference in spread</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./ChiSquare_test.html">ChiSquare</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./regression.html" aria-current="page">Ordinary least squares Regression</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./ANOVA.html">Analysis of variance (ANOVA)</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./Logistic.html">Logistic regression</a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#the-simple-model" id="toc-the-simple-model" class="nav-link active" data-scroll-target="#the-simple-model"> <span class="header-section-number">1</span> The simple model</a></li>
+  <li><a href="#the-bivariate-regression-model" id="toc-the-bivariate-regression-model" class="nav-link" data-scroll-target="#the-bivariate-regression-model"> <span class="header-section-number">2</span> The bivariate regression model</a>
+  <ul class="collapse">
+  <li><a href="#testing-if-the-bivariate-model-is-an-improvement-over-the-mean-model" id="toc-testing-if-the-bivariate-model-is-an-improvement-over-the-mean-model" class="nav-link" data-scroll-target="#testing-if-the-bivariate-model-is-an-improvement-over-the-mean-model"> <span class="header-section-number">2.1</span> Testing if the bivariate model is an improvement over the mean model</a>
+  <ul class="collapse">
+  <li><a href="#the-coefficient-of-determination-r2" id="toc-the-coefficient-of-determination-r2" class="nav-link" data-scroll-target="#the-coefficient-of-determination-r2"> <span class="header-section-number">2.1.1</span> The coefficient of determination, <span class="math inline">\(R^2\)</span></a></li>
+  <li><a href="#the-f-ratio-test" id="toc-the-f-ratio-test" class="nav-link" data-scroll-target="#the-f-ratio-test"> <span class="header-section-number">2.1.2</span> The F-ratio test</a></li>
+  </ul></li>
+  <li><a href="#testing-if-the-estimated-slope-is-significantly-different-from-0" id="toc-testing-if-the-estimated-slope-is-significantly-different-from-0" class="nav-link" data-scroll-target="#testing-if-the-estimated-slope-is-significantly-different-from-0"> <span class="header-section-number">2.2</span> Testing if the estimated slope is significantly different from 0</a>
+  <ul class="collapse">
+  <li><a href="#extracting-hat-beta_1-confidence-interval" id="toc-extracting-hat-beta_1-confidence-interval" class="nav-link" data-scroll-target="#extracting-hat-beta_1-confidence-interval"> <span class="header-section-number">2.2.1</span> Extracting <span class="math inline">\(\hat \beta_1\)</span> confidence interval</a></li>
+  </ul></li>
+  <li><a href="#checking-the-residuals" id="toc-checking-the-residuals" class="nav-link" data-scroll-target="#checking-the-residuals"> <span class="header-section-number">2.3</span> Checking the residuals</a>
+  <ul class="collapse">
+  <li><a href="#assumption-1-bar-varepsilon-0" id="toc-assumption-1-bar-varepsilon-0" class="nav-link" data-scroll-target="#assumption-1-bar-varepsilon-0"> <span class="header-section-number">2.3.1</span> Assumption 1: <span class="math inline">\(\bar \varepsilon = 0\)</span></a></li>
+  <li><a href="#assumption-2-homoscedasticity" id="toc-assumption-2-homoscedasticity" class="nav-link" data-scroll-target="#assumption-2-homoscedasticity"> <span class="header-section-number">2.3.2</span> Assumption 2: homoscedasticity</a></li>
+  <li><a href="#assumption-3-normal-gaussian-distribution-of-residuals" id="toc-assumption-3-normal-gaussian-distribution-of-residuals" class="nav-link" data-scroll-target="#assumption-3-normal-gaussian-distribution-of-residuals"> <span class="header-section-number">2.3.3</span> Assumption 3: Normal (Gaussian) distribution of residuals</a></li>
+  <li><a href="#assumption-4-independence-of-residuals" id="toc-assumption-4-independence-of-residuals" class="nav-link" data-scroll-target="#assumption-4-independence-of-residuals"> <span class="header-section-number">2.3.4</span> Assumption 4: Independence of residuals</a></li>
+  </ul></li>
+  <li><a href="#influential-observations" id="toc-influential-observations" class="nav-link" data-scroll-target="#influential-observations"> <span class="header-section-number">2.4</span> Influential Observations</a></li>
+  <li><a href="#what-to-do-if-some-of-the-assumptions-are-not-met" id="toc-what-to-do-if-some-of-the-assumptions-are-not-met" class="nav-link" data-scroll-target="#what-to-do-if-some-of-the-assumptions-are-not-met"> <span class="header-section-number">2.5</span> What to do if some of the assumptions are not met</a>
+  <ul class="collapse">
+  <li><a href="#data-transformation" id="toc-data-transformation" class="nav-link" data-scroll-target="#data-transformation"> <span class="header-section-number">2.5.1</span> Data transformation</a></li>
+  <li><a href="#bootstrapping" id="toc-bootstrapping" class="nav-link" data-scroll-target="#bootstrapping"> <span class="header-section-number">2.5.2</span> Bootstrapping</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#multivariate-regression-model" id="toc-multivariate-regression-model" class="nav-link" data-scroll-target="#multivariate-regression-model"> <span class="header-section-number">3</span> Multivariate regression model</a>
+  <ul class="collapse">
+  <li><a href="#reviewing-the-multivariate-regression-model-summary" id="toc-reviewing-the-multivariate-regression-model-summary" class="nav-link" data-scroll-target="#reviewing-the-multivariate-regression-model-summary"> <span class="header-section-number">3.1</span> Reviewing the multivariate regression model summary</a></li>
+  <li><a href="#comparing-the-two-variable-model-with-the-one-variable-model" id="toc-comparing-the-two-variable-model-with-the-one-variable-model" class="nav-link" data-scroll-target="#comparing-the-two-variable-model-with-the-one-variable-model"> <span class="header-section-number">3.2</span> Comparing the two-variable model with the one-variable model</a></li>
+  <li><a href="#looking-for-multi-collinearity" id="toc-looking-for-multi-collinearity" class="nav-link" data-scroll-target="#looking-for-multi-collinearity"> <span class="header-section-number">3.3</span> Looking for multi-collinearity</a></li>
+  </ul></li>
+  <li><a href="#including-categorical-predictor-variables" id="toc-including-categorical-predictor-variables" class="nav-link" data-scroll-target="#including-categorical-predictor-variables"> <span class="header-section-number">4</span> Including categorical predictor variables</a>
+  <ul class="collapse">
+  <li><a href="#two-category-variable" id="toc-two-category-variable" class="nav-link" data-scroll-target="#two-category-variable"> <span class="header-section-number">4.1</span> Two category variable</a></li>
+  <li><a href="#multi-category-variable" id="toc-multi-category-variable" class="nav-link" data-scroll-target="#multi-category-variable"> <span class="header-section-number">4.2</span> Multi-category variable</a></li>
+  </ul></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"> <span class="header-section-number">5</span> References</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Regression analysis (OLS method)</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<p><em>Last modified on 2022-09-12</em></p>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<p>Packages used in this tutorial:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car) </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(boot) </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scatterplot3d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="the-simple-model" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> The simple model</h1>
+<p>The objective of statistical modeling is to come up with the most parsimonious model that does a good job in predicting some variable. The simplest mode is the sample mean. We can express this model as:</p>
+<p><span class="math display">\[
+Y = \beta_0 + \varepsilon  
+\]</span></p>
+<p>where <span class="math inline">\(Y\)</span> is the variable we are trying to predict, <span class="math inline">\(\beta_0\)</span> is the mean, and <span class="math inline">\(\varepsilon\)</span> is the difference (or error) between the model, <span class="math inline">\(\beta_0\)</span>, and the actual value <span class="math inline">\(Y\)</span>. How well a model fits the actual data is assessed by measuring the error or deviance between the actual data and the predicted data.</p>
+<p>In the following working example, we will look at the median per capita income for the State of Maine aggregated by state (the data are provided from the US Census ACS 2007 - 2011 dataset). The dollar amounts are adjusted to 2010 inflation dollars.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">23663</span>, <span class="dv">20659</span>, <span class="dv">32277</span>, <span class="dv">21595</span>, <span class="dv">27227</span>, </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>       <span class="dv">25023</span>, <span class="dv">26504</span>, <span class="dv">28741</span>, <span class="dv">21735</span>, <span class="dv">23366</span>, </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>       <span class="dv">20871</span>, <span class="dv">28370</span>, <span class="dv">21105</span>, <span class="dv">22706</span>, <span class="dv">19527</span>, </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>       <span class="dv">28321</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Next, we will define the simple model (the mean of all 16 values) for this batch of data:</p>
+<p><span class="math inline">\(\hat Y = \beta_0 = \bar Y =\)</span> 24481</p>
+<p>The “hat” on top of <span class="math inline">\(\hat Y\)</span> indicates that this is a value <em>predicted</em> by the model and not the actual value <span class="math inline">\(Y\)</span>.</p>
+<p>We can plot the true values <span class="math inline">\(Y\)</span> (black dots) along with the values predicted from our simple model <span class="math inline">\(\hat Y\)</span> (blue dots and lines).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>( y  , <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">ylab=</span><span class="cn">NA</span>, <span class="at">mgp=</span><span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">1</span>,.<span class="dv">5</span>) , <span class="at">las=</span><span class="dv">1</span>, <span class="at">bty=</span><span class="st">"n"</span>, <span class="at">xaxs=</span><span class="st">"i"</span>, <span class="at">xpd =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="fu">mean</span>(y), <span class="at">col=</span><span class="st">"blue"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="fu">rep</span>(<span class="fu">mean</span>(y), <span class="fu">length</span>(y)), <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">type=</span><span class="st">"b"</span>, <span class="at">pch =</span> <span class="dv">21</span>, <span class="at">bg=</span><span class="st">"white"</span>, <span class="at">xpd =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">"Income($)"</span>, <span class="at">side=</span><span class="dv">3</span>, <span class="at">adj=</span> <span class="sc">-</span><span class="fl">0.1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="regression_files/figure-html/unnamed-chunk-3-1.png" width="576"></p>
+</div>
+</div>
+<p>The function <code>abline</code> adds a blue horizontal line whose value is <span class="math inline">\(\bar Y\)</span>. Blue dots are added using the <code>points()</code> function to highlight the associated predicted values, <span class="math inline">\(\hat Y\)</span>, for each value <span class="math inline">\(Y\)</span>. The x-axis serves only to <em>spread</em> out the <span class="math inline">\(Y\)</span> values across its range. The <code>las = 1</code> option in the <code>plot</code> function sets all axes labels to display horizontally (a value of <code>0</code> would set the orientation of all labels parallel to the axis which is the default setting).</p>
+<p>One way to measure the error between the predicted values <span class="math inline">\(\hat Y\)</span> and <span class="math inline">\(Y\)</span> is to compute the difference (error <span class="math inline">\(\varepsilon\)</span>) between both values.</p>
+<div class="cell-output-display">
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="math inline">\(Y\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(\hat Y\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(\varepsilon = Y - \hat Y\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">23663</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">-818</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">20659</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">-3822</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">32277</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">7796</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">21595</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">-2886</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">27227</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">2746</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">25023</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">542</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">26504</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">2023</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">28741</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">4260</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">21735</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">-2746</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">23366</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">-1115</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">20871</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">-3610</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">28370</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">3889</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">21105</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">-3376</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">22706</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">-1775</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">19527</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">-4954</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">28321</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">3840</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The errors (or differences between <span class="math inline">\(Y\)</span> and <span class="math inline">\(\hat Y\)</span>) are displayed as red dashed lines in the following figure:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="regression_files/figure-html/unnamed-chunk-5-1.png" width="576"></p>
+</div>
+</div>
+<p>To get the magnitude of the total error, we could sum these errors, however, doing so would return a sum of errors of 0 (i.e.&nbsp;the positive errors and negative errors cancel each other out). One solution to circumvent this problem is to take the <strong>absolute</strong> values of the errors then sum these values (this is also known as the <strong>least absolute error</strong>, <strong>LAE</strong>):</p>
+<p><span class="math display">\[
+LAE = \sum \mid Y - \hat Y \mid
+\]</span></p>
+<p>However, by convention, we quantify the difference between <span class="math inline">\(Y\)</span> and <span class="math inline">\(\hat Y\)</span> using the <strong>sum of the squared errors</strong> (<strong>SSE</strong>) instead, or</p>
+<p><span class="math display">\[
+SSE = \sum (Y - \hat Y)^2
+\]</span></p>
+<p>The following table shows the difference between LAE and SSE values</p>
+<div class="cell-output-display">
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="math inline">\(Y\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(\hat Y\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(\mid Y - \hat Y \mid\)</span></th>
+<th style="text-align: center;"><span class="math inline">\((Y - \hat Y)^2\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">23663</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">818</td>
+<td style="text-align: center;">668511</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">20659</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">3822</td>
+<td style="text-align: center;">14604818</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">32277</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">7796</td>
+<td style="text-align: center;">60783463</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">21595</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">2886</td>
+<td style="text-align: center;">8326832</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">27227</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">2746</td>
+<td style="text-align: center;">7542576</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">25023</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">542</td>
+<td style="text-align: center;">294171</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">26504</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">2023</td>
+<td style="text-align: center;">4094046</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">28741</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">4260</td>
+<td style="text-align: center;">18150795</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">21735</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">2746</td>
+<td style="text-align: center;">7538457</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">23366</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">1115</td>
+<td style="text-align: center;">1242389</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">20871</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">3610</td>
+<td style="text-align: center;">13029393</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">28370</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">3889</td>
+<td style="text-align: center;">15127238</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">21105</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">3376</td>
+<td style="text-align: center;">11394844</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">22706</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">1775</td>
+<td style="text-align: center;">3149294</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">19527</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">4954</td>
+<td style="text-align: center;">24538401</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">28321</td>
+<td style="text-align: center;">24481</td>
+<td style="text-align: center;">3840</td>
+<td style="text-align: center;">14748480</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell">
+
+</div>
+<p><span class="math inline">\(LAE_{mean}\)</span> = 50197 and <span class="math inline">\(SSE_{mean}\)</span> = 205233706.</p>
+<p>Squaring the error has the effect of <strong>amplifying</strong> large errors in the dataset. The following figure highlights the difference by drawing the <em>square</em> of the differences as red shaded squares.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="regression_files/figure-html/unnamed-chunk-7-1.png" width="576"></p>
+</div>
+</div>
+<p>It is more natural to visualize a squared amount using a geometric primitive whose area changes proportionately to the squared error changes. Note how the larger error at index 3 has an error line length about 3 times that associated with index 5 (these correspond to the records number three and five in the above table). Yet, the area for index 3 appears almost <em>9 times</em> bigger than that associated with index 5 (as it should since we are <em>squaring</em> the difference). Note too that the unit used to measure the area of each square (the squared error) is the one associated with the <em>Y</em>-axis (recall that the error is associated with the prediction of <span class="math inline">\(Y\)</span> and not of <span class="math inline">\(X\)</span>).</p>
+<p>This simple model (i.e.&nbsp;one where we are using the mean value to predict <span class="math inline">\(Y\)</span> for each county) obviously has its limits. A more common approach in predicting <span class="math inline">\(Y\)</span> is to use a <em>predictor</em> variable (i.e.&nbsp;a covariate).</p>
+</section>
+<section id="the-bivariate-regression-model" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> The bivariate regression model</h1>
+<p>The bivariate model augments the simple (mean) model by adding a variable, <span class="math inline">\(X\)</span>, that is believed to <em>co-vary</em> with <span class="math inline">\(Y\)</span>. In other words, we are using another variable (aka, an <strong>independent</strong> or <strong>predictor</strong> variable) to estimate <span class="math inline">\(Y\)</span>. This augmented model takes on the form:</p>
+<p><span class="math display">\[
+Y = \beta_0 + \beta_1X + \varepsilon
+\]</span></p>
+<p>This is the equation of a slope where <span class="math inline">\(\beta_0\)</span> tells us where on the y-axis the slope intersects the axis and <span class="math inline">\(\beta_1\)</span> is the slope of the line (a positive <span class="math inline">\(\beta_1\)</span> value indicates that the slope is upward, a negative <span class="math inline">\(\beta_1\)</span> value indicates that the slope is downward).</p>
+<p>Continuing with our example, we will look at the percentage of Mainers having attained a Bachelor’s degree or greater by county (the data are provided by the US Census ACS 2007 - 2011 dataset).</p>
+<p>The following block of code defines the new variable <span class="math inline">\(X\)</span> (i.e.&nbsp;fraction of Mainers having attained a bachelor’s degree or greater within each county) and visualizes the relationship between income and education attainment using a scatter plot. In the process, a <code>dataframe</code> called <code>dat</code> is created that stores both <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># X represents the fraction of residents in each county having attained a</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># bachelor's degree or better</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>x   <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.19</span>, <span class="fl">0.16</span>, <span class="fl">0.40</span>, <span class="fl">0.24</span>, <span class="fl">0.31</span>, <span class="fl">0.24</span>, <span class="fl">0.28</span>, </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>         <span class="fl">0.31</span>, <span class="fl">0.18</span>, <span class="fl">0.23</span>, <span class="fl">0.17</span>, <span class="fl">0.31</span>, <span class="fl">0.15</span>, <span class="fl">0.25</span>, </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>         <span class="fl">0.19</span>, <span class="fl">0.28</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Let's combine Income and Education into a single dataframe</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Income =</span> y, <span class="at">Education =</span> x)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co"># We will add county names to each row</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="fu">row.names</span>(dat) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Androscoggin"</span>, <span class="st">"Aroostook"</span>, <span class="st">"Cumberland"</span>, <span class="st">"Franklin"</span>, <span class="st">"Hancock"</span>,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"Kennebec"</span>, <span class="st">"Knox"</span>, <span class="st">"Lincoln"</span>, <span class="st">"Oxford"</span>, <span class="st">"Penobscot"</span>, <span class="st">"Piscataquis"</span>,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"Sagadahoc"</span>, <span class="st">"Somerset"</span>, <span class="st">"Waldo"</span>, <span class="st">"Washington"</span>, <span class="st">"York"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The following displays the contents of our new dataframe <code>dat</code>:</p>
+<div class="cell-output-display">
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Income</th>
+<th style="text-align: right;">Education</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Androscoggin</td>
+<td style="text-align: right;">23663</td>
+<td style="text-align: right;">0.19</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Aroostook</td>
+<td style="text-align: right;">20659</td>
+<td style="text-align: right;">0.16</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Cumberland</td>
+<td style="text-align: right;">32277</td>
+<td style="text-align: right;">0.40</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Franklin</td>
+<td style="text-align: right;">21595</td>
+<td style="text-align: right;">0.24</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Hancock</td>
+<td style="text-align: right;">27227</td>
+<td style="text-align: right;">0.31</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Kennebec</td>
+<td style="text-align: right;">25023</td>
+<td style="text-align: right;">0.24</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Knox</td>
+<td style="text-align: right;">26504</td>
+<td style="text-align: right;">0.28</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Lincoln</td>
+<td style="text-align: right;">28741</td>
+<td style="text-align: right;">0.31</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Oxford</td>
+<td style="text-align: right;">21735</td>
+<td style="text-align: right;">0.18</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Penobscot</td>
+<td style="text-align: right;">23366</td>
+<td style="text-align: right;">0.23</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Piscataquis</td>
+<td style="text-align: right;">20871</td>
+<td style="text-align: right;">0.17</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Sagadahoc</td>
+<td style="text-align: right;">28370</td>
+<td style="text-align: right;">0.31</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Somerset</td>
+<td style="text-align: right;">21105</td>
+<td style="text-align: right;">0.15</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Waldo</td>
+<td style="text-align: right;">22706</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Washington</td>
+<td style="text-align: right;">19527</td>
+<td style="text-align: right;">0.19</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">York</td>
+<td style="text-align: right;">28321</td>
+<td style="text-align: right;">0.28</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Now let’s plot the data</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>( Income <span class="sc">~</span> Education , dat, <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">ylab=</span><span class="cn">NA</span>, <span class="at">mgp=</span><span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">1</span>,.<span class="dv">5</span>) , <span class="at">las=</span><span class="dv">1</span>, <span class="at">bty=</span><span class="st">"n"</span>, <span class="at">xaxs=</span><span class="st">"i"</span>, </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">xpd =</span> <span class="cn">TRUE</span>, <span class="at">xlab=</span><span class="st">"Fraction having attained a Bachelor's degree"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">"Income($)"</span>, <span class="at">side=</span><span class="dv">3</span>, <span class="at">adj=</span> <span class="sc">-</span><span class="fl">0.1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="regression_files/figure-html/unnamed-chunk-10-1.png" width="576"></p>
+</div>
+</div>
+<p>It’s clear from the figure that there appears to be a positive relationship between income and education attainment. The next step is to <em>capture</em> the nature of this relationship from the perspective of a linear equation. We seek to fit a slope that will minimize the overall distance between the line and the true value, hence we seek <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> that minimizes the error. The estimate for <span class="math inline">\(\beta_1\)</span> is sometimes represented as the letter <span class="math inline">\(b_1\)</span> or <span class="math inline">\(\hat \beta_1\)</span>. We’ll stick with the latter notation throughout this exercise. <span class="math inline">\(\hat \beta_1\)</span> is estimated using the linear <strong>least squares</strong> technique:</p>
+<p><span class="math display">\[
+\hat \beta_1 = \frac{\sum (X_i - \bar X)(Y_i-\bar Y)}{\sum (X_i-\bar X)^2}
+\]</span></p>
+<p>The breakdown of the terms in this equation are listed in the following table:</p>
+<div class="cell-output-display">
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: right;"><span class="math inline">\(X\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(Y\)</span></th>
+<th style="text-align: right;"><span class="math inline">\((X - \bar X)(Y - \bar Y)\)</span></th>
+<th style="text-align: right;"><span class="math inline">\((X - \bar X)^2\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.19</td>
+<td style="text-align: right;">23663</td>
+<td style="text-align: right;">43.436</td>
+<td style="text-align: right;">0.003</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.16</td>
+<td style="text-align: right;">20659</td>
+<td style="text-align: right;">317.673</td>
+<td style="text-align: right;">0.007</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.40</td>
+<td style="text-align: right;">32277</td>
+<td style="text-align: right;">1223.056</td>
+<td style="text-align: right;">0.025</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.24</td>
+<td style="text-align: right;">21595</td>
+<td style="text-align: right;">9.018</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">27227</td>
+<td style="text-align: right;">183.664</td>
+<td style="text-align: right;">0.004</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.24</td>
+<td style="text-align: right;">25023</td>
+<td style="text-align: right;">-1.695</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.28</td>
+<td style="text-align: right;">26504</td>
+<td style="text-align: right;">74.612</td>
+<td style="text-align: right;">0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">28741</td>
+<td style="text-align: right;">284.913</td>
+<td style="text-align: right;">0.004</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.18</td>
+<td style="text-align: right;">21735</td>
+<td style="text-align: right;">173.318</td>
+<td style="text-align: right;">0.004</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.23</td>
+<td style="text-align: right;">23366</td>
+<td style="text-align: right;">14.629</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.17</td>
+<td style="text-align: right;">20871</td>
+<td style="text-align: right;">263.954</td>
+<td style="text-align: right;">0.005</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">28370</td>
+<td style="text-align: right;">260.102</td>
+<td style="text-align: right;">0.004</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.15</td>
+<td style="text-align: right;">21105</td>
+<td style="text-align: right;">314.355</td>
+<td style="text-align: right;">0.009</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">22706</td>
+<td style="text-align: right;">-12.201</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.19</td>
+<td style="text-align: right;">19527</td>
+<td style="text-align: right;">263.161</td>
+<td style="text-align: right;">0.003</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.28</td>
+<td style="text-align: right;">28321</td>
+<td style="text-align: right;">141.614</td>
+<td style="text-align: right;">0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">3553.609</td>
+<td style="text-align: right;">0.072</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The bottom of the last two columns show the sums of the numerator and denominator (3553.60875 and 0.0715438 respectively). <span class="math inline">\(\hat \beta_1\)</span>, the estimated slope, is therefore 3553.61/0.072 or 49670.</p>
+<p>Knowing <span class="math inline">\(\hat \beta_1\)</span> we can solve for the intercept <span class="math inline">\(b_0\)</span>:</p>
+<p><span class="math display">\[
+\hat \beta_0 = \hat Y - \hat \beta_1 X
+\]</span></p>
+<p>It just so happens that the slope passes through <span class="math inline">\(\bar Y\)</span> and <span class="math inline">\(\bar X\)</span>. So we can substitute <span class="math inline">\(X\)</span> and <span class="math inline">\(\hat Y\)</span> in the equation with their respective means: 0.24 and 24481. This gives us <span class="math inline">\(\hat \beta_0\)</span> = 12405. Our final linear equation looks like this:</p>
+<p><span class="math inline">\(\hat Y\)</span> = 12404.5 + 49670.4 <span class="math inline">\(X\)</span> + <span class="math inline">\(\varepsilon\)</span></p>
+<p>It’s no surprise that <code>R</code> has a built in function, <code>lm()</code>, that will estimate these regression coefficients for us. The function can be called as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="fu">lm</span>( y <span class="sc">~</span> x, dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The output of the linear model is saved to the variable <code>M</code>. The formula <code>y ~ x</code> tells the function to regress the variable <code>y</code> against the variable <code>x</code>. You must also supply the name of the table or dataframe that stores these variables (i.e.&nbsp;the dataframe <code>dat</code>).</p>
+<p>The regression coefficients <span class="math inline">\(\hat \beta_0\)</span> and <span class="math inline">\(\hat \beta_1\)</span> computed by <code>lm</code> can be extracted from output <code>M</code> as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>M<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept)           x 
+   12404.50    49670.43 </code></pre>
+</div>
+</div>
+<p>The regression coefficients are identical to those computed manually from the table.</p>
+<p>We can also use the model output to add the regression line to our data. The function <code>abline()</code> reads the contents of the model output <code>M</code> and is smart enough to extract the slope equation for plotting:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>( y <span class="sc">~</span> x , dat, <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">ylab=</span><span class="cn">NA</span>, <span class="at">mgp=</span><span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">1</span>,.<span class="dv">5</span>) , <span class="at">las=</span><span class="dv">1</span>, <span class="at">bty=</span><span class="st">"n"</span>, <span class="at">xaxs=</span><span class="st">"i"</span>, <span class="at">xpd =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlab=</span><span class="st">"Fraction having attained a Bachelor's degree"</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">"Income($)"</span>, <span class="at">side=</span><span class="dv">3</span>, <span class="at">adj=</span> <span class="sc">-</span><span class="fl">0.1</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(M, <span class="at">col=</span><span class="st">"blue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="regression_files/figure-html/unnamed-chunk-14-1.png" width="576"></p>
+</div>
+</div>
+<p>Next, we will look at the errors (or residuals) between the estimated values <span class="math inline">\(\hat Y\)</span> from our model and the true values <span class="math inline">\(Y\)</span> from our observations. We will represent these differences as squared errors:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="regression_files/figure-html/unnamed-chunk-15-1.png" width="576"></p>
+</div>
+</div>
+<p>Notice how the sizes of the red boxes are smaller then the ones for the simple model (i.e the model defined by the mean <span class="math inline">\(\bar Y\)</span>). In fact, we can sum these squared differences to get our new sum of squared error (SSE) as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>SSE <span class="ot">&lt;-</span> <span class="fu">sum</span>( <span class="fu">summary</span>(M)<span class="sc">$</span>res<span class="sc">^</span><span class="dv">2</span> )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This returns an <span class="math inline">\(SSE\)</span> value of 28724435.</p>
+<p>This is less than the sum of squared errors for the <em>mean</em> model <span class="math inline">\(\bar Y\)</span>, <span class="math inline">\(SSE_{mean}\)</span>, whose value was 205233705.75. <span class="math inline">\(SSE\)</span> is sometimes referred to as the <strong>residual error</strong>. The difference between the residual error <span class="math inline">\(SSE\)</span> and <span class="math inline">\(SSE_{mean}\)</span> is the error <em>explained</em> by our new (bivariate) model or the <strong>sum of squares reduced</strong>, <span class="math inline">\(SSR\)</span>:</p>
+<p><span class="math display">\[
+SSR = SSE_{mean} - SSE
+\]</span></p>
+<p>In <code>R</code>, this can easily be computed as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>SSR <span class="ot">&lt;-</span> SSE.mean <span class="sc">-</span> SSE</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>giving us an <span class="math inline">\(SSR\)</span> value of 176509271.</p>
+<p>Graphically, the square root of each squared residual making up <span class="math inline">\(SSR\)</span> represents the distance between the <em>mean</em> model (which is a horizontal line) and the <em>bivariate</em> model (which usually has a none zero slope) for every point. This is <em>not</em> the distance between a point and one of the lines.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="regression_files/figure-html/unnamed-chunk-18-1.png" width="576"></p>
+</div>
+</div>
+<p>The linear models are shown in blue lines, the square root of each residual element making up <span class="math inline">\(SSR\)</span> (the difference between the two models) is shown in dashed red lines. Had we shown each <em>squared</em> residual, red boxes would have been drawn as in earlier figures (the boxes were not drawn here to prevent clutter). The take away point here is that <span class="math inline">\(SSR\)</span> is the error that is explained by the new bivariate model.</p>
+<p>The following table summarizes some of these key error terms:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th></th>
+<th style="text-align: center;">Error</th>
+<th style="text-align: center;">Notation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Mean model</td>
+<td style="text-align: center;">Total error</td>
+<td style="text-align: center;"><span class="math inline">\(SSE_{mean}\)</span> or <span class="math inline">\(SST\)</span></td>
+</tr>
+<tr class="even">
+<td>Bivariate model</td>
+<td style="text-align: center;">Residual error</td>
+<td style="text-align: center;"><span class="math inline">\(SSE\)</span></td>
+</tr>
+<tr class="odd">
+<td>Bivariate - Mean</td>
+<td style="text-align: center;">Explained error</td>
+<td style="text-align: center;"><span class="math inline">\(SSR\)</span></td>
+</tr>
+</tbody>
+</table>
+<section id="testing-if-the-bivariate-model-is-an-improvement-over-the-mean-model" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="testing-if-the-bivariate-model-is-an-improvement-over-the-mean-model"><span class="header-section-number">2.1</span> Testing if the bivariate model is an improvement over the mean model</h2>
+<section id="the-coefficient-of-determination-r2" class="level3" data-number="2.1.1">
+<h3 data-number="2.1.1" class="anchored" data-anchor-id="the-coefficient-of-determination-r2"><span class="header-section-number">2.1.1</span> The coefficient of determination, <span class="math inline">\(R^2\)</span></h3>
+<p>In this working example, the percent error explained by the bivariate model is,</p>
+<p><span class="math display">\[
+\frac{SSE_{mean} - SSE}{SSE_{mean}} \times 100 = \frac{SSR}{SSE_{mean}} \times 100
+\]</span></p>
+<p>or (205233706 - 28724435) / 205233706 * 100 = <strong>86.0%</strong>. This is a substantial reduction in error.</p>
+<p>The ratio between <span class="math inline">\(SSR\)</span> and <span class="math inline">\(SSE_{mean}\)</span> is also referred to as the <strong>proportional error reduction score</strong> (also referred to as the <strong>coefficient of determination</strong>), or <span class="math inline">\(R^2\)</span>, hence:</p>
+<p><span class="math display">\[
+R^2 = \frac{SSR}{SSE_{mean}}
+\]</span></p>
+<p><span class="math inline">\(R^2\)</span> is another value computed by the linear model <code>lm()</code> that can be extracted from the output <code>M</code> as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(M)<span class="sc">$</span>r.squared</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.8600404</code></pre>
+</div>
+</div>
+<p>The <span class="math inline">\(R^2\)</span> value computed by <span class="math inline">\(M\)</span> is the same as that computed manually using the ratio of errors (except that the latter was presented as a percentage and not as a fraction). Another way to describe <span class="math inline">\(R^2\)</span> is to view its value as the fraction of the variance in <span class="math inline">\(Y\)</span> explained by <span class="math inline">\(X\)</span>. A <span class="math inline">\(R^2\)</span> value of <span class="math inline">\(0\)</span> implies complete lack of fit of the model to the data whereas a value of <span class="math inline">\(1\)</span> implies perfect fit. In our working example the <span class="math inline">\(R^2\)</span> value of 0.86 implies that the <strong>model explains 86%</strong> of the variance in <span class="math inline">\(Y\)</span>.</p>
+<p><code>R</code> also outputs <span class="math inline">\(adjusted\; R^2\)</span>, a better measure of overall model fit. It ‘penalizes’ <span class="math inline">\(R^2\)</span> for the number of predictors in the model <em>vis-a-vis</em> the number of observations. As the ratio of predictors to number of observation increases, <span class="math inline">\(R^2\)</span> can be artificially inflated thus providing us with a false sense of model fit quality. If the number of predictors to number of observations ratio is small, <span class="math inline">\(adjusted\; R^2\)</span> will be smaller than <span class="math inline">\(R^2\)</span>. <span class="math inline">\(adjusted\; R^2\)</span> can be extracted from the model output as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(M)<span class="sc">$</span>adj.r.squared</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The <span class="math inline">\(adjusted\; R^2\)</span> of <strong>0.85</strong> is very close to our <span class="math inline">\(R^2\)</span> value of <strong>0.86</strong>. So our predictive power hasn’t changed given our sample size and one predictor variable.</p>
+</section>
+<section id="the-f-ratio-test" class="level3" data-number="2.1.2">
+<h3 data-number="2.1.2" class="anchored" data-anchor-id="the-f-ratio-test"><span class="header-section-number">2.1.2</span> The F-ratio test</h3>
+<p><span class="math inline">\(R^2\)</span> is one way to evaluate the strength of the linear model. Another is to determine if the reduction in error between the bivariate model and mean model is <em>significant</em>. We’ve already noted a decrease in overall residual errors when augmenting our mean model with a predictor variable <span class="math inline">\(X\)</span> (i.e.&nbsp;the fraction of residents having attained at least a bachelor’s degree). Now we need to determine if this difference is significant.</p>
+<p>It helps to conceptualize residual errors as <em>spreads</em> or variances. The following two plots show the errors explained by the model (left) and the errors not explained by the model for each of the 16 data points. Note that we can derive <span class="math inline">\(SSR\)</span> and <span class="math inline">\(SSE\)</span> from the left and right graphs respectively by <em>squaring</em> then <em>summing</em> the horizontal error bars.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="regression_files/figure-html/unnamed-chunk-21-1.png" width="576"></p>
+</div>
+</div>
+<p>We want to assess whether the total amount of <em>unexplained error</em> (right) is significantly less than the total amount of <em>explained error</em> (left). We have 16 records (i.e.&nbsp;data for sixteen counties) therefore we have 16 measures of error. Since the model assumes that the errors are the same across the entire range of <span class="math inline">\(Y\)</span> values, we will take the average of those errors; hence we take the average of <span class="math inline">\(SSR\)</span> and the average of <span class="math inline">\(SSE\)</span>. However, because these data are from a <em>subset</em> of possible <span class="math inline">\(Y\)</span> values and not <em>all</em> possible <span class="math inline">\(Y\)</span> values we will need to divide <span class="math inline">\(SSR\)</span> and <span class="math inline">\(SSE\)</span> by their respective <span class="math inline">\(degress\; of\; freedom\)</span> and not by the total number of records, <span class="math inline">\(n\)</span>. These “averages” are called <strong>mean squares</strong> (<span class="math inline">\(MS\)</span>) and are computed as follows:</p>
+<p><span class="math display">\[
+MS_{model} = \frac{SSR}{df_{model}} =  \frac{SSR}{parameters\; in\; the\; bivariate\; model - parameters\; in\; the\; mean\; model}
+\]</span></p>
+<p><span class="math display">\[
+MS_{residual} = \frac{SSE}{df_{residual}} = \frac{SSE}{n - number\; of\; parameters}
+\]</span></p>
+<p>where the <span class="math inline">\(parameters\)</span> are the number of coefficients in the mean model (where there is just one parameter: <span class="math inline">\(\beta_0 = \hat Y\)</span>) and the number of coefficient in the bivariate model (where there are two parameters: <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>). In our working example, <span class="math inline">\(df_{model}\)</span> = 1 and <span class="math inline">\(df_{residual}\)</span> = 14.</p>
+<p>It’s important to remember that these measures of error are measures of <strong>spread</strong> and not of a <em>central</em> value. Since these are measures of spread we use the <span class="math inline">\(F\)</span>-test (and <em>not</em> the <span class="math inline">\(t\)</span>-test) to determine if the difference between <span class="math inline">\(MS_{model}\)</span> and <span class="math inline">\(MS_{residual}\)</span> is significant (recall that the <span class="math inline">\(F\)</span> test is used to determine if two measures of spread between samples are significantly different). The <span class="math inline">\(F\)</span> ratio is computed as follows:</p>
+<p><span class="math display">\[
+F = \frac{MS_{model}}{MS_{residual}}
+\]</span></p>
+<p>A simple way to implement an <span class="math inline">\(F\)</span> test with on our bivariate regression model is to call the <code>anova()</code> function as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(M)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>where the variable <code>M</code> is the output from our regression model created earlier. The output of <code>anova()</code> is summarized in the following table:</p>
+<div class="cell-output-display">
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: center;">Df</th>
+<th style="text-align: center;">Sum Sq</th>
+<th style="text-align: center;">Mean Sq</th>
+<th style="text-align: center;">F value</th>
+<th style="text-align: center;">Pr(&gt;F)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">x</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">176509271</td>
+<td style="text-align: center;">176509271</td>
+<td style="text-align: center;">86.02884</td>
+<td style="text-align: center;">0.0000002</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Residuals</td>
+<td style="text-align: center;">14</td>
+<td style="text-align: center;">28724435</td>
+<td style="text-align: center;">2051745</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The first row in the table (labeled as <code>x</code>) represents the error terms <span class="math inline">\(SSR\)</span> and <span class="math inline">\(MS_{model}\)</span> for the basic model (the <em>mean</em> model in our case) while the second row labeled <code>Residuals</code> represents error terms <span class="math inline">\(SSE\)</span> and <span class="math inline">\(MS_{residual}\)</span> for the current model. The column labeled <code>Df</code> displays the degrees of freedom, the column labeled <code>Sum Sq</code> displays the sum of squares <span class="math inline">\(SSR\)</span> and <span class="math inline">\(SSE\)</span>, the column labeled <code>Mean Sq</code> displays the <em>mean squares</em> <span class="math inline">\(MS\)</span> and the column labeled <code>F value</code> displays the <span class="math inline">\(F\)</span> ratio <span class="math inline">\(MS_{model}/MS_{residual}\)</span>.</p>
+<p>The larger the <span class="math inline">\(F\)</span> ratio, the greater the difference between the bivariate model and mean model. The question then becomes ‘how significant is the observed ratio?’. To answer this question, we must setup a hypothesis test. We setup the test as follows:</p>
+<p><span class="math inline">\(H_o\)</span>: The addition of the term <span class="math inline">\(\beta_1\)</span> (and hence the predictor <span class="math inline">\(X\)</span>) does not improve the prediction of <span class="math inline">\(Y\)</span> over the simple <em>mean</em> model.</p>
+<p><span class="math inline">\(H_a\)</span>: The addition of the term <span class="math inline">\(\beta_1\)</span> (and hence the predictor <span class="math inline">\(X\)</span>) helps improve the prediction of <span class="math inline">\(Y\)</span> over the simple <em>mean</em> model.</p>
+<p>The next step is to determine how likely we are (as a measure of probability) to have a <span class="math inline">\(F\)</span> ratio as large as the one observed under the assumption <span class="math inline">\(H_o\)</span> that the bivariate model does <em>not</em> improve on our prediction of <span class="math inline">\(Y\)</span>. The last column in the <code>anova</code> output gives us this probability (as a fraction): <span class="math inline">\(P\)</span> = 0. In other words, there is a 0% chance that we could have computed an <span class="math inline">\(F\)</span> ratio as extreme as ours had the <em>bivariate</em> model not improved over the <em>mean</em> model.</p>
+<p>The following graph shows the frequency distribution of <span class="math inline">\(F\)</span> values we would expect if indeed <span class="math inline">\(H_o\)</span> was true. Most of the values under <span class="math inline">\(H_o\)</span> fall between 0 and 5. The red line to the far right of the curve is where our observed <span class="math inline">\(F\)</span> value lies along this continuum–this is not a value one would expect to get if <span class="math inline">\(H_o\)</span> were true. It’s clear from this output that our <em>bivariate</em> model is a significant improvement over our <em>mean</em> model.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="regression_files/figure-html/unnamed-chunk-24-1.png" width="672"></p>
+</div>
+</div>
+<p>The F-ratio is not only used to compare the bivariate model to the mean, in fact, it’s more commonly used to compare a <em>two-predictor</em> variable model with a <em>one-predictor</em> variable model or a <em>three-predictor</em> model with a <em>two-predictor</em> model and so on. In each case, one model is compared with a similar model <em>minus</em> one predictor variable.</p>
+<p>When two different models are compared, the function <code>anova()</code> requires two parameters: the two regression model outputs (we’ll call <code>M1</code> and <code>M2</code>).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(M1, M2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>An example will be provided in a later section when we tackle multivariate regression.</p>
+</section>
+</section>
+<section id="testing-if-the-estimated-slope-is-significantly-different-from-0" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="testing-if-the-estimated-slope-is-significantly-different-from-0"><span class="header-section-number">2.2</span> Testing if the estimated slope is significantly different from 0</h2>
+<p>We’ve just assessed that our <em>bivariate</em> model is a significant improvement over the much <em>simpler</em> mean model. We can also test if each regression coefficient <span class="math inline">\(\beta\)</span> is significantly different from 0. If we are dealing with a model that has just one predictor <span class="math inline">\(X\)</span>, then the <span class="math inline">\(F\)</span> test just described will also tell us if the regression coefficient <span class="math inline">\(\beta_1\)</span> is significant. However, if more than one predictor variable is present in the regression model, then you should perform an <span class="math inline">\(F\)</span>-test to test <em>overall</em> model improvement, then test each regression term independently for significance.</p>
+<p>When assessing if a regression coefficient is significantly different from zero, we are setting up yet another hypothesis test where:</p>
+<p><span class="math inline">\(H_o\)</span>: <span class="math inline">\(\beta_1\)</span> = 0 (i.e.&nbsp;the predictor variable <em>does not</em> contribute significantly to the overall improvement of the predictive ability of the model).</p>
+<p><span class="math inline">\(H_a\)</span>: <span class="math inline">\(\beta_1\)</span> &lt; 0 or <span class="math inline">\(\beta_1\)</span> &gt; 0 for one-tailed test, or <span class="math inline">\(\beta_1 \neq\)</span> 0 for a two-tailed test (i.e.&nbsp;the predictor variable <em>does</em> contribute significantly to the overall improvement of the predictive ability of the model).</p>
+<p>Our hypothesis in this working example is that the level of education attainment (<span class="math inline">\(X\)</span>) can predict per-capita income (<span class="math inline">\(Y\)</span>), at least at the county level (which is the level at which our data is aggregated). So what we set out to test is the <strong>null hypothesis</strong>, <span class="math inline">\(H_o\)</span>, that <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are <strong>not linearly related</strong>. If <span class="math inline">\(H_o\)</span> is true, then we would expect the regression coefficient <span class="math inline">\(\beta_1\)</span> to be very close to zero. So this begs the question ‘how close should <span class="math inline">\(\beta_1\)</span> be to 0 for us <strong>not to reject</strong> <span class="math inline">\(H_o\)</span>?’</p>
+<p>To answer this question, we need to perform a <span class="math inline">\(t\)</span>-test where we compare our calculated regression coefficient <span class="math inline">\(\hat \beta_1\)</span> to what we would expect to get if <span class="math inline">\(X\)</span> did not contribute significantly to the model’s predictive capabilities. So the statistic <span class="math inline">\(t\)</span> is computed as follows:</p>
+<p><span class="math display">\[
+t = \frac{\hat \beta_1 - \beta_{1_o}}{s_{\hat \beta_1}}
+\]</span></p>
+<p>Since <span class="math inline">\(\beta_1\)</span> is zero under <span class="math inline">\(H_o\)</span> , we can rewrite the above equation as follows:</p>
+<p><span class="math display">\[
+t = \frac{\hat \beta_1 - 0}{s_{\hat \beta_1}} = \frac{\hat \beta_1 }{s_{\hat \beta_1}}
+\]</span></p>
+<p>where the estimate <span class="math inline">\(s_{\hat \beta_1}\)</span> is the <strong>standard error of <span class="math inline">\(\beta\)</span></strong> which can be computed from:</p>
+<p><span class="math display">\[
+s_{\hat \beta_1} = \frac{\sqrt{MS_{residual}}}{\sqrt{SSX}}
+\]</span></p>
+<p>where <span class="math inline">\(SSX\)</span> is the sum of squares of the variable <span class="math inline">\(X\)</span> (i.e.&nbsp;<span class="math inline">\(\sum (X - \bar X)^2\)</span>) which was computed in an earlier table.</p>
+<p>In our working example, <span class="math inline">\(s_{\hat \beta_1}\)</span> is 1432.3914787 / 0.2674766 or <span class="math inline">\(s_{\hat \beta_1}\)</span> = 5355.2. The test statistic <span class="math inline">\(t\)</span> is therefore 49670.43 / 5355.2 or <span class="math inline">\(t\)</span> = 9.28.</p>
+<p>Next we need to determine if the computed value of <span class="math inline">\(t\)</span> is significantly different from the values of <span class="math inline">\(t\)</span> expected under <span class="math inline">\(H_o\)</span>. The following figure plots the frequency distribution of <span class="math inline">\(\beta_{1_o}\)</span> (i.e.&nbsp;the kind of <span class="math inline">\(\beta_1\)</span> values we could expect to get under the assumption that the predictor <span class="math inline">\(X\)</span> does not contribute to the model) along with the red regions showing where our observed <span class="math inline">\(\hat \beta_1\)</span> must lie for us to safely reject <span class="math inline">\(H_o\)</span> at the 5% confidence level (note that because we are performing a two-sided test, i.e.&nbsp;that <span class="math inline">\(\hat \beta_1\)</span> is different from 0, the red regions each represent 2.5%; when combined both tails give us a 5% rejection region).</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="regression_files/figure-html/unnamed-chunk-26-1.png" width="672"></p>
+</div>
+</div>
+<p>It’s clear that seeing where our observed <span class="math inline">\(\hat \beta_1\)</span> lies along the distribution allows us to be fairly confident that our <span class="math inline">\(\hat \beta_1\)</span> is far from being a <em>typical value</em> under <span class="math inline">\(H_o\)</span>, in fact we can be quite confident in rejecting the null hypothesis, <span class="math inline">\(H_o\)</span>. This implies that <span class="math inline">\(X\)</span> (education attainment) <strong>does</strong> contribute information towards the prediction of <span class="math inline">\(Y\)</span> (per-capita income) when modeled as a <em>linear</em> relationship.</p>
+<p>Fortunately, we do not need to burden ourselves with all these calculations. The aforementioned standard error, <span class="math inline">\(t\)</span> value and <span class="math inline">\(P\)</span> value are computed as part of the <code>lm</code> analysis. You can list these and many other output parameters using the <code>summary()</code> function as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(M)[[<span class="dv">4</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The <code>[[4]]</code> option displays the pertinent subset of the <code>summary</code> output that we want. The content of this output is displayed in the following table:</p>
+<div class="cell-output-display">
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: center;">Estimate</th>
+<th style="text-align: center;">Std. Error</th>
+<th style="text-align: center;">t value</th>
+<th style="text-align: center;">Pr(&gt;|t|)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: center;">12404.50</td>
+<td style="text-align: center;">1350.332</td>
+<td style="text-align: center;">9.186264</td>
+<td style="text-align: center;">0.0000003</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">x</td>
+<td style="text-align: center;">49670.43</td>
+<td style="text-align: center;">5355.202</td>
+<td style="text-align: center;">9.275173</td>
+<td style="text-align: center;">0.0000002</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The second line of the output displays the value of <span class="math inline">\(\hat \beta_1\)</span>, its standard error, its <span class="math inline">\(t\)</span>-value and the probability of observing a <span class="math inline">\(\beta_1\)</span> value as extreme as ours under <span class="math inline">\(H_o\)</span>.</p>
+<section id="extracting-hat-beta_1-confidence-interval" class="level3" data-number="2.2.1">
+<h3 data-number="2.2.1" class="anchored" data-anchor-id="extracting-hat-beta_1-confidence-interval"><span class="header-section-number">2.2.1</span> Extracting <span class="math inline">\(\hat \beta_1\)</span> confidence interval</h3>
+<p><span class="math inline">\(\hat \beta_1\)</span>’s standard error <span class="math inline">\(s_{\hat \beta_1}\)</span> can also be used to derive a confidence interval for our estimate. The standard error of <strong>5355</strong> tells us that we can be ~68% confident that our true <span class="math inline">\(\beta_1\)</span> value lies between <span class="math inline">\(\hat \beta_1\)</span> - 5355 and <span class="math inline">\(\hat \beta_1\)</span> + 5355. We can use the standard error to construct different confidence intervals depending on our desired <span class="math inline">\(\alpha\)</span> level. The following table shows upper and lower limits for a few common alpha levels:</p>
+<div class="cell">
+
+</div>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Confidence level <span class="math inline">\(\alpha\)</span></th>
+<th style="text-align: center;">Lower limit</th>
+<th style="text-align: center;">Upper limit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">68%</td>
+<td style="text-align: center;">44149</td>
+<td style="text-align: center;">55192</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">95%</td>
+<td style="text-align: center;">38185</td>
+<td style="text-align: center;">61156</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">99%</td>
+<td style="text-align: center;">33729</td>
+<td style="text-align: center;">65612</td>
+</tr>
+</tbody>
+</table>
+<p>The following figure shows the range of the distribution curve covered by the 68% and 95% confidence intervals for our working example.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="regression_files/figure-html/unnamed-chunk-30-1.png" width="768"></p>
+</div>
+</div>
+<p>The confidence intervals for <span class="math inline">\(\hat \beta_1\)</span> can easily be extracted in <code>R</code> using the <code>confint()</code> function. for example, to get the confidence interval for an <span class="math inline">\(\alpha\)</span> of 95%, call the following function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(M, <span class="at">parm =</span> <span class="dv">2</span>, <span class="at">level =</span> <span class="fl">0.95</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     2.5 %  97.5 %
+x 38184.66 61156.2</code></pre>
+</div>
+</div>
+<p>The first parameter, <code>M</code>, is the linear regression model output computed earlier. The second parameter <code>parm = 2</code> tells <code>R</code> which parameter to compute the confidence interval for (a value of <code>1</code> means that the confidence interval for the intercept is desired), and the third parameter in the function, <code>level = 0.95</code> tells <code>R</code> which <span class="math inline">\(\alpha\)</span> value you wish to compute a confidence interval for.</p>
+</section>
+</section>
+<section id="checking-the-residuals" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="checking-the-residuals"><span class="header-section-number">2.3</span> Checking the residuals</h2>
+<p>We have already used the residuals <span class="math inline">\(\varepsilon\)</span> to give us and assessment of model fit and the contribution of <span class="math inline">\(X\)</span> to the prediction of <span class="math inline">\(Y\)</span>. But the <em>distribution</em> of the residuals can also offer us insight into whether or not all of the following key assumptions are met:</p>
+<ol type="1">
+<li>The <strong>mean</strong> of the residuals, <span class="math inline">\(\bar \varepsilon = 0\)</span>, is close to <strong>0</strong>.</li>
+<li>The <strong>spread</strong> of the residuals is the same for all values of <span class="math inline">\(X\)</span>–i.e.&nbsp;they should be <strong>homoscedastic</strong>.</li>
+<li>The probability distribution of the errors follows a <strong>normal (Gaussian)</strong> distribution.</li>
+<li>The residuals are <strong>independent</strong> of one another–i.e.&nbsp;they are not <strong>autocorrelated</strong>.</li>
+</ol>
+<p>We will explore each assumption in the following sections.</p>
+<section id="assumption-1-bar-varepsilon-0" class="level3" data-number="2.3.1">
+<h3 data-number="2.3.1" class="anchored" data-anchor-id="assumption-1-bar-varepsilon-0"><span class="header-section-number">2.3.1</span> Assumption 1: <span class="math inline">\(\bar \varepsilon = 0\)</span></h3>
+<p>The <code>lm</code> regression model outputs not only parameters as seen in earlier sections, but residuals as well. For each <span class="math inline">\(Y\)</span> value, a residual (or error) accounting for the difference between the model <span class="math inline">\(\hat Y\)</span> and actual <span class="math inline">\(Y\)</span> value is computed. We can plot the residuals as a function of the predictor variable <span class="math inline">\(X\)</span>. We will also draw the line at <span class="math inline">\(\varepsilon\)</span> = 0 to see how <span class="math inline">\(\varepsilon\)</span> fluctuates around 0.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(M<span class="sc">$</span>residuals <span class="sc">~</span> x, <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">ylab=</span> <span class="st">"Residuals"</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">lty =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="regression_files/figure-html/unnamed-chunk-32-1.png" width="384"></p>
+</div>
+</div>
+<p>We can compute the mean of the residuals, <span class="math inline">\(\bar \varepsilon\)</span>, as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(M<span class="sc">$</span>residuals)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -0.00000000000002131628</code></pre>
+</div>
+</div>
+<p>which gives us a value very close to zero as expected.</p>
+</section>
+<section id="assumption-2-homoscedasticity" class="level3" data-number="2.3.2">
+<h3 data-number="2.3.2" class="anchored" data-anchor-id="assumption-2-homoscedasticity"><span class="header-section-number">2.3.2</span> Assumption 2: homoscedasticity</h3>
+<p>It helps to demonstrate via figures what does and does not constitute a homoscedastic residual:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="regression_files/figure-html/unnamed-chunk-34-1.png" width="864"></p>
+</div>
+</div>
+<p>The figure on the left shows no obvious trend in the <em>variability</em> of the residuals as a function of <span class="math inline">\(X\)</span>. The middle figure shows an <em>increase</em> in variability of the residuals with increasing <span class="math inline">\(X\)</span>. The figure on the right shows a <em>decrease</em> in variability in the residuals with increasing <span class="math inline">\(X\)</span>. When the variances of <span class="math inline">\(\varepsilon\)</span> are not uniform across all ranges of <span class="math inline">\(X\)</span>, the residuals are said to be <strong>heteroscedastic</strong>.</p>
+<p>Our plot of the residuals from the bivariate model may show some signs of heteroscedasticity, particularly on the right hand side of the graph. When dealing with relatively small samples, a visual assessment of the distribution of the residuals may not be enough to assess whether or not the assumption of homoscedasticity is met. We therefore turn to the <strong>Breusch-Pagan test</strong>. A Breusch-Pagan function, <code>ncvTest()</code>, is available in the library <code>car</code> which will need to be loaded into our <code>R</code> session before performing the test. The package <code>car</code> is usually installed as part of the normal <code>R</code> installation.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ncvTest</span>(M)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Non-constant Variance Score Test 
+Variance formula: ~ fitted.values 
+Chisquare = 0.2935096, Df = 1, p = 0.58798</code></pre>
+</div>
+</div>
+<p>The Breusch-Pagan tests the (null) hypothesis that the variances are constant across the full range of <span class="math inline">\(X\)</span>. The <span class="math inline">\(P\)</span> value tells the likelihood that our distribution of residual variances are consistent with homoscedasticity. A non-significant <span class="math inline">\(P\)</span> value (one usually greater than 0.05) should indicate that our residuals are homoscedastic. Given our high <span class="math inline">\(P\)</span> value of 0.59, we can be fairly confident that we have satisfied our second assumption.</p>
+</section>
+<section id="assumption-3-normal-gaussian-distribution-of-residuals" class="level3" data-number="2.3.3">
+<h3 data-number="2.3.3" class="anchored" data-anchor-id="assumption-3-normal-gaussian-distribution-of-residuals"><span class="header-section-number">2.3.3</span> Assumption 3: Normal (Gaussian) distribution of residuals</h3>
+<p>An important assumption is that the distribution of the residual values follow a normal (Gaussian) distribution. Note that this assumption is <strong>only</strong> needed when computing <strong>confidence intervals</strong> or regression coefficient <strong><span class="math inline">\(P\)</span>-values</strong>. If your interest is solely in finding the best linear <em>unbiased</em> estimator (BLUE), then only the three other assumptions need to be met.</p>
+<p>The assumption of normality of residuals is often confused with the belief that <span class="math inline">\(X\)</span> (the predictor variables) must follow a normal distribution. This is incorrect! The least-squares regression model makes <strong>no</strong> assumptions about the distribution of <span class="math inline">\(X\)</span>. However, if the <em>residuals</em> do not follow a normal distribution, then one method of resolving this problem is to transform the values of <span class="math inline">\(X\)</span> (which may be the source of confusion).</p>
+<p>It helps to first plot the histogram of our residuals then to fit a kernel density function to help see the overall trend in distribution.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(M<span class="sc">$</span>residuals, <span class="at">col=</span><span class="st">"bisque"</span>, <span class="at">freq=</span><span class="cn">FALSE</span>, <span class="at">main=</span><span class="cn">NA</span>)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(M<span class="sc">$</span>residuals), <span class="at">col=</span><span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="regression_files/figure-html/unnamed-chunk-36-1.png" width="384"></p>
+</div>
+</div>
+<p>A good visual test of normality is the use of a <strong>Q-Q plot</strong>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(M, <span class="at">which =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="regression_files/figure-html/unnamed-chunk-37-1.png" width="384"></p>
+</div>
+</div>
+<p>What we are hoping to see is an alignment of the residual values (hollow points on the plot) along the sloped dashed line. Any deviation from the sloped line may indicate lack of normality in our residuals. You will seldom encounter residuals that fit the line exactly. What you are assessing is whether or not the difference is significant. In our working example, there seems to be disagreement between the distribution of our residuals and the <em>normal</em> line on the plot.</p>
+<p>A visual assessment of normality using the Q-Q plot is usually the preferred approach, but you can also use the <strong>Shapiro-Wilk</strong> test to assess the <em>significance</em> of deviation from normality. But use this test with caution, large sample sizes tend to always indicate deviation from normality, regardless how close they follow the Gaussian curve. <code>R</code> has a function called <code>shapiro.test()</code> which we can call as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(M<span class="sc">$</span>residuals)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  M$residuals
+W = 0.92243, p-value = 0.1846</code></pre>
+</div>
+</div>
+<p>The output we are interested in is the <span class="math inline">\(P\)</span>-value. The <em>Shapiro-Wilk Test</em> tests the null hypothesis that the residuals come from a normally distributed population. A large <span class="math inline">\(P\)</span>-value indicates that there is a good chance that the null is true (i.e.&nbsp;that the residuals are close to being normally distributed). If the <span class="math inline">\(P\)</span> value is small, then there is a good chance that the null is false. Our <span class="math inline">\(P\)</span> value is 0.18 which would indicate that we cannot reject the null. Despite the Shapiro-Welk test telling us that there is a good chance that our <span class="math inline">\(\varepsilon\)</span> values come from a normally distributed population, our visual assessment of the Q-Q plot leads us to question this assessment.</p>
+<p>Again, remember that the assumption of normality of residuals really only matters when you are seeking a confidence interval for <span class="math inline">\(\hat \beta_1\)</span> or <span class="math inline">\(P\)</span>-values.</p>
+</section>
+<section id="assumption-4-independence-of-residuals" class="level3" data-number="2.3.4">
+<h3 data-number="2.3.4" class="anchored" data-anchor-id="assumption-4-independence-of-residuals"><span class="header-section-number">2.3.4</span> Assumption 4: Independence of residuals</h3>
+<p>Our final assumption pertains to the independence of the residuals. In other words, we want to make sure that a residual value is not auto-correlated with a <em>neighboring</em> residual value. The word <em>neighbor</em> can mean different things. It may refer to the <em>order</em> of the residuals in which case we are concerned with residuals being more similar within a narrow range of <span class="math inline">\(X\)</span>, or it may refer to a <em>spatial</em> neighborhood in which case we are concerned with residuals of similar values being <em>spatially</em> clustered. To deal with the former, we can use the <strong>Durbin-Watson</strong> test available in the <code>R</code> package <code>car</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car) <span class="co"># Load this package if not already loaded</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">durbinWatsonTest</span>(M)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> lag Autocorrelation D-W Statistic p-value
+   1      0.01856517      1.706932   0.588
+ Alternative hypothesis: rho != 0</code></pre>
+</div>
+</div>
+<p>Ideally, the <code>D-W</code> statistic returned by the test should fall within the range of 1 to 3. The <span class="math inline">\(P\)</span>-value is the probability that our residual distribution is consistent with what we would expect if there was no auto-correlation. Our test statistic of 1.71 and <span class="math inline">\(P\)</span> value of 0.62 suggests that the assumption of independence is met with our model. You might note that the <span class="math inline">\(P\)</span>-value changes every time the tests is re-run. This is because the Durbin Watson test, as implemented in <code>R</code>, uses a Monte-Carlo approach to compute <span class="math inline">\(P\)</span>. If you want to nail <span class="math inline">\(P\)</span> down to a greater precision, you can add the <code>reps =</code> parameter to the function (by default, the test runs 1000 bootstrap replications). For example, you could rerun the test using 10,000 bootstrap replications (<code>durbinWatsonTest(M, reps = 10000)</code>).</p>
+</section>
+</section>
+<section id="influential-observations" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="influential-observations"><span class="header-section-number">2.4</span> Influential Observations</h2>
+<p>We want to avoid a situation where a single, or very small subset of points, have a disproportionately large influence on the model results. It is usually best to remove such influential points from the regression analysis. This is not to say that the influential points should be ignored from the overall analysis, but it may suggest that such points may behave differently then the bulk of the data and therefore may require a different model.</p>
+<p>Several tests are available to determine if one or several points are influential. Two of which are covered here: <strong>Cook’s distance</strong> and <strong>hat values</strong>.</p>
+<p>Cook’s distance can be computed from the model using the <code>cooks.distance()</code> function. But it’s also available as one of <code>plot.lm</code>’s diagnostic outputs.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>( M, <span class="at">which =</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="regression_files/figure-html/unnamed-chunk-40-1.png" width="384"></p>
+</div>
+</div>
+<p>We could have called the <code>plot.lm</code> function, but because <code>R</code> recognizes that the object <code>M</code> is the output of an <code>lm</code> regression, it automatically passes the call to <code>plot.lm</code>. The option <code>which = 4</code> tells <code>R</code> which of the 6 diagnostic plots to display (to see a list of all diagnostic plots offered, type <code>?plot.lm</code>). Usually, any point with a Cook’s distance value <strong>greater than 1</strong> is considered overly influential. In our working example, none of the points are even close to 1 implying that none of our observations wield undue influence.</p>
+<p>The other test that can be used to assess if a point has strong leverage is the <strong>hat values</strong> test. The technique involves calculating an average leverage value for all data points; this is simply the ratio between the number of regression coefficients in our model (this includes the intercept) and the number of observations. Once the average leverage is computed, we use a cutoff of either twice this average or three times this average (these are two popular cutoff values). We then look for hat values greater then these cutoffs. In the following chunk of code, we first compute the mean leverage values (whose value is assigned to the <code>cut</code> object), we then compute the leverage values for each point using the <code>hatvalues()</code> function and plot the resulting leverage values along with the two cutoff values (in dashed red lines).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>cut   <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>) <span class="sc">*</span> <span class="fu">length</span>(<span class="fu">coefficients</span>(M)) <span class="sc">/</span> <span class="fu">length</span>(<span class="fu">resid</span>(M))</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>M.hat <span class="ot">&lt;-</span> <span class="fu">hatvalues</span>(M)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(M.hat)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> cut, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>( <span class="fu">which</span>(M.hat <span class="sc">&gt;</span> <span class="fu">min</span>(cut) ) ,  M.hat[M.hat <span class="sc">&gt;</span> <span class="fu">min</span>(cut)] , </span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">row.names</span>(dat)[M.hat <span class="sc">&gt;</span> <span class="fu">min</span>(cut)], <span class="at">pos=</span><span class="dv">4</span>, <span class="at">col=</span><span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="regression_files/figure-html/unnamed-chunk-41-1.png" width="384"></p>
+</div>
+</div>
+<p>The last line of code (the one featuring the <code>text</code> function) labels only the points having a value greater than the smaller of the two cutoff values.</p>
+<p>The influential point of interest is associated with the third record in our <code>dat</code> dataset, Cumberland county. Let’s see where the point lies relative to the regression slope</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(Income <span class="sc">~</span> Education, dat)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(M, <span class="at">col=</span><span class="st">"blue"</span>)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(dat[M.hat <span class="sc">&gt;</span> <span class="fu">min</span>(cut),]<span class="sc">$</span>Education, </span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>       dat[M.hat <span class="sc">&gt;</span> <span class="fu">min</span>(cut),]<span class="sc">$</span>Income, <span class="at">col=</span><span class="st">"red"</span>, <span class="at">pch=</span><span class="dv">16</span>) </span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>( dat[M.hat <span class="sc">&gt;</span> <span class="fu">min</span>(cut),]<span class="sc">$</span>Education, </span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>       dat[M.hat <span class="sc">&gt;</span> <span class="fu">min</span>(cut),]<span class="sc">$</span>Income , </span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">labels =</span> <span class="fu">row.names</span>(dat)[M.hat <span class="sc">&gt;</span> <span class="fu">min</span>(cut)], </span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">col=</span><span class="st">"red"</span>, <span class="at">pos=</span><span class="dv">2</span>) <span class="co"># Add label to the left of point</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="regression_files/figure-html/unnamed-chunk-42-1.png" width="384"></p>
+</div>
+</div>
+<p>The point lies right on the line and happens to be at the far end of the distribution. The concern is that this point might have undue leverage potential. It helps to think of the regression line as a long straight bar hinged somewhere near the center. It requires less <em>force</em> to move the bar about the imaginary hinge point when applied to the ends of the bar then near the center of the bar. The <em>hat values</em> test is suggesting that observation number 3 may have unusual leverage potential. We can assess observation number 3’s influence by running a new regression analysis without observation number 3.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new dataframe that omits observation number 3</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>dat.nolev <span class="ot">&lt;-</span> dat[ <span class="sc">-</span> <span class="fu">which</span>(M.hat <span class="sc">&gt;</span> <span class="fu">min</span>(cut)),]</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Run a new regression analysis</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>M.nolev <span class="ot">&lt;-</span> <span class="fu">lm</span>( Income <span class="sc">~</span> Education, dat.nolev)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can view a full summary of this analysis using the <code>summary()</code> function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(M.nolev)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Income ~ Education, data = dat.nolev)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2730.0  -518.1   306.4   819.1  2009.8 
+
+Coefficients:
+            Estimate Std. Error t value   Pr(&gt;|t|)    
+(Intercept)    12408       1670   7.431 0.00000497 ***
+Education      49654       6984   7.109 0.00000794 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1486 on 13 degrees of freedom
+Multiple R-squared:  0.7954,    Adjusted R-squared:  0.7797 
+F-statistic: 50.54 on 1 and 13 DF,  p-value: 0.000007942</code></pre>
+</div>
+</div>
+<p>You’ll note that the <span class="math inline">\(adjusted\; R^2\)</span> value drops from 0.85 to 0.78.</p>
+<p>If we compare the estimates (and their standard errors) between both model (see the summary tables below), we’ll note that the estimates are nearly identical, however, the standard errors for <span class="math inline">\(\hat \beta_1\)</span> increase by almost 30%.</p>
+<p>The original model <code>M</code>:</p>
+<div class="cell-output-display">
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: center;">Estimate</th>
+<th style="text-align: center;">Std. Error</th>
+<th style="text-align: center;">t value</th>
+<th style="text-align: center;">Pr(&gt;|t|)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: center;">12404.50</td>
+<td style="text-align: center;">1350.33</td>
+<td style="text-align: center;">9.19</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">x</td>
+<td style="text-align: center;">49670.43</td>
+<td style="text-align: center;">5355.20</td>
+<td style="text-align: center;">9.28</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The new model <code>M.nolev</code>:</p>
+<div class="cell-output-display">
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: center;">Estimate</th>
+<th style="text-align: center;">Std. Error</th>
+<th style="text-align: center;">t value</th>
+<th style="text-align: center;">Pr(&gt;|t|)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: center;">12407.93</td>
+<td style="text-align: center;">1669.77</td>
+<td style="text-align: center;">7.43</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Education</td>
+<td style="text-align: center;">49654.45</td>
+<td style="text-align: center;">6984.52</td>
+<td style="text-align: center;">7.11</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Given that our estimates are nearly identical, but that the overall confidence in the model decreases with the new model, there seems to be no reason why we would omit the 3rd observation based on this analysis.</p>
+<p>This little exercise demonstrates the need to use as many different tools as possible to evaluate whether an assumption is satisfied or not.</p>
+</section>
+<section id="what-to-do-if-some-of-the-assumptions-are-not-met" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="what-to-do-if-some-of-the-assumptions-are-not-met"><span class="header-section-number">2.5</span> What to do if some of the assumptions are not met</h2>
+<section id="data-transformation" class="level3" data-number="2.5.1">
+<h3 data-number="2.5.1" class="anchored" data-anchor-id="data-transformation"><span class="header-section-number">2.5.1</span> Data transformation</h3>
+<p>Data transformation (usually via some non-linear re-expression) may be required when one or more of the following apply: * The residuals are skewed or are heteroscedastic. * When theory suggests. * To force a linear relationship between variables</p>
+<p><strong>Do not</strong> transform your data if the sole purpose is to “correct” for outliers.</p>
+<p>We observed that our residuals did not follow a normal (Gaussian) distribution. Satisfying this assumption is important if we are to use this model to derive confidence intervals around our <span class="math inline">\(\beta\)</span> estimates or if we are to use this model to compute <span class="math inline">\(P\)</span> values. We can see if transforming our data will help. This means re-expressing the <span class="math inline">\(X\)</span> and/or the <span class="math inline">\(Y\)</span> values (i.e.&nbsp;converting each value in <span class="math inline">\(X\)</span> and/or <span class="math inline">\(Y\)</span> by some expression such as <code>log(x)</code> or <code>log(y)</code>)</p>
+<p>It helps to look at the distribution of the variables (this is something that should normally be done prior to performing a regression analysis). We’ll use the <code>hist()</code> plotting function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(dat<span class="sc">$</span>Income, <span class="at">breaks =</span> <span class="fu">with</span>(dat, <span class="fu">seq</span>(<span class="fu">min</span>(Income), <span class="fu">max</span>(Income), <span class="at">length.out=</span><span class="dv">5</span>)) )</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(dat<span class="sc">$</span>Education, <span class="at">breaks =</span> <span class="fu">with</span>(dat, <span class="fu">seq</span>(<span class="fu">min</span>(Education), <span class="fu">max</span>(Education), <span class="at">length.out=</span><span class="dv">5</span>)) )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="regression_files/figure-html/unnamed-chunk-48-1.png" width="576"></p>
+</div>
+</div>
+<p>Two common transformations are the natural log (implemented as <code>log</code> in <code>R</code>) and the square. These are special cases of what is called a <strong>Box-Cox</strong> family of transformations.</p>
+<p>Data transformation is an iterative process which relies heavily on <strong>Exploratory Data Analysis (EDA)</strong> skills. It’s important to keep in mind the goal of the transformation. In our example, its purpose is to help improve the symmetry of the residuals. The following figures show different Q-Q plots of the regression residuals for different transformations of <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>.</p>
+<p>Several data transformation scenarios were explored using square root and logarithmic transformation of the <span class="math inline">\(X\)</span>’s and/or <span class="math inline">\(Y\)</span>’s. Of course, a thorough analysis would consist of a wide range of Box-Cox transformations. The scatter plots (along with the regression lines) are displayed on the left hand side for different transformations (the axes labels indicate which, if any, transformation was applied). The accompanying Q-Q plots are displayed to the right of the scatter plots.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="regression_files/figure-html/unnamed-chunk-49-1.png" width="624"></p>
+</div>
+</div>
+<p>A visual assessment of the Q-Q plots indicates some mild improvements near the middle of the residual distribution (note how the mid-points line up nicely with the dashed line), particularly in the second and fourth transformation (i.e.&nbsp;for <code>log(Income) ~ Education</code> and <code>sqrt(Income) ~ Education</code>).</p>
+<p>Note that transforming the data can come at a cost, particularly when interpretation of the results is required. For example, what does a log transformation of Income imply? When dealing with concentrations, it can make theoretical sense to take the log of a value–a good example being the concentration of hydrogen ions in a solution which is usually expressed as a log (pH). It’s always good practice to take a step back from the data transformation workflow and assess where your regression analysis is heading.</p>
+</section>
+<section id="bootstrapping" class="level3" data-number="2.5.2">
+<h3 data-number="2.5.2" class="anchored" data-anchor-id="bootstrapping"><span class="header-section-number">2.5.2</span> Bootstrapping</h3>
+<p>If the assumption of normality of residual is not met, one can overcome this problem by using bootstrapping techniques to come up with regression parameters confidence intervals and <span class="math inline">\(P\)</span>-values. The bootstrap technique involves rerunning an analysis, such as the regression analysis in our case, many times, while randomly resampling from our data each time. In concept, we are acting as though our original <em>sample</em> is the actual population and we are sampling, at random (with replacement), from this <em>pseudo</em> population.</p>
+<p>One way to implement a bootstrap is to use the <code>boot</code> package’s function <code>boot()</code>. But before we do, we will need to create our own regression function that will be passed to <code>boot()</code>. This custom function will not only compute a regression model, but it will also return the regression coefficients for each simulation. The following block of code defines our new custom function <code>lm.sim</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>lm.sim <span class="ot">&lt;-</span> <span class="cf">function</span>(formula, data, i)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  d.sim <span class="ot">&lt;-</span> data [i,]  </span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  M.sim <span class="ot">&lt;-</span> <span class="fu">lm</span>(formula, <span class="at">data=</span>d.sim)</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(M.sim<span class="sc">$</span>coef)</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can now use the <code>boot()</code> function to run the simulation. Note the call to our custom function <code>lm.sim</code> and the number of bootstrap replicates (i.e.&nbsp;<code>R = 999</code>). Also, don’t forget to load the <code>boot</code> library into the current <code>R</code> session (if not already loaded).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(boot)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>M.boot <span class="ot">&lt;-</span> <span class="fu">boot</span>(<span class="at">statistic =</span> lm.sim, <span class="at">formula =</span> Income <span class="sc">~</span> Education, <span class="at">data=</span>dat, <span class="at">R =</span> <span class="dv">999</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The results of our bootstrap simulation are now stored in the object <code>M.boot</code>. In essence, a new regression line is created for each simulation. In our working example, we created 999 different regression lines. The following plot shows the first 100 regression lines in light grey. Note how they fluctuate about the original regression line (shown in red). The distribution of these slopes is what is used to compute the confidence interval.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="regression_files/figure-html/unnamed-chunk-52-1.png" width="384"></p>
+</div>
+</div>
+<p>We can now use the function <code>boot.ci</code> (also in the <code>boot</code> package) to extract confidence intervals for our <span class="math inline">\(\beta\)</span> parameters for a given <span class="math inline">\(\alpha\)</span> confidence value. For example, to get the confidence intervals for the parameters <span class="math inline">\(\hat \beta_0\)</span> at a 95% confidence interval, you can type the following command:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boot.ci</span>(M.boot, <span class="at">conf =</span> <span class="fl">0.95</span>, <span class="at">type =</span> <span class="st">"bca"</span>, <span class="at">index=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+Based on 999 bootstrap replicates
+
+CALL : 
+boot.ci(boot.out = M.boot, conf = 0.95, type = "bca", index = 1)
+
+Intervals : 
+Level       BCa          
+95%   ( 9933, 14027 )  
+Calculations and Intervals on Original Scale</code></pre>
+</div>
+</div>
+<p>Note that your values may differ since the results stem from Monte Carlo simulation. Index <code>1</code>, the first parameter in our lm.sim output, is the coefficient for <span class="math inline">\(\hat \beta_0\)</span>. <code>boot.ci</code> will generate many difference confidence intervals. In this example, we are choosing <code>bca</code> (adjusted bootstrap percentile).</p>
+<p>To get the confidence interval for <span class="math inline">\(\hat \beta_1\)</span> at the 95% <span class="math inline">\(\alpha\)</span> level just have the function point to index 2:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boot.ci</span>(M.boot, <span class="at">conf =</span> <span class="fl">0.95</span>, <span class="at">type=</span><span class="st">"bca"</span>, <span class="at">index=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+Based on 999 bootstrap replicates
+
+CALL : 
+boot.ci(boot.out = M.boot, conf = 0.95, type = "bca", index = 2)
+
+Intervals : 
+Level       BCa          
+95%   (43317, 58859 )  
+Calculations and Intervals on Original Scale</code></pre>
+</div>
+</div>
+<div class="cell">
+
+</div>
+<p>The following table summarizes the 95% confidence interval for <span class="math inline">\(\hat \beta_1\)</span> from our simulation. The original confidence interval is displayed for comparison.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Model</th>
+<th style="text-align: center;"><span class="math inline">\(\hat \beta_1\)</span> interval</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Original</td>
+<td style="text-align: center;">[44149, 55192]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Bootstrap</td>
+<td style="text-align: center;">[43317, 58859]</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+</section>
+<section id="multivariate-regression-model" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Multivariate regression model</h1>
+<p>We do not need to restrict ourselves to one predictor variable, we can add as many predictor variables to the model as needed (if suggested by theory). But we only do so in the hopes that the extra predictors help account for the unexplained variances in <span class="math inline">\(Y\)</span>.</p>
+<p>Continuing with our working example, we will add a second predictor variable, <code>x2</code>. This variable represents the fraction of the employed civilian workforce employed in a professional field (e.g.&nbsp;scientific, management and administrative industries)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>x2 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.079</span>, <span class="fl">0.062</span>, <span class="fl">0.116</span>, <span class="fl">0.055</span>, <span class="fl">0.103</span>, <span class="fl">0.078</span>, </span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>        <span class="fl">0.089</span>, <span class="fl">0.079</span>, <span class="fl">0.067</span>, <span class="fl">0.073</span>, <span class="fl">0.054</span>, <span class="fl">0.094</span>, </span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>        <span class="fl">0.061</span>, <span class="fl">0.072</span>, <span class="fl">0.038</span>, <span class="fl">0.084</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We will add this new variable to our <code>dat</code> dataframe and name the variable <code>Professional</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>Professional <span class="ot">&lt;-</span> x2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We now have an updated dataframe, <code>dat</code>, with a third column.</p>
+<div class="cell-output-display">
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: center;">Income</th>
+<th style="text-align: center;">Education</th>
+<th style="text-align: center;">Professional</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Androscoggin</td>
+<td style="text-align: center;">23663</td>
+<td style="text-align: center;">0.19</td>
+<td style="text-align: center;">0.079</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Aroostook</td>
+<td style="text-align: center;">20659</td>
+<td style="text-align: center;">0.16</td>
+<td style="text-align: center;">0.062</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Cumberland</td>
+<td style="text-align: center;">32277</td>
+<td style="text-align: center;">0.40</td>
+<td style="text-align: center;">0.116</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Franklin</td>
+<td style="text-align: center;">21595</td>
+<td style="text-align: center;">0.24</td>
+<td style="text-align: center;">0.055</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Hancock</td>
+<td style="text-align: center;">27227</td>
+<td style="text-align: center;">0.31</td>
+<td style="text-align: center;">0.103</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Kennebec</td>
+<td style="text-align: center;">25023</td>
+<td style="text-align: center;">0.24</td>
+<td style="text-align: center;">0.078</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Knox</td>
+<td style="text-align: center;">26504</td>
+<td style="text-align: center;">0.28</td>
+<td style="text-align: center;">0.089</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Lincoln</td>
+<td style="text-align: center;">28741</td>
+<td style="text-align: center;">0.31</td>
+<td style="text-align: center;">0.079</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Oxford</td>
+<td style="text-align: center;">21735</td>
+<td style="text-align: center;">0.18</td>
+<td style="text-align: center;">0.067</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Penobscot</td>
+<td style="text-align: center;">23366</td>
+<td style="text-align: center;">0.23</td>
+<td style="text-align: center;">0.073</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Piscataquis</td>
+<td style="text-align: center;">20871</td>
+<td style="text-align: center;">0.17</td>
+<td style="text-align: center;">0.054</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Sagadahoc</td>
+<td style="text-align: center;">28370</td>
+<td style="text-align: center;">0.31</td>
+<td style="text-align: center;">0.094</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Somerset</td>
+<td style="text-align: center;">21105</td>
+<td style="text-align: center;">0.15</td>
+<td style="text-align: center;">0.061</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Waldo</td>
+<td style="text-align: center;">22706</td>
+<td style="text-align: center;">0.25</td>
+<td style="text-align: center;">0.072</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Washington</td>
+<td style="text-align: center;">19527</td>
+<td style="text-align: center;">0.19</td>
+<td style="text-align: center;">0.038</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">York</td>
+<td style="text-align: center;">28321</td>
+<td style="text-align: center;">0.28</td>
+<td style="text-align: center;">0.084</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Let’s rerun our original model, but this time we will call the output of the one predictor model <code>M1</code> (this naming convention will help when comparing models).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>M1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Income <span class="sc">~</span> Education, dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s review the summary. This time we’ll have <code>R</code> display the parameters <em>and</em> the statistics in a single output:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(M1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Income ~ Education, data = dat)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2730.4  -490.9   249.5   757.9  2008.8 
+
+Coefficients:
+            Estimate Std. Error t value    Pr(&gt;|t|)    
+(Intercept)    12404       1350   9.186 0.000000264 ***
+Education      49670       5355   9.275 0.000000235 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1432 on 14 degrees of freedom
+Multiple R-squared:   0.86, Adjusted R-squared:   0.85 
+F-statistic: 86.03 on 1 and 14 DF,  p-value: 0.0000002353</code></pre>
+</div>
+</div>
+<p>The output should be the same as before.</p>
+<p>We now generate an augmented (i.e.&nbsp;adding a second predictor) regression model, <code>M2</code>, as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>M2 <span class="ot">&lt;-</span> <span class="fu">lm</span>( Income <span class="sc">~</span> Education <span class="sc">+</span> Professional, dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>At this point, it’s helpful to visualize what a two-variable model represents. A two-variable model defines the equation of a plane that best fits a 3-D set of points. The regression plane is to a two-variable model what a regression line is to a one-variable model. We can plot the 3-D scatter plot where <em>x-axis</em> = fraction with bachelor’s, <em>y-axis</em> = fraction with a professional job and <em>z-axis</em> = income. We draw the 3-D scatter plot using the function <code>scatterplot3d()</code> from the <code>scatterplot3d()</code> package. We also add the regression plane to the plot.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scatterplot3d) </span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>s3d <span class="ot">&lt;-</span> <span class="fu">scatterplot3d</span>(dat<span class="sc">$</span>Education, dat<span class="sc">$</span>Professional , dat<span class="sc">$</span>Income, </span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">highlight.3d=</span><span class="cn">TRUE</span>, <span class="at">angle=</span><span class="dv">55</span>, <span class="at">scale.y=</span><span class="fl">0.7</span>, <span class="at">pch=</span><span class="dv">16</span>,</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">xlab =</span> <span class="st">"Education"</span>, <span class="at">ylab =</span> <span class="st">"Professional"</span>, <span class="at">zlab=</span><span class="st">"Income"</span>)</span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the 3-D regression plane defined by our model M2</span></span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>s3d<span class="sc">$</span><span class="fu">plane3d</span>(M2, <span class="at">lty.box=</span><span class="st">"solid"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="regression_files/figure-html/unnamed-chunk-62-1.png" width="672"></p>
+</div>
+</div>
+<section id="reviewing-the-multivariate-regression-model-summary" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="reviewing-the-multivariate-regression-model-summary"><span class="header-section-number">3.1</span> Reviewing the multivariate regression model summary</h2>
+<p>We can, of course, generate a full summary of the regression results as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(M2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Income ~ Education + Professional, data = dat)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-1704.2  -360.6  -202.5   412.8  2006.7 
+
+Coefficients:
+             Estimate Std. Error t value    Pr(&gt;|t|)    
+(Intercept)     10907       1143   9.544 0.000000308 ***
+Education       29684       7452   3.983     0.00156 ** 
+Professional    84473      26184   3.226     0.00663 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1108 on 13 degrees of freedom
+Multiple R-squared:  0.9223,    Adjusted R-squared:  0.9103 
+F-statistic: 77.13 on 2 and 13 DF,  p-value: 0.00000006148</code></pre>
+</div>
+</div>
+<p>The interpretation of the model statistics is the same with a multivariate model as it is with a bivariate model. The one difference is that the extra regression coefficient <span class="math inline">\(\hat \beta_2\)</span> (associated with the <em>Professional</em> variable) is added to the list of regression parameters. In our example, <span class="math inline">\(\hat \beta_2\)</span> is significantly different from <span class="math inline">\(0\)</span> (<span class="math inline">\(P\)</span> = 0.0066).</p>
+<p>One noticeable difference in the summary output is the presence of a <strong>Multiple R-squared</strong> statistic in lieu of the bivariate simple R-squared. Its interpretation is, however, the same and we can note an increase in the models’ overall <span class="math inline">\(R^2\)</span> value. The <span class="math inline">\(F\)</span>-statistic’s <span class="math inline">\(P\)</span> value of <span class="math inline">\(0\)</span> tells us that the amount of residual error from this multivariate model is significantly less than that of the simpler model, the mean <span class="math inline">\(\bar Y\)</span>. So far, things look encouraging.</p>
+<p>The equation of the modeled plane is thus:</p>
+<p><span class="math inline">\(\widehat{Income}\)</span> = <strong>10907</strong> + <strong>29684</strong> (<span class="math inline">\(Education\)</span>) + <strong>84473</strong> (<span class="math inline">\(Professional\)</span>)</p>
+</section>
+<section id="comparing-the-two-variable-model-with-the-one-variable-model" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="comparing-the-two-variable-model-with-the-one-variable-model"><span class="header-section-number">3.2</span> Comparing the two-variable model with the one-variable model</h2>
+<p>We can compare the two-variable model, <code>M2</code>, with the one-variable model (the bivariate model), <code>M1</code>. Using the <code>anova()</code> function. This test assesses whether or not adding the second variable, <code>x2</code>, <em>significantly</em> improves our ability to predict <span class="math inline">\(Y\)</span>. It’s important to remember that a good model is a parsimonious one. If an augmented regression model does not significantly improve our overall predictive ability, then we should always revert back to the simpler model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(M1, M2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Model 1: Income ~ Education
+Model 2: Income ~ Education + Professional
+  Res.Df      RSS Df Sum of Sq      F   Pr(&gt;F)   
+1     14 28724435                                
+2     13 15952383  1  12772052 10.408 0.006625 **
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>The <span class="math inline">\(P\)</span> value is very small indicating that the reduction in residual error in model <code>M2</code> over model <code>M1</code> is significant. Model <code>M2</code> looks promising so far.</p>
+</section>
+<section id="looking-for-multi-collinearity" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="looking-for-multi-collinearity"><span class="header-section-number">3.3</span> Looking for multi-collinearity</h2>
+<p>When adding explanatory variables to a model, one must be very careful not to add variables that explain the same ‘thing’. In other words, we don’t want (nor need) to have two or more variables in the model explain the <strong>same variance</strong>. One popular test for Multi-collinearity is the <strong>Variance Inflation Factor (VIF)</strong> test. The VIF is computed for all regression parameters. For example, VIF for <span class="math inline">\(X_2\)</span> is computed by first regressing <span class="math inline">\(X_1\)</span> against all other predictors (in our example, we would regress <span class="math inline">\(X_1\)</span> against <span class="math inline">\(X_2\)</span>) then taking the resulting <span class="math inline">\(R^2\)</span> and plugging it in the following VIF equation:</p>
+<p><span class="math display">\[
+VIF = \frac{1}{1 - R^2_1}
+\]</span></p>
+<p>where the subscript <span class="math inline">\(1\)</span> in <span class="math inline">\(R^2_1\)</span> indicates that the <span class="math inline">\(R^2\)</span> is for the model <code>x1 ~ x2</code>. The VIF for <span class="math inline">\(X_2\)</span> is computed in the same way.</p>
+<p>What we are avoiding are <em>large</em> VIF values (a <em>large</em> VIF value may indicate high multicollinearity). What constitutes a large VIF value is open for debate. Typical values range from 3 to 10, so VIF’s should be interpreted with caution.</p>
+<p>We can use <code>R</code>’s <code>vif()</code> function to compute VIF for the variables <em>Education</em> and <em>Professional</em></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(M2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Education Professional 
+    3.237621     3.237621 </code></pre>
+</div>
+</div>
+<p>The <em>moderately high</em> VIF should be a warning. It’s always good practice to generate a <strong>scatter plot matrix</strong> to <em>view</em> any potential relationship between <em>all</em> variables involved. We can use <code>R</code>’s <code>pairs()</code> function to display the scatter plots:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pairs</span>(dat, <span class="at">panel =</span> panel.smooth)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="regression_files/figure-html/unnamed-chunk-66-1.png" width="576"></p>
+</div>
+</div>
+<p>The function <code>pairs()</code> generates a scatter plot matrix of all columns in the dataframe. Three columns of data are present in our dataframe <code>dat</code>, therefore we have a 3x3 scatter plot matrix. We also add a LOWESS smoother (shown as a red polyline in each graph) by calling the option <code>panel = panel.smooth</code>. To interpret the output, just match each plot to its corresponding variable along the <em>x-axis</em> and <em>y-axis</em>. For example, the scatter plot in the upper right-hand corner is that for the variables <em>Professional</em> and <em>Income</em>. We are interested in seeing how the predictor variables <em>Education</em> and <em>Professional</em> relate to one another. The scatter plot between both predictor variables seem to indicate a significant relationship between the two predictors–this does not bode well for our two-predictor model. The fact that they seem to be correlated suggests that they may be explaining the same variance in <span class="math inline">\(Y\)</span>. This means that despite having <em>promising</em> model summary statistics, we cannot trust this model and thus revert back to our bivariate model <code>M1</code>.</p>
+</section>
+</section>
+<section id="including-categorical-predictor-variables" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Including categorical predictor variables</h1>
+<section id="two-category-variable" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="two-category-variable"><span class="header-section-number">4.1</span> Two category variable</h2>
+<p>So far, we have worked with continuous variables. We can include categorical variables in our model as well. For example, let’s hypothesize that coastal counties might be conducive to higher incomes. We’ll create a new variable, <code>x3</code>, that will house one of two values, <code>yes</code> or <code>no</code>, indicating whether or not the county is on the coast or not.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>x3 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"no"</span>, <span class="st">"no"</span>, <span class="st">"yes"</span>, <span class="st">"no"</span>, <span class="st">"yes"</span>, <span class="st">"no"</span>, <span class="st">"yes"</span>, <span class="st">"yes"</span>,</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>        <span class="st">"no"</span>, <span class="st">"no"</span>, <span class="st">"no"</span>, <span class="st">"yes"</span>, <span class="st">"no"</span>, <span class="st">"yes"</span>, <span class="st">"yes"</span>, <span class="st">"yes"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Alternatively, we could have encoded <em>access to coast</em> as binary values <code>0</code> and <code>1</code>, but as we’ll see shortly, when we have non-numeric variables in a regression model, <code>R</code> will recognize such variables as <strong>factors</strong>.</p>
+<p>We will add these values to our <code>dat</code> dataframe and name the new variable <code>Coast</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>Coast <span class="ot">&lt;-</span> x3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The way a categorical variable such as <code>Coast</code> is treated in a regression model is by converting categories to binary values. In our example, the variable <code>Coast</code> has two categories, <code>yes</code> and <code>no</code>, which means that one will be coded <code>0</code> and the other <code>1</code>. You could specify which is to be coded <code>0</code> or <code>1</code>, or you can let <code>R</code> do this for you. Let’s run the regression analysis with our new variable (we will not use the variable <em>Professional</em> since we concluded earlier that the variable was redundant).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>M3 <span class="ot">&lt;-</span> <span class="fu">lm</span>( Income <span class="sc">~</span> Education <span class="sc">+</span> Coast, <span class="at">dat =</span> dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>You may see a warning message indicating that the variable Coast was converted to a factor (i.e.&nbsp;it was treated as a categorical value). Conversely, if you want to explicitly tell <code>R</code> that the variable Coast should be treated as a category, you can enclose that variable in the <code>as.factor()</code> function as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>M3 <span class="ot">&lt;-</span> <span class="fu">lm</span>( Income <span class="sc">~</span> Education <span class="sc">+</span> <span class="fu">as.factor</span>(Coast), <span class="at">dat =</span> dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The <code>as.factor</code> option is important if your categorical variable is numeric since <code>R</code> would treat such variable as numeric.</p>
+<p>We can view the full summary as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(M3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Income ~ Education + as.factor(Coast), data = dat)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3054.9  -548.7   277.0   754.5  2211.3 
+
+Coefficients:
+                    Estimate Std. Error t value   Pr(&gt;|t|)    
+(Intercept)          11861.6     1621.8   7.314 0.00000588 ***
+Education            53284.9     7882.2   6.760 0.00001341 ***
+as.factor(Coast)yes   -671.7     1054.1  -0.637      0.535    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1464 on 13 degrees of freedom
+Multiple R-squared:  0.8643,    Adjusted R-squared:  0.8434 
+F-statistic: 41.39 on 2 and 13 DF,  p-value: 0.000002303</code></pre>
+</div>
+</div>
+<p>You’ll note that the regression coefficient for <em>Coast</em> is displayed as the variable <code>Coastyes</code>, in other words <code>R</code> chose one of the categories, <code>yes</code> to be coded as <code>1</code> for us. The regression model is thus:</p>
+<p><span class="math inline">\(\widehat{Income}\)</span> = <strong>11862</strong> + <strong>53285</strong> <span class="math inline">\(Education\)</span> <strong>-672</strong> <span class="math inline">\(Coast_{yes}\)</span></p>
+<p>The last variable is treated as follows: if the county is on the coast, then <code>Coast</code> takes on a value of <strong>1</strong>, if not, it takes on a value of <strong>0</strong>. For example, <strong>Androscoggin</strong> county which is <em>not</em> on the coast is expressed as follows where the variable <em>Coast</em> takes on the value of <strong>0</strong>:</p>
+<p><span class="math inline">\(\widehat{Income}\)</span> = <strong>11862</strong> + <strong>53285</strong> (23663) <strong>-672</strong> (0)</p>
+<p>The equation for <strong>Cumberland</strong> county which <em>is</em> on the coast is expressed as follows where the variable <em>Coast</em> takes on the value of <strong>1</strong>:</p>
+<p><span class="math inline">\(\widehat{Income}\)</span> = <strong>11862</strong> + <strong>53285</strong> (32277) <strong>-672</strong> (1)</p>
+<p>Turning our attention to the model summary output, one notices a relatively high <span class="math inline">\(P\)</span>-value associated with the <em>Coast</em> regression coefficient. This indicates that <span class="math inline">\(\beta_2\)</span> is not significantly different from <span class="math inline">\(0\)</span>. In fact, comparing this model with model <code>M1</code> using <code>anova()</code> indicates that adding the <em>Coast</em> variable does not significantly improve our prediction of <span class="math inline">\(Y\)</span> (income).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(M1, M3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Model 1: Income ~ Education
+Model 2: Income ~ Education + as.factor(Coast)
+  Res.Df      RSS Df Sum of Sq     F Pr(&gt;F)
+1     14 28724435                          
+2     13 27854540  1    869895 0.406 0.5351</code></pre>
+</div>
+</div>
+<p>Note the large <span class="math inline">\(P\)</span> value of 0.54 indicating that <span class="math inline">\(\beta_{coast}\)</span> does not improve the prediction of <span class="math inline">\(Y\)</span>.</p>
+</section>
+<section id="multi-category-variable" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="multi-category-variable"><span class="header-section-number">4.2</span> Multi-category variable</h2>
+<p>For each category in a categorical variable, there are <span class="math inline">\((number\; of\; categories\; -1)\)</span> regression variables added to the model. In the previous example, the variable <em>Coast</em> had two categories, <em>yes</em> and <em>no</em>, therefore <strong>one</strong> regression parameter was added to the model. If the categorical variable has three categories, then two regression parameters are added to the model. For example, let’s split the state of Maine into three zones–east, central and west–we end up with the following explanatory variable:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>x4 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"W"</span>, <span class="st">"C"</span>, <span class="st">"W"</span>, <span class="st">"W"</span>, <span class="st">"E"</span>, <span class="st">"C"</span>, <span class="st">"C"</span>, <span class="st">"C"</span>, <span class="st">"W"</span>, <span class="st">"C"</span>,</span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>        <span class="st">"C"</span>, <span class="st">"C"</span>, <span class="st">"W"</span>, <span class="st">"E"</span>, <span class="st">"E"</span>, <span class="st">"W"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We’ll add this fourth predictor variable we’ll call <code>Geo</code> to our dataset <code>dat</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>Geo <span class="ot">&lt;-</span> x4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Our table now looks like this:</p>
+<div class="cell-output-display">
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Income</th>
+<th style="text-align: right;">Education</th>
+<th style="text-align: right;">Professional</th>
+<th style="text-align: left;">Coast</th>
+<th style="text-align: left;">Geo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Androscoggin</td>
+<td style="text-align: right;">23663</td>
+<td style="text-align: right;">0.19</td>
+<td style="text-align: right;">0.079</td>
+<td style="text-align: left;">no</td>
+<td style="text-align: left;">W</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Aroostook</td>
+<td style="text-align: right;">20659</td>
+<td style="text-align: right;">0.16</td>
+<td style="text-align: right;">0.062</td>
+<td style="text-align: left;">no</td>
+<td style="text-align: left;">C</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Cumberland</td>
+<td style="text-align: right;">32277</td>
+<td style="text-align: right;">0.40</td>
+<td style="text-align: right;">0.116</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;">W</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Franklin</td>
+<td style="text-align: right;">21595</td>
+<td style="text-align: right;">0.24</td>
+<td style="text-align: right;">0.055</td>
+<td style="text-align: left;">no</td>
+<td style="text-align: left;">W</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Hancock</td>
+<td style="text-align: right;">27227</td>
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">0.103</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;">E</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Kennebec</td>
+<td style="text-align: right;">25023</td>
+<td style="text-align: right;">0.24</td>
+<td style="text-align: right;">0.078</td>
+<td style="text-align: left;">no</td>
+<td style="text-align: left;">C</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Knox</td>
+<td style="text-align: right;">26504</td>
+<td style="text-align: right;">0.28</td>
+<td style="text-align: right;">0.089</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;">C</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Lincoln</td>
+<td style="text-align: right;">28741</td>
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">0.079</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;">C</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Oxford</td>
+<td style="text-align: right;">21735</td>
+<td style="text-align: right;">0.18</td>
+<td style="text-align: right;">0.067</td>
+<td style="text-align: left;">no</td>
+<td style="text-align: left;">W</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Penobscot</td>
+<td style="text-align: right;">23366</td>
+<td style="text-align: right;">0.23</td>
+<td style="text-align: right;">0.073</td>
+<td style="text-align: left;">no</td>
+<td style="text-align: left;">C</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Piscataquis</td>
+<td style="text-align: right;">20871</td>
+<td style="text-align: right;">0.17</td>
+<td style="text-align: right;">0.054</td>
+<td style="text-align: left;">no</td>
+<td style="text-align: left;">C</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Sagadahoc</td>
+<td style="text-align: right;">28370</td>
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">0.094</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;">C</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Somerset</td>
+<td style="text-align: right;">21105</td>
+<td style="text-align: right;">0.15</td>
+<td style="text-align: right;">0.061</td>
+<td style="text-align: left;">no</td>
+<td style="text-align: left;">W</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Waldo</td>
+<td style="text-align: right;">22706</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">0.072</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;">E</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Washington</td>
+<td style="text-align: right;">19527</td>
+<td style="text-align: right;">0.19</td>
+<td style="text-align: right;">0.038</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;">E</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">York</td>
+<td style="text-align: right;">28321</td>
+<td style="text-align: right;">0.28</td>
+<td style="text-align: right;">0.084</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;">W</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Now let’s run a fourth regression analysis using the variables <code>Education</code> and <code>Geo</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>M4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Income <span class="sc">~</span> Education <span class="sc">+</span> Geo, <span class="at">dat =</span> dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Again, you might see a warning indicating that the variable <code>Geo</code> was flagged as a categorical variable and thus converted to a <code>factor</code>.</p>
+<p>Let’s look at the model summary.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(M4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Income ~ Education + Geo, data = dat)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3187.7  -473.2     1.9   642.7  1527.1 
+
+Coefficients:
+            Estimate Std. Error t value    Pr(&gt;|t|)    
+(Intercept)  12579.3     1217.9  10.329 0.000000252 ***
+Education    50281.5     4630.6  10.858 0.000000146 ***
+GeoE         -1996.4      854.1  -2.337      0.0376 *  
+GeoW           135.8      688.2   0.197      0.8469    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1237 on 12 degrees of freedom
+Multiple R-squared:  0.9106,    Adjusted R-squared:  0.8882 
+F-statistic: 40.72 on 3 and 12 DF,  p-value: 0.000001443</code></pre>
+</div>
+</div>
+<p>As expected, the model added <strong>two</strong> regression parameters, one is called <code>GeoE</code> for counties identified as being on the east side of the state and <code>GeoW</code> for the counties identified as being on the west side of the state. Here are three examples showing how the equation is to be interpreted with different east/central/west designations.</p>
+<p>For <strong>Androscoggin</strong> county, its location lies to the west, therefore the variable <code>GeoE</code> is assigned a value of 0 and <code>GeoW</code> is assigned a value of <code>1</code>:</p>
+<p><span class="math inline">\(\widehat{Income}\)</span> = <strong>12579</strong> + <strong>50282</strong> (23663) <strong>-1996</strong> (0) + <strong>136</strong> (1)</p>
+<p>For <strong>Hancock</strong> county, its location lies to the east, therefore the variable <code>GeoE</code> is assigned a value of <strong>1</strong> and <code>GeoW</code> is assigned a value of <strong>0</strong>:</p>
+<p><span class="math inline">\(\widehat{Income}\)</span> = <strong>12579</strong> + <strong>50282</strong> (27227) <strong>-1996</strong> (1) + <strong>136</strong> (0)</p>
+<p>For <strong>Kennebec</strong> county, its location lies in the center of the state, therefore <strong>both</strong> variables <code>GeoE</code> and <code>GeoW</code> are assigned a value of <strong>0</strong>:</p>
+<p><span class="math inline">\(\widehat{Income}\)</span> = <strong>12579</strong> + <strong>50282</strong> (25023) <strong>-1996</strong> (0) + <strong>136</strong> (0)</p>
+<p>Turning to the model summary results, it appears that one of the new regression coefficients, <span class="math inline">\(\beta_{GeoE}\)</span> is significantly different from 0 whereas that of <span class="math inline">\(\beta_{GeoW}\)</span> is not. This seems to suggest that Eastern counties might differ from other counties when it comes to per-capita income. We can aggregate the western and central counties into a single category and end up with a two category variable, i.e one where a county is either on the eastern side of the state or is not. We will use the <code>recode()</code> function to reclassify the values and add the new codes to our <code>dat</code> dataframe as a new variable we’ll call <code>East</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>East <span class="ot">&lt;-</span> <span class="fu">recode</span>(dat<span class="sc">$</span>Geo, <span class="st">" 'W' = 'No' ; 'C' = 'No' ; 'E' = 'Yes' "</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s look at our augmented table.</p>
+<div class="cell-output-display">
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Income</th>
+<th style="text-align: right;">Education</th>
+<th style="text-align: right;">Professional</th>
+<th style="text-align: left;">Coast</th>
+<th style="text-align: left;">Geo</th>
+<th style="text-align: left;">East</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Androscoggin</td>
+<td style="text-align: right;">23663</td>
+<td style="text-align: right;">0.19</td>
+<td style="text-align: right;">0.079</td>
+<td style="text-align: left;">no</td>
+<td style="text-align: left;">W</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Aroostook</td>
+<td style="text-align: right;">20659</td>
+<td style="text-align: right;">0.16</td>
+<td style="text-align: right;">0.062</td>
+<td style="text-align: left;">no</td>
+<td style="text-align: left;">C</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Cumberland</td>
+<td style="text-align: right;">32277</td>
+<td style="text-align: right;">0.40</td>
+<td style="text-align: right;">0.116</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;">W</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Franklin</td>
+<td style="text-align: right;">21595</td>
+<td style="text-align: right;">0.24</td>
+<td style="text-align: right;">0.055</td>
+<td style="text-align: left;">no</td>
+<td style="text-align: left;">W</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Hancock</td>
+<td style="text-align: right;">27227</td>
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">0.103</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;">E</td>
+<td style="text-align: left;">Yes</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Kennebec</td>
+<td style="text-align: right;">25023</td>
+<td style="text-align: right;">0.24</td>
+<td style="text-align: right;">0.078</td>
+<td style="text-align: left;">no</td>
+<td style="text-align: left;">C</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Knox</td>
+<td style="text-align: right;">26504</td>
+<td style="text-align: right;">0.28</td>
+<td style="text-align: right;">0.089</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;">C</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Lincoln</td>
+<td style="text-align: right;">28741</td>
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">0.079</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;">C</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Oxford</td>
+<td style="text-align: right;">21735</td>
+<td style="text-align: right;">0.18</td>
+<td style="text-align: right;">0.067</td>
+<td style="text-align: left;">no</td>
+<td style="text-align: left;">W</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Penobscot</td>
+<td style="text-align: right;">23366</td>
+<td style="text-align: right;">0.23</td>
+<td style="text-align: right;">0.073</td>
+<td style="text-align: left;">no</td>
+<td style="text-align: left;">C</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Piscataquis</td>
+<td style="text-align: right;">20871</td>
+<td style="text-align: right;">0.17</td>
+<td style="text-align: right;">0.054</td>
+<td style="text-align: left;">no</td>
+<td style="text-align: left;">C</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Sagadahoc</td>
+<td style="text-align: right;">28370</td>
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">0.094</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;">C</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Somerset</td>
+<td style="text-align: right;">21105</td>
+<td style="text-align: right;">0.15</td>
+<td style="text-align: right;">0.061</td>
+<td style="text-align: left;">no</td>
+<td style="text-align: left;">W</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Waldo</td>
+<td style="text-align: right;">22706</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">0.072</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;">E</td>
+<td style="text-align: left;">Yes</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Washington</td>
+<td style="text-align: right;">19527</td>
+<td style="text-align: right;">0.19</td>
+<td style="text-align: right;">0.038</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;">E</td>
+<td style="text-align: left;">Yes</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">York</td>
+<td style="text-align: right;">28321</td>
+<td style="text-align: right;">0.28</td>
+<td style="text-align: right;">0.084</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;">W</td>
+<td style="text-align: left;">No</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>At this point, we could run a new regression with this variable, but before we do, we will control which category from the variable <code>East</code> will be assigned the <strong>reference</strong> category in the regression model as opposed to letting <code>R</code> decide for us. To complete this task, we will use the function <code>factor()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>East <span class="ot">&lt;-</span> <span class="fu">factor</span>(dat<span class="sc">$</span>East, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"No"</span>, <span class="st">"Yes"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This line of code does three things: it explicitly defines the variable <code>East</code> as a factor, it explicitly defines the two categories, <code>No</code> and <code>Yes</code>, and it sets the order of these categories (based on the order of the categories defined in the <code>level</code> option). The latter is important since the regression function <code>lm</code> will assign the first category in the level as the reference.</p>
+<p>We are now ready to run the regression analysis</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>M5 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Income <span class="sc">~</span> Education <span class="sc">+</span> East, dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s view the regression model summary.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(M5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Income ~ Education + East, data = dat)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-3114.59  -454.21     5.88   614.49  1600.85 
+
+Coefficients:
+            Estimate Std. Error t value     Pr(&gt;|t|)    
+(Intercept)  12646.2     1125.6  11.235 0.0000000459 ***
+Education    50264.0     4455.3  11.282 0.0000000437 ***
+EastYes      -2058.9      763.3  -2.697       0.0183 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1190 on 13 degrees of freedom
+Multiple R-squared:  0.9103,    Adjusted R-squared:  0.8965 
+F-statistic: 65.93 on 2 and 13 DF,  p-value: 0.0000001564</code></pre>
+</div>
+</div>
+<p>This model is an improvement over the model <code>M1</code> in that a bit more of the variance in <span class="math inline">\(Y\)</span> is accounted for in <code>M5</code> as gleaned from the higher <span class="math inline">\(R^2\)</span> value. We also note that <strong>all</strong> regression coefficients are significantly different from 0. This is a good thing. The negative regression coefficient <span class="math inline">\(\hat {\beta_2}\)</span> tells us that income is negatively related to the East-other designation. In other words, income tends to be less in eastern counties than in other counties.</p>
+<p>Now let’s look at the <code>lm</code> summary plots to see if the assumptions pertaining to the residuals are met:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>OP <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(M5, <span class="at">which =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>))</span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(OP)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="regression_files/figure-html/unnamed-chunk-83-1.png" width="720"></p>
+</div>
+</div>
+<p>You may recall back when we looked at the residuals for model <code>M1</code> that the Q-Q plot showed residuals near the tails of the distribution that diverged from the theoretical distribution. It appears that this divergence near the ends of the distribution is under control–that’s a good thing. There is also no strong evidence of heteroscadisticy and the Cooks’ Distance indicates that there is no disproportionately influential points (all values are less than 1).</p>
+<p>Bear in mind that the geographic designation of East vs.&nbsp;Others may have more to do with factors associated with the two eastern most counties than actual geographic location. It may well be that our variable <code>East</code> is nothing more than a latent variable, but one that may shed some valuable insight into the prediction of <span class="math inline">\(Y\)</span>.</p>
+</section>
+</section>
+<section id="references" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> References</h1>
+<p>Freedman D.A., Robert Pisani, Roger Purves. <em>Statistics</em>, 4th edition, 2007.<br>
+Millard S.P, Neerchal N.K., <em>Environmental Statistics with S-Plus</em>, 2001.<br>
+McClave J.T., Dietrich F.H., <em>Statistics</em>, 4th edition, 1988.<br>
+Vik P., <em>Regression, ANOVA, and the General Linear Model: A Statistics Primer</em>, 2013.</p>
+<p><strong>Session Info</strong>:</p>
+<div class="cell-output-display">
+<p><strong>R version 4.2.1 (2022-06-23 ucrt)</strong></p>
+<p><strong>Platform:</strong> x86_64-w64-mingw32/x64 (64-bit)</p>
+<p><strong>attached base packages:</strong> <em>stats</em>, <em>graphics</em>, <em>grDevices</em>, <em>utils</em>, <em>datasets</em>, <em>methods</em> and <em>base</em></p>
+<p><strong>other attached packages:</strong> <em>gplots(v.3.1.3)</em>, <em>scatterplot3d(v.0.3-41)</em>, <em>boot(v.1.3-28)</em>, <em>car(v.3.1-0)</em> and <em>carData(v.3.0-5)</em></p>
+<p><strong>loaded via a namespace (and not attached):</strong> <em>Rcpp(v.1.0.9)</em>, <em>rstudioapi(v.0.14)</em>, <em>Rttf2pt1(v.1.3.8)</em>, <em>knitr(v.1.40)</em>, <em>magrittr(v.2.0.3)</em>, <em>MASS(v.7.3-57)</em>, <em>xtable(v.1.8-4)</em>, <em>rlang(v.1.0.4)</em>, <em>fastmap(v.1.1.0)</em>, <em>stringr(v.1.4.1)</em>, <em>highr(v.0.9)</em>, <em>caTools(v.1.18.2)</em>, <em>tools(v.4.2.1)</em>, <em>xfun(v.0.32)</em>, <em>KernSmooth(v.2.23-20)</em>, <em>cli(v.3.3.0)</em>, <em>extrafontdb(v.1.0)</em>, <em>htmltools(v.0.5.3)</em>, <em>gtools(v.3.9.3)</em>, <em>yaml(v.2.3.5)</em>, <em>abind(v.1.4-5)</em>, <em>digest(v.0.6.29)</em>, <em>bitops(v.1.0-7)</em>, <em>evaluate(v.0.16)</em>, <em>rmarkdown(v.2.16)</em>, <em>stringi(v.1.7.8)</em>, <em>pander(v.0.6.5)</em>, <em>compiler(v.4.2.1)</em>, <em>extrafont(v.0.18)</em> and <em>jsonlite(v.1.8.0)</em></p>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-right">Creative Commons License, Manny Gimond, 2022</div>
+  </div>
+</footer>
+
+
+
+</body></html>
