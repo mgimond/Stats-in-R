@@ -4,6 +4,7 @@ project:
   
 website:
   title: "Basic stats explained (in R)"
+  google-analytics: "G-ZTL54L3SJR"
   navbar:
     left:
       - href: CI.qmd
@@ -25,6 +26,7 @@ website:
   search: 
     location: navbar
     type: overlay
+    
 
 
 

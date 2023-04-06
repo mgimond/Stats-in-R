@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.0.36">
+<meta name="generator" content="quarto-1.2.335">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -11,10 +11,15 @@
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-span.underline{text-decoration: underline;}
-div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -53,7 +58,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -66,7 +71,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -114,6 +119,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-submit-button-title": "Submit"
   }
 }</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-ZTL54L3SJR"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-ZTL54L3SJR', { 'anonymize_ip': true});
+</script>
 
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
@@ -125,34 +139,43 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
-      <a class="navbar-brand" href="./index.html">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Basic stats explained (in R)</span>
-  </a>
+    </a>
+  </div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./CI.html">Confidence intervals</a>
+    <a class="nav-link" href="./CI.html">
+ <span class="menu-text">Confidence intervals</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./z_t_tests.html">Z and T tests</a>
+    <a class="nav-link" href="./z_t_tests.html">
+ <span class="menu-text">Z and T tests</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./F_test.html">F-test: Test for difference in spread</a>
+    <a class="nav-link" href="./F_test.html">
+ <span class="menu-text">F-test: Test for difference in spread</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./ChiSquare_test.html" aria-current="page">ChiSquare</a>
+    <a class="nav-link active" href="./ChiSquare_test.html" aria-current="page">
+ <span class="menu-text">ChiSquare</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./regression.html">Ordinary least squares Regression</a>
+    <a class="nav-link" href="./regression.html">
+ <span class="menu-text">Ordinary least squares Regression</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./ANOVA.html">Analysis of variance (ANOVA)</a>
+    <a class="nav-link" href="./ANOVA.html">
+ <span class="menu-text">Analysis of variance (ANOVA)</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./Logistic.html">Logistic regression</a>
+    <a class="nav-link" href="./Logistic.html">
+ <span class="menu-text">Logistic regression</span></a>
   </li>  
 </ul>
               <div id="quarto-search" class="" title="Search"></div>
@@ -165,44 +188,44 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc">
+        <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"> <span class="header-section-number">1</span> Introduction</a></li>
-  <li><a href="#single-factor-classification" id="toc-single-factor-classification" class="nav-link" data-scroll-target="#single-factor-classification"> <span class="header-section-number">2</span> Single factor classification</a>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="toc-section-number">1</span>  Introduction</a></li>
+  <li><a href="#single-factor-classification" id="toc-single-factor-classification" class="nav-link" data-scroll-target="#single-factor-classification"><span class="toc-section-number">2</span>  Single factor classification</a>
   <ul class="collapse">
-  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example"> <span class="header-section-number">2.1</span> Example</a>
+  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example"><span class="toc-section-number">2.1</span>  Example</a>
   <ul class="collapse">
-  <li><a href="#problem" id="toc-problem" class="nav-link" data-scroll-target="#problem"> <span class="header-section-number">2.1.1</span> Problem</a></li>
-  <li><a href="#solution" id="toc-solution" class="nav-link" data-scroll-target="#solution"> <span class="header-section-number">2.1.2</span> Solution</a></li>
+  <li><a href="#problem" id="toc-problem" class="nav-link" data-scroll-target="#problem"><span class="toc-section-number">2.1.1</span>  Problem</a></li>
+  <li><a href="#solution" id="toc-solution" class="nav-link" data-scroll-target="#solution"><span class="toc-section-number">2.1.2</span>  Solution</a></li>
   </ul></li>
-  <li><a href="#the-chi2-curve-explained" id="toc-the-chi2-curve-explained" class="nav-link" data-scroll-target="#the-chi2-curve-explained"> <span class="header-section-number">2.2</span> The <span class="math inline">\(\chi^2\)</span> curve explained</a></li>
-  <li><a href="#can-the-chi2-value-be-too-good" id="toc-can-the-chi2-value-be-too-good" class="nav-link" data-scroll-target="#can-the-chi2-value-be-too-good"> <span class="header-section-number">2.3</span> Can the <span class="math inline">\(\chi^2\)</span> value be ‘too’ good?</a></li>
+  <li><a href="#the-chi2-curve-explained" id="toc-the-chi2-curve-explained" class="nav-link" data-scroll-target="#the-chi2-curve-explained"><span class="toc-section-number">2.2</span>  The <span class="math inline">\(\chi^2\)</span> curve explained</a></li>
+  <li><a href="#can-the-chi2-value-be-too-good" id="toc-can-the-chi2-value-be-too-good" class="nav-link" data-scroll-target="#can-the-chi2-value-be-too-good"><span class="toc-section-number">2.3</span>  Can the <span class="math inline">\(\chi^2\)</span> value be ‘too’ good?</a></li>
   </ul></li>
-  <li><a href="#two-factor-classification" id="toc-two-factor-classification" class="nav-link" data-scroll-target="#two-factor-classification"> <span class="header-section-number">3</span> Two factor classification</a>
+  <li><a href="#two-factor-classification" id="toc-two-factor-classification" class="nav-link" data-scroll-target="#two-factor-classification"><span class="toc-section-number">3</span>  Two factor classification</a>
   <ul class="collapse">
-  <li><a href="#example-1" id="toc-example-1" class="nav-link" data-scroll-target="#example-1"> <span class="header-section-number">3.1</span> Example</a>
+  <li><a href="#example-1" id="toc-example-1" class="nav-link" data-scroll-target="#example-1"><span class="toc-section-number">3.1</span>  Example</a>
   <ul class="collapse">
-  <li><a href="#problem-1" id="toc-problem-1" class="nav-link" data-scroll-target="#problem-1"> <span class="header-section-number">3.1.1</span> Problem</a></li>
-  <li><a href="#solution-1" id="toc-solution-1" class="nav-link" data-scroll-target="#solution-1"> <span class="header-section-number">3.1.2</span> Solution</a></li>
-  </ul></li>
-  </ul></li>
-  <li><a href="#three-or-more-factor-classification" id="toc-three-or-more-factor-classification" class="nav-link" data-scroll-target="#three-or-more-factor-classification"> <span class="header-section-number">4</span> Three or more factor classification</a></li>
-  <li><a href="#inferences-about-population-variance" id="toc-inferences-about-population-variance" class="nav-link" data-scroll-target="#inferences-about-population-variance"> <span class="header-section-number">5</span> Inferences about population variance</a>
-  <ul class="collapse">
-  <li><a href="#computing-confidence-intervals-for-variances" id="toc-computing-confidence-intervals-for-variances" class="nav-link" data-scroll-target="#computing-confidence-intervals-for-variances"> <span class="header-section-number">5.1</span> Computing confidence intervals for variances</a>
-  <ul class="collapse">
-  <li><a href="#example-2" id="toc-example-2" class="nav-link" data-scroll-target="#example-2"> <span class="header-section-number">5.1.1</span> Example</a></li>
-  <li><a href="#solution-2" id="toc-solution-2" class="nav-link" data-scroll-target="#solution-2"> <span class="header-section-number">5.1.2</span> Solution</a></li>
-  </ul></li>
-  <li><a href="#test-hypotheses-on-population-variances" id="toc-test-hypotheses-on-population-variances" class="nav-link" data-scroll-target="#test-hypotheses-on-population-variances"> <span class="header-section-number">5.2</span> Test hypotheses on population variances</a>
-  <ul class="collapse">
-  <li><a href="#example-3" id="toc-example-3" class="nav-link" data-scroll-target="#example-3"> <span class="header-section-number">5.2.1</span> Example</a></li>
-  <li><a href="#solution-3" id="toc-solution-3" class="nav-link" data-scroll-target="#solution-3"> <span class="header-section-number">5.2.2</span> Solution</a></li>
+  <li><a href="#problem-1" id="toc-problem-1" class="nav-link" data-scroll-target="#problem-1"><span class="toc-section-number">3.1.1</span>  Problem</a></li>
+  <li><a href="#solution-1" id="toc-solution-1" class="nav-link" data-scroll-target="#solution-1"><span class="toc-section-number">3.1.2</span>  Solution</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"> <span class="header-section-number">6</span> References</a></li>
+  <li><a href="#three-or-more-factor-classification" id="toc-three-or-more-factor-classification" class="nav-link" data-scroll-target="#three-or-more-factor-classification"><span class="toc-section-number">4</span>  Three or more factor classification</a></li>
+  <li><a href="#inferences-about-population-variance" id="toc-inferences-about-population-variance" class="nav-link" data-scroll-target="#inferences-about-population-variance"><span class="toc-section-number">5</span>  Inferences about population variance</a>
+  <ul class="collapse">
+  <li><a href="#computing-confidence-intervals-for-variances" id="toc-computing-confidence-intervals-for-variances" class="nav-link" data-scroll-target="#computing-confidence-intervals-for-variances"><span class="toc-section-number">5.1</span>  Computing confidence intervals for variances</a>
+  <ul class="collapse">
+  <li><a href="#example-2" id="toc-example-2" class="nav-link" data-scroll-target="#example-2"><span class="toc-section-number">5.1.1</span>  Example</a></li>
+  <li><a href="#solution-2" id="toc-solution-2" class="nav-link" data-scroll-target="#solution-2"><span class="toc-section-number">5.1.2</span>  Solution</a></li>
+  </ul></li>
+  <li><a href="#test-hypotheses-on-population-variances" id="toc-test-hypotheses-on-population-variances" class="nav-link" data-scroll-target="#test-hypotheses-on-population-variances"><span class="toc-section-number">5.2</span>  Test hypotheses on population variances</a>
+  <ul class="collapse">
+  <li><a href="#example-3" id="toc-example-3" class="nav-link" data-scroll-target="#example-3"><span class="toc-section-number">5.2.1</span>  Example</a></li>
+  <li><a href="#solution-3" id="toc-solution-3" class="nav-link" data-scroll-target="#solution-3"><span class="toc-section-number">5.2.2</span>  Solution</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="toc-section-number">6</span>  References</a></li>
   </ul>
 </nav>
     </div>
@@ -219,13 +242,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="quarto-title-meta">
 
     
+  
     
   </div>
   
 
 </header>
 
-<p><em>Last modified on 2022-09-12</em></p>
+<p><em>Last modified on 2023-04-06</em></p>
 <div class="cell">
 
 </div>
@@ -299,12 +323,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="solution" class="level3" data-number="2.1.2">
 <h3 data-number="2.1.2" class="anchored" data-anchor-id="solution"><span class="header-section-number">2.1.2</span> Solution</h3>
-<p>The <span class="math inline">\(\pmb\chi^2\)</span><strong>-statistic</strong> is the sum of the squared difference between observed and expected counts divided by the expected frequency, or,</p>
-<p><span class="math display">\[
+<p>The <span class="math inline">\(\pmb\chi^2\)</span><strong>-statistic</strong> is the sum of the squared difference between observed and expected counts divided by the expected frequency, or, <span class="math display">\[
 \chi^2 = \sum{\frac{(observed frequency - expected frequency)^2}{expected frequency}}
-\]</span></p>
-<p>Computing <span class="math inline">\(\chi^2\)</span> for our data we get:</p>
-<p><span class="math display">\[
+\]</span> Computing <span class="math inline">\(\chi^2\)</span> for our data we get: <span class="math display">\[
 \chi^2 = \frac{(36-40)^2}{40} + \frac{(44-40)^2}{40} + \frac{(38-40)^2}{40} + \frac{(37-40)^2}{40} + \frac{(45-40)^2}{40} = 1.75
 \]</span></p>
 <p>Next, we need to see where our <span class="math inline">\(\chi^2\)</span> value lies on a <span class="math inline">\(\pmb\chi^2\)</span><strong>-curve</strong>. The shape of the <span class="math inline">\(\chi^2\)</span> curve is defined by the <strong>degrees of freedom</strong>, <span class="math inline">\(df\)</span> (this is analogous to the <em>Student</em> curve). <span class="math inline">\(df\)</span> is computed from the number of possible outcomes minus one or <span class="math inline">\(df = 5 -1 = 4\)</span> for our working example. The shape of the <span class="math inline">\(\chi^2\)</span> curve for 5 <span class="math inline">\(df\)</span> ’s and the placement of our <span class="math inline">\(\chi^2\)</span> statistic on that curve are shown below:</p>
@@ -599,15 +620,11 @@ X-squared = 0.47002, df = 3, p-value = 0.9254</code></pre>
 </tbody>
 </table>
 <p>Summing either the row sums or column sums gives us a total number of souls on the Titanic of <strong>2201</strong>. This will be the value <span class="math inline">\(n\)</span> in the next steps.</p>
-<p>Next, we will compute the expected counts assuming that all classes of passenger and crew members had an equal probability of perishing. The formula to compute the expectation is simple. It’s the product of the row sum and column sum divided by the total number of souls. For example, for <span class="math inline">\(row\; 1\)</span>/<span class="math inline">\(col\; 1\)</span> (i.e.&nbsp;the total number of 1st class passengers that perished), the expected count assuming <span class="math inline">\(H_o\)</span> is at play here is,</p>
-<p><span class="math display">\[
+<p>Next, we will compute the expected counts assuming that all classes of passenger and crew members had an equal probability of perishing. The formula to compute the expectation is simple. It’s the product of the row sum and column sum divided by the total number of souls. For example, for <span class="math inline">\(row\; 1\)</span>/<span class="math inline">\(col\; 1\)</span> (i.e.&nbsp;the total number of 1st class passengers that perished), the expected count assuming <span class="math inline">\(H_o\)</span> is at play here is, <span class="math display">\[
 E(n_{11}) = \frac{r_1c_1}{n} = \frac{(325)(1490)}{2201} = 220
-\]</span></p>
-<p>where <span class="math inline">\(N_{11}\)</span> refers to cell <span class="math inline">\(row\; 1\)</span>/<span class="math inline">\(col\; 1\)</span>. Likewise, we can compute the expected value for <span class="math inline">\(row\; 1\)</span>/<span class="math inline">\(col\; 2\)</span> as follows,</p>
-<p><span class="math display">\[
+\]</span> where <span class="math inline">\(N_{11}\)</span> refers to cell <span class="math inline">\(row\; 1\)</span>/<span class="math inline">\(col\; 1\)</span>. Likewise, we can compute the expected value for <span class="math inline">\(row\; 1\)</span>/<span class="math inline">\(col\; 2\)</span> as follows, <span class="math display">\[
 E(n_{12}) = \frac{r_1c_2}{n} = \frac{(325)(711)}{2201} = 105
-\]</span></p>
-<p>The above procedure can be repeated for the remaining six cells giving the <strong>expected</strong> table:</p>
+\]</span> The above procedure can be repeated for the remaining six cells giving the <strong>expected</strong> table:</p>
 <table class="table">
 <thead>
 <tr class="header">
@@ -640,12 +657,10 @@ E(n_{12}) = \frac{r_1c_2}{n} = \frac{(325)(711)}{2201} = 105
 </tbody>
 </table>
 <p>Note that if you round the numbers (this is not required, you can work with decimal values as well), it is good practice to check that the <strong>total</strong> count adds up to <span class="math inline">\(n\)</span> (i.e.&nbsp;2201 in our working example).</p>
-<p>The next step is to compute the <span class="math inline">\(\chi^2\)</span> statistic between the observed and expected values.</p>
-<p><span class="math display">\[
+<p>The next step is to compute the <span class="math inline">\(\chi^2\)</span> statistic between the observed and expected values. <span class="math display">\[
 \chi^2 = \frac{(122 - 220)^2}{220} + \frac{(203-105)^2}{105} + ... + \frac{(212-286)^2}{286} = 190.4
 \]</span></p>
-<p>The shape of the <span class="math inline">\(\chi^2\)</span> curve is determined by the degrees of freedom, <span class="math inline">\(df\)</span>. For a two-factor analysis, <span class="math inline">\(df\)</span> is the product of the number of rows minus one and the number of columns minus one or,</p>
-<p><span class="math display">\[
+<p>The shape of the <span class="math inline">\(\chi^2\)</span> curve is determined by the degrees of freedom, <span class="math inline">\(df\)</span>. For a two-factor analysis, <span class="math inline">\(df\)</span> is the product of the number of rows minus one and the number of columns minus one or, <span class="math display">\[
 df = (rows - 1)(columns - 1)
 \]</span></p>
 <p>For our working example, the <span class="math inline">\(df\)</span> is <span class="math inline">\((4-1)(2-1)=3\)</span>. Our observed <span class="math inline">\(\chi^2\)</span> value falls to the very far right side of the <span class="math inline">\(\chi^2\)</span> curve. It’s clear that the probability of coming up with a <span class="math inline">\(\chi^2\)</span> value as extreme as ours is nearly 0, in other words it’s very likely that the observed discrepancy in survival rates between classes and crew members is <em>not</em> due to chance variability.</p>
@@ -1035,28 +1050,19 @@ Saturated  0.00000  0    0.00000         0              1</code></pre>
 <pre><code>[1] 128.422</code></pre>
 </div>
 </div>
-<p>Now that we have our <span class="math inline">\(\chi^2\)</span> values, we can find the <span class="math inline">\(\sigma^2\)</span> values (and by extension the standard deviation <span class="math inline">\(\sigma\)</span>) that define the <span class="math inline">\(CI\)</span>. We simply solve the <span class="math inline">\(\chi^2\)</span> equation for <span class="math inline">\(\sigma^2\)</span>:</p>
-<p><span class="math display">\[
+<p>Now that we have our <span class="math inline">\(\chi^2\)</span> values, we can find the <span class="math inline">\(\sigma^2\)</span> values (and by extension the standard deviation <span class="math inline">\(\sigma\)</span>) that define the <span class="math inline">\(CI\)</span>. We simply solve the <span class="math inline">\(\chi^2\)</span> equation for <span class="math inline">\(\sigma^2\)</span>: <span class="math display">\[
 \sigma^2 = \frac{(n-1)s^2}{\chi^2}
 \]</span></p>
-<p>The confidence interval <span class="math inline">\(CI\)</span> for the population <em>variance</em> is thus:</p>
-<p><span class="math display">\[
+<p>The confidence interval <span class="math inline">\(CI\)</span> for the population <em>variance</em> is thus: <span class="math display">\[
 \frac{(n-1)s^2}{\chi_{0.925}^2} &lt; \sigma^2 &lt; \frac{(n-1)s^2}{\chi_{0.025}^2}
-\]</span></p>
-<p>or</p>
-<p><span class="math display">\[
+\]</span> or <span class="math display">\[
 \frac{(99)10.95^2}{128.4} &lt; \sigma^2 &lt;  \frac{(99)10.95^2}{73.36}
-\]</span></p>
-<p>giving us</p>
-<p><span class="math display">\[
+\]</span> giving us <span class="math display">\[
 92.4 &lt; \sigma^2 &lt;  161.8
 \]</span></p>
-<p>and the confidence interval for the population <em>standard deviation</em>, <span class="math inline">\(\sigma\)</span> is:</p>
-<p><span class="math display">\[
+<p>and the confidence interval for the population <em>standard deviation</em>, <span class="math inline">\(\sigma\)</span> is: <span class="math display">\[
 \sqrt{92.4} &lt; \sigma &lt; \sqrt{161.8}
-\]</span></p>
-<p>or</p>
-<p><span class="math display">\[
+\]</span> or <span class="math display">\[
 9.6 &lt; \sigma &lt;  12.72
 \]</span></p>
 </section>
@@ -1073,11 +1079,9 @@ Saturated  0.00000  0    0.00000         0              1</code></pre>
 <p><span class="math display">\[
 \chi^2 = \frac{(n-1)s^2}{\sigma_o^2} = \frac{(15-1)1.7^2}{2.0^2} = 10.1
 \]</span></p>
-<p>The probability of getting a <span class="math inline">\(\chi^2\)</span> of 10.1 is 0.246 (or 24.6%). So if chance variability alone were to explain the difference between our observed <span class="math inline">\(\chi^2\)</span> value and the hypothesized <span class="math inline">\(\chi^2\)</span> value associated with <span class="math inline">\(\sigma_o^2\)</span>, there would be a 24.6% chance of getting a <span class="math inline">\(\chi^2\)</span> as extreme as ours. Now the customer wants to be 95% confident that the difference between our observed <span class="math inline">\(s\)</span> and the threshold <span class="math inline">\(\sigma_o\)</span> of 2.0 is real (i.e.&nbsp;that it’s less than 2.0) and not due to chance variability. This is tantamount to a one-sided hypothesis test where</p>
-<p><span class="math display">\[
+<p>The probability of getting a <span class="math inline">\(\chi^2\)</span> of 10.1 is 0.246 (or 24.6%). So if chance variability alone were to explain the difference between our observed <span class="math inline">\(\chi^2\)</span> value and the hypothesized <span class="math inline">\(\chi^2\)</span> value associated with <span class="math inline">\(\sigma_o^2\)</span>, there would be a 24.6% chance of getting a <span class="math inline">\(\chi^2\)</span> as extreme as ours. Now the customer wants to be 95% confident that the difference between our observed <span class="math inline">\(s\)</span> and the threshold <span class="math inline">\(\sigma_o\)</span> of 2.0 is real (i.e.&nbsp;that it’s less than 2.0) and not due to chance variability. This is tantamount to a one-sided hypothesis test where <span class="math display">\[
 H_o: \sigma^2 = 2.0^2
-\]</span></p>
-<p><span class="math display">\[
+\]</span> <span class="math display">\[
 H_a: \sigma^2 &lt; 2.0^2
 \]</span></p>
 <p>where <span class="math inline">\(\sigma\)</span> is the standard deviation of the width for all parts being manufactured. The customer wants to be 95% confident that <span class="math inline">\(\sigma\)</span> is less than 2.0. This translates to having an observed <span class="math inline">\(P\)</span> closer to the left tail of the distribution. The exact cutoff is 95% from the right-hand side, or 5% from the left hand side (dashed line in the following graph). Our observed <span class="math inline">\(P\)</span> value of 0.246 is greater than the desired <span class="math inline">\(\alpha\)</span> value of 0.05 meaning that there is a good chance that our observed difference in width variance is due to chance variability (at least at the 5% confidence level). We therefore cannot reject the null and must inform the customer that the machined parts do not meet the desired criteria.</p>
@@ -1105,11 +1109,11 @@ McClave J.T., Dietrich F.H., <em>Statistics</em>, 4th edition, 1988.</p>
 <hr>
 <p><strong>Session Info</strong>:</p>
 <div class="cell-output-display">
-<p><strong>R version 4.2.1 (2022-06-23 ucrt)</strong></p>
+<p><strong>R version 4.2.2 (2022-10-31 ucrt)</strong></p>
 <p><strong>Platform:</strong> x86_64-w64-mingw32/x64 (64-bit)</p>
 <p><strong>attached base packages:</strong> <em>stats</em>, <em>graphics</em>, <em>grDevices</em>, <em>utils</em>, <em>datasets</em>, <em>methods</em> and <em>base</em></p>
-<p><strong>other attached packages:</strong> MASS(v.7.3-57)</p>
-<p><strong>loaded via a namespace (and not attached):</strong> <em>Rcpp(v.1.0.9)</em>, <em>digest(v.0.6.29)</em>, <em>Rttf2pt1(v.1.3.8)</em>, <em>jsonlite(v.1.8.0)</em>, <em>magrittr(v.2.0.3)</em>, <em>evaluate(v.0.16)</em>, <em>rlang(v.1.0.4)</em>, <em>stringi(v.1.7.8)</em>, <em>cli(v.3.3.0)</em>, <em>rstudioapi(v.0.14)</em>, <em>extrafontdb(v.1.0)</em>, <em>rmarkdown(v.2.16)</em>, <em>extrafont(v.0.18)</em>, <em>tools(v.4.2.1)</em>, <em>pander(v.0.6.5)</em>, <em>stringr(v.1.4.1)</em>, <em>xfun(v.0.32)</em>, <em>yaml(v.2.3.5)</em>, <em>fastmap(v.1.1.0)</em>, <em>compiler(v.4.2.1)</em>, <em>htmltools(v.0.5.3)</em> and <em>knitr(v.1.40)</em></p>
+<p><strong>other attached packages:</strong> MASS(v.7.3-58.1)</p>
+<p><strong>loaded via a namespace (and not attached):</strong> <em>Rcpp(v.1.0.10)</em>, <em>digest(v.0.6.31)</em>, <em>Rttf2pt1(v.1.3.12)</em>, <em>jsonlite(v.1.8.4)</em>, <em>evaluate(v.0.20)</em>, <em>rlang(v.1.0.6)</em>, <em>cli(v.3.6.0)</em>, <em>rstudioapi(v.0.14)</em>, <em>extrafontdb(v.1.0)</em>, <em>rmarkdown(v.2.20)</em>, <em>extrafont(v.0.19)</em>, <em>tools(v.4.2.2)</em>, <em>pander(v.0.6.5)</em>, <em>xfun(v.0.37)</em>, <em>yaml(v.2.3.7)</em>, <em>fastmap(v.1.1.0)</em>, <em>compiler(v.4.2.2)</em>, <em>htmltools(v.0.5.4)</em> and <em>knitr(v.1.42)</em></p>
 </div>
 
 
@@ -1157,7 +1161,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
     button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
     setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
       button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);

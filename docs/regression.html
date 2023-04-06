@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.0.36">
+<meta name="generator" content="quarto-1.2.335">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -11,10 +11,15 @@
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-span.underline{text-decoration: underline;}
-div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -53,7 +58,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -66,7 +71,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -114,6 +119,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-submit-button-title": "Submit"
   }
 }</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-ZTL54L3SJR"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-ZTL54L3SJR', { 'anonymize_ip': true});
+</script>
 
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
@@ -125,34 +139,43 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
-      <a class="navbar-brand" href="./index.html">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Basic stats explained (in R)</span>
-  </a>
+    </a>
+  </div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./CI.html">Confidence intervals</a>
+    <a class="nav-link" href="./CI.html">
+ <span class="menu-text">Confidence intervals</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./z_t_tests.html">Z and T tests</a>
+    <a class="nav-link" href="./z_t_tests.html">
+ <span class="menu-text">Z and T tests</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./F_test.html">F-test: Test for difference in spread</a>
+    <a class="nav-link" href="./F_test.html">
+ <span class="menu-text">F-test: Test for difference in spread</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./ChiSquare_test.html">ChiSquare</a>
+    <a class="nav-link" href="./ChiSquare_test.html">
+ <span class="menu-text">ChiSquare</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./regression.html" aria-current="page">Ordinary least squares Regression</a>
+    <a class="nav-link active" href="./regression.html" aria-current="page">
+ <span class="menu-text">Ordinary least squares Regression</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./ANOVA.html">Analysis of variance (ANOVA)</a>
+    <a class="nav-link" href="./ANOVA.html">
+ <span class="menu-text">Analysis of variance (ANOVA)</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./Logistic.html">Logistic regression</a>
+    <a class="nav-link" href="./Logistic.html">
+ <span class="menu-text">Logistic regression</span></a>
   </li>  
 </ul>
               <div id="quarto-search" class="" title="Search"></div>
@@ -165,48 +188,48 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc">
+        <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#the-simple-model" id="toc-the-simple-model" class="nav-link active" data-scroll-target="#the-simple-model"> <span class="header-section-number">1</span> The simple model</a></li>
-  <li><a href="#the-bivariate-regression-model" id="toc-the-bivariate-regression-model" class="nav-link" data-scroll-target="#the-bivariate-regression-model"> <span class="header-section-number">2</span> The bivariate regression model</a>
+  <li><a href="#the-simple-model" id="toc-the-simple-model" class="nav-link active" data-scroll-target="#the-simple-model"><span class="toc-section-number">1</span>  The simple model</a></li>
+  <li><a href="#the-bivariate-regression-model" id="toc-the-bivariate-regression-model" class="nav-link" data-scroll-target="#the-bivariate-regression-model"><span class="toc-section-number">2</span>  The bivariate regression model</a>
   <ul class="collapse">
-  <li><a href="#testing-if-the-bivariate-model-is-an-improvement-over-the-mean-model" id="toc-testing-if-the-bivariate-model-is-an-improvement-over-the-mean-model" class="nav-link" data-scroll-target="#testing-if-the-bivariate-model-is-an-improvement-over-the-mean-model"> <span class="header-section-number">2.1</span> Testing if the bivariate model is an improvement over the mean model</a>
+  <li><a href="#testing-if-the-bivariate-model-is-an-improvement-over-the-mean-model" id="toc-testing-if-the-bivariate-model-is-an-improvement-over-the-mean-model" class="nav-link" data-scroll-target="#testing-if-the-bivariate-model-is-an-improvement-over-the-mean-model"><span class="toc-section-number">2.1</span>  Testing if the bivariate model is an improvement over the mean model</a>
   <ul class="collapse">
-  <li><a href="#the-coefficient-of-determination-r2" id="toc-the-coefficient-of-determination-r2" class="nav-link" data-scroll-target="#the-coefficient-of-determination-r2"> <span class="header-section-number">2.1.1</span> The coefficient of determination, <span class="math inline">\(R^2\)</span></a></li>
-  <li><a href="#the-f-ratio-test" id="toc-the-f-ratio-test" class="nav-link" data-scroll-target="#the-f-ratio-test"> <span class="header-section-number">2.1.2</span> The F-ratio test</a></li>
+  <li><a href="#the-coefficient-of-determination-r2" id="toc-the-coefficient-of-determination-r2" class="nav-link" data-scroll-target="#the-coefficient-of-determination-r2"><span class="toc-section-number">2.1.1</span>  The coefficient of determination, <span class="math inline">\(R^2\)</span></a></li>
+  <li><a href="#the-f-ratio-test" id="toc-the-f-ratio-test" class="nav-link" data-scroll-target="#the-f-ratio-test"><span class="toc-section-number">2.1.2</span>  The F-ratio test</a></li>
   </ul></li>
-  <li><a href="#testing-if-the-estimated-slope-is-significantly-different-from-0" id="toc-testing-if-the-estimated-slope-is-significantly-different-from-0" class="nav-link" data-scroll-target="#testing-if-the-estimated-slope-is-significantly-different-from-0"> <span class="header-section-number">2.2</span> Testing if the estimated slope is significantly different from 0</a>
+  <li><a href="#testing-if-the-estimated-slope-is-significantly-different-from-0" id="toc-testing-if-the-estimated-slope-is-significantly-different-from-0" class="nav-link" data-scroll-target="#testing-if-the-estimated-slope-is-significantly-different-from-0"><span class="toc-section-number">2.2</span>  Testing if the estimated slope is significantly different from 0</a>
   <ul class="collapse">
-  <li><a href="#extracting-hat-beta_1-confidence-interval" id="toc-extracting-hat-beta_1-confidence-interval" class="nav-link" data-scroll-target="#extracting-hat-beta_1-confidence-interval"> <span class="header-section-number">2.2.1</span> Extracting <span class="math inline">\(\hat \beta_1\)</span> confidence interval</a></li>
+  <li><a href="#extracting-hat-beta_1-confidence-interval" id="toc-extracting-hat-beta_1-confidence-interval" class="nav-link" data-scroll-target="#extracting-hat-beta_1-confidence-interval"><span class="toc-section-number">2.2.1</span>  Extracting <span class="math inline">\(\hat \beta_1\)</span> confidence interval</a></li>
   </ul></li>
-  <li><a href="#checking-the-residuals" id="toc-checking-the-residuals" class="nav-link" data-scroll-target="#checking-the-residuals"> <span class="header-section-number">2.3</span> Checking the residuals</a>
+  <li><a href="#checking-the-residuals" id="toc-checking-the-residuals" class="nav-link" data-scroll-target="#checking-the-residuals"><span class="toc-section-number">2.3</span>  Checking the residuals</a>
   <ul class="collapse">
-  <li><a href="#assumption-1-bar-varepsilon-0" id="toc-assumption-1-bar-varepsilon-0" class="nav-link" data-scroll-target="#assumption-1-bar-varepsilon-0"> <span class="header-section-number">2.3.1</span> Assumption 1: <span class="math inline">\(\bar \varepsilon = 0\)</span></a></li>
-  <li><a href="#assumption-2-homoscedasticity" id="toc-assumption-2-homoscedasticity" class="nav-link" data-scroll-target="#assumption-2-homoscedasticity"> <span class="header-section-number">2.3.2</span> Assumption 2: homoscedasticity</a></li>
-  <li><a href="#assumption-3-normal-gaussian-distribution-of-residuals" id="toc-assumption-3-normal-gaussian-distribution-of-residuals" class="nav-link" data-scroll-target="#assumption-3-normal-gaussian-distribution-of-residuals"> <span class="header-section-number">2.3.3</span> Assumption 3: Normal (Gaussian) distribution of residuals</a></li>
-  <li><a href="#assumption-4-independence-of-residuals" id="toc-assumption-4-independence-of-residuals" class="nav-link" data-scroll-target="#assumption-4-independence-of-residuals"> <span class="header-section-number">2.3.4</span> Assumption 4: Independence of residuals</a></li>
+  <li><a href="#assumption-1-bar-varepsilon-0" id="toc-assumption-1-bar-varepsilon-0" class="nav-link" data-scroll-target="#assumption-1-bar-varepsilon-0"><span class="toc-section-number">2.3.1</span>  Assumption 1: <span class="math inline">\(\bar \varepsilon = 0\)</span></a></li>
+  <li><a href="#assumption-2-homoscedasticity" id="toc-assumption-2-homoscedasticity" class="nav-link" data-scroll-target="#assumption-2-homoscedasticity"><span class="toc-section-number">2.3.2</span>  Assumption 2: homoscedasticity</a></li>
+  <li><a href="#assumption-3-normal-gaussian-distribution-of-residuals" id="toc-assumption-3-normal-gaussian-distribution-of-residuals" class="nav-link" data-scroll-target="#assumption-3-normal-gaussian-distribution-of-residuals"><span class="toc-section-number">2.3.3</span>  Assumption 3: Normal (Gaussian) distribution of residuals</a></li>
+  <li><a href="#assumption-4-independence-of-residuals" id="toc-assumption-4-independence-of-residuals" class="nav-link" data-scroll-target="#assumption-4-independence-of-residuals"><span class="toc-section-number">2.3.4</span>  Assumption 4: Independence of residuals</a></li>
   </ul></li>
-  <li><a href="#influential-observations" id="toc-influential-observations" class="nav-link" data-scroll-target="#influential-observations"> <span class="header-section-number">2.4</span> Influential Observations</a></li>
-  <li><a href="#what-to-do-if-some-of-the-assumptions-are-not-met" id="toc-what-to-do-if-some-of-the-assumptions-are-not-met" class="nav-link" data-scroll-target="#what-to-do-if-some-of-the-assumptions-are-not-met"> <span class="header-section-number">2.5</span> What to do if some of the assumptions are not met</a>
+  <li><a href="#influential-observations" id="toc-influential-observations" class="nav-link" data-scroll-target="#influential-observations"><span class="toc-section-number">2.4</span>  Influential Observations</a></li>
+  <li><a href="#what-to-do-if-some-of-the-assumptions-are-not-met" id="toc-what-to-do-if-some-of-the-assumptions-are-not-met" class="nav-link" data-scroll-target="#what-to-do-if-some-of-the-assumptions-are-not-met"><span class="toc-section-number">2.5</span>  What to do if some of the assumptions are not met</a>
   <ul class="collapse">
-  <li><a href="#data-transformation" id="toc-data-transformation" class="nav-link" data-scroll-target="#data-transformation"> <span class="header-section-number">2.5.1</span> Data transformation</a></li>
-  <li><a href="#bootstrapping" id="toc-bootstrapping" class="nav-link" data-scroll-target="#bootstrapping"> <span class="header-section-number">2.5.2</span> Bootstrapping</a></li>
+  <li><a href="#data-transformation" id="toc-data-transformation" class="nav-link" data-scroll-target="#data-transformation"><span class="toc-section-number">2.5.1</span>  Data transformation</a></li>
+  <li><a href="#bootstrapping" id="toc-bootstrapping" class="nav-link" data-scroll-target="#bootstrapping"><span class="toc-section-number">2.5.2</span>  Bootstrapping</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#multivariate-regression-model" id="toc-multivariate-regression-model" class="nav-link" data-scroll-target="#multivariate-regression-model"> <span class="header-section-number">3</span> Multivariate regression model</a>
+  <li><a href="#multivariate-regression-model" id="toc-multivariate-regression-model" class="nav-link" data-scroll-target="#multivariate-regression-model"><span class="toc-section-number">3</span>  Multivariate regression model</a>
   <ul class="collapse">
-  <li><a href="#reviewing-the-multivariate-regression-model-summary" id="toc-reviewing-the-multivariate-regression-model-summary" class="nav-link" data-scroll-target="#reviewing-the-multivariate-regression-model-summary"> <span class="header-section-number">3.1</span> Reviewing the multivariate regression model summary</a></li>
-  <li><a href="#comparing-the-two-variable-model-with-the-one-variable-model" id="toc-comparing-the-two-variable-model-with-the-one-variable-model" class="nav-link" data-scroll-target="#comparing-the-two-variable-model-with-the-one-variable-model"> <span class="header-section-number">3.2</span> Comparing the two-variable model with the one-variable model</a></li>
-  <li><a href="#looking-for-multi-collinearity" id="toc-looking-for-multi-collinearity" class="nav-link" data-scroll-target="#looking-for-multi-collinearity"> <span class="header-section-number">3.3</span> Looking for multi-collinearity</a></li>
+  <li><a href="#reviewing-the-multivariate-regression-model-summary" id="toc-reviewing-the-multivariate-regression-model-summary" class="nav-link" data-scroll-target="#reviewing-the-multivariate-regression-model-summary"><span class="toc-section-number">3.1</span>  Reviewing the multivariate regression model summary</a></li>
+  <li><a href="#comparing-the-two-variable-model-with-the-one-variable-model" id="toc-comparing-the-two-variable-model-with-the-one-variable-model" class="nav-link" data-scroll-target="#comparing-the-two-variable-model-with-the-one-variable-model"><span class="toc-section-number">3.2</span>  Comparing the two-variable model with the one-variable model</a></li>
+  <li><a href="#looking-for-multi-collinearity" id="toc-looking-for-multi-collinearity" class="nav-link" data-scroll-target="#looking-for-multi-collinearity"><span class="toc-section-number">3.3</span>  Looking for multi-collinearity</a></li>
   </ul></li>
-  <li><a href="#including-categorical-predictor-variables" id="toc-including-categorical-predictor-variables" class="nav-link" data-scroll-target="#including-categorical-predictor-variables"> <span class="header-section-number">4</span> Including categorical predictor variables</a>
+  <li><a href="#including-categorical-predictor-variables" id="toc-including-categorical-predictor-variables" class="nav-link" data-scroll-target="#including-categorical-predictor-variables"><span class="toc-section-number">4</span>  Including categorical predictor variables</a>
   <ul class="collapse">
-  <li><a href="#two-category-variable" id="toc-two-category-variable" class="nav-link" data-scroll-target="#two-category-variable"> <span class="header-section-number">4.1</span> Two category variable</a></li>
-  <li><a href="#multi-category-variable" id="toc-multi-category-variable" class="nav-link" data-scroll-target="#multi-category-variable"> <span class="header-section-number">4.2</span> Multi-category variable</a></li>
+  <li><a href="#two-category-variable" id="toc-two-category-variable" class="nav-link" data-scroll-target="#two-category-variable"><span class="toc-section-number">4.1</span>  Two category variable</a></li>
+  <li><a href="#multi-category-variable" id="toc-multi-category-variable" class="nav-link" data-scroll-target="#multi-category-variable"><span class="toc-section-number">4.2</span>  Multi-category variable</a></li>
   </ul></li>
-  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"> <span class="header-section-number">5</span> References</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="toc-section-number">5</span>  References</a></li>
   </ul>
 </nav>
     </div>
@@ -223,13 +246,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="quarto-title-meta">
 
     
+  
     
   </div>
   
 
 </header>
 
-<p><em>Last modified on 2022-09-12</em></p>
+<p><em>Last modified on 2023-04-06</em></p>
 <div class="cell">
 
 </div>
@@ -629,8 +653,7 @@ Y = \beta_0 + \beta_1X + \varepsilon
 <p><img src="regression_files/figure-html/unnamed-chunk-10-1.png" width="576"></p>
 </div>
 </div>
-<p>It’s clear from the figure that there appears to be a positive relationship between income and education attainment. The next step is to <em>capture</em> the nature of this relationship from the perspective of a linear equation. We seek to fit a slope that will minimize the overall distance between the line and the true value, hence we seek <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> that minimizes the error. The estimate for <span class="math inline">\(\beta_1\)</span> is sometimes represented as the letter <span class="math inline">\(b_1\)</span> or <span class="math inline">\(\hat \beta_1\)</span>. We’ll stick with the latter notation throughout this exercise. <span class="math inline">\(\hat \beta_1\)</span> is estimated using the linear <strong>least squares</strong> technique:</p>
-<p><span class="math display">\[
+<p>It’s clear from the figure that there appears to be a positive relationship between income and education attainment. The next step is to <em>capture</em> the nature of this relationship from the perspective of a linear equation. We seek to fit a slope that will minimize the overall distance between the line and the true value, hence we seek <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> that minimizes the error. The estimate for <span class="math inline">\(\beta_1\)</span> is sometimes represented as the letter <span class="math inline">\(b_1\)</span> or <span class="math inline">\(\hat \beta_1\)</span>. We’ll stick with the latter notation throughout this exercise. <span class="math inline">\(\hat \beta_1\)</span> is estimated using the linear <strong>least squares</strong> technique: <span class="math display">\[
 \hat \beta_1 = \frac{\sum (X_i - \bar X)(Y_i-\bar Y)}{\sum (X_i-\bar X)^2}
 \]</span></p>
 <p>The breakdown of the terms in this equation are listed in the following table:</p>
@@ -751,8 +774,7 @@ Y = \beta_0 + \beta_1X + \varepsilon
 </table>
 </div>
 <p>The bottom of the last two columns show the sums of the numerator and denominator (3553.60875 and 0.0715438 respectively). <span class="math inline">\(\hat \beta_1\)</span>, the estimated slope, is therefore 3553.61/0.072 or 49670.</p>
-<p>Knowing <span class="math inline">\(\hat \beta_1\)</span> we can solve for the intercept <span class="math inline">\(b_0\)</span>:</p>
-<p><span class="math display">\[
+<p>Knowing <span class="math inline">\(\hat \beta_1\)</span> we can solve for the intercept <span class="math inline">\(b_0\)</span>: <span class="math display">\[
 \hat \beta_0 = \hat Y - \hat \beta_1 X
 \]</span></p>
 <p>It just so happens that the slope passes through <span class="math inline">\(\bar Y\)</span> and <span class="math inline">\(\bar X\)</span>. So we can substitute <span class="math inline">\(X\)</span> and <span class="math inline">\(\hat Y\)</span> in the equation with their respective means: 0.24 and 24481. This gives us <span class="math inline">\(\hat \beta_0\)</span> = 12405. Our final linear equation looks like this:</p>
@@ -874,8 +896,7 @@ R^2 = \frac{SSR}{SSE_{mean}}
 <p>We want to assess whether the total amount of <em>unexplained error</em> (right) is significantly less than the total amount of <em>explained error</em> (left). We have 16 records (i.e.&nbsp;data for sixteen counties) therefore we have 16 measures of error. Since the model assumes that the errors are the same across the entire range of <span class="math inline">\(Y\)</span> values, we will take the average of those errors; hence we take the average of <span class="math inline">\(SSR\)</span> and the average of <span class="math inline">\(SSE\)</span>. However, because these data are from a <em>subset</em> of possible <span class="math inline">\(Y\)</span> values and not <em>all</em> possible <span class="math inline">\(Y\)</span> values we will need to divide <span class="math inline">\(SSR\)</span> and <span class="math inline">\(SSE\)</span> by their respective <span class="math inline">\(degress\; of\; freedom\)</span> and not by the total number of records, <span class="math inline">\(n\)</span>. These “averages” are called <strong>mean squares</strong> (<span class="math inline">\(MS\)</span>) and are computed as follows:</p>
 <p><span class="math display">\[
 MS_{model} = \frac{SSR}{df_{model}} =  \frac{SSR}{parameters\; in\; the\; bivariate\; model - parameters\; in\; the\; mean\; model}
-\]</span></p>
-<p><span class="math display">\[
+\]</span> <span class="math display">\[
 MS_{residual} = \frac{SSE}{df_{residual}} = \frac{SSE}{n - number\; of\; parameters}
 \]</span></p>
 <p>where the <span class="math inline">\(parameters\)</span> are the number of coefficients in the mean model (where there is just one parameter: <span class="math inline">\(\beta_0 = \hat Y\)</span>) and the number of coefficient in the bivariate model (where there are two parameters: <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>). In our working example, <span class="math inline">\(df_{model}\)</span> = 1 and <span class="math inline">\(df_{residual}\)</span> = 14.</p>
@@ -950,8 +971,7 @@ F = \frac{MS_{model}}{MS_{residual}}
 <p><span class="math display">\[
 t = \frac{\hat \beta_1 - \beta_{1_o}}{s_{\hat \beta_1}}
 \]</span></p>
-<p>Since <span class="math inline">\(\beta_1\)</span> is zero under <span class="math inline">\(H_o\)</span> , we can rewrite the above equation as follows:</p>
-<p><span class="math display">\[
+<p>Since <span class="math inline">\(\beta_1\)</span> is zero under <span class="math inline">\(H_o\)</span> , we can rewrite the above equation as follows: <span class="math display">\[
 t = \frac{\hat \beta_1 - 0}{s_{\hat \beta_1}} = \frac{\hat \beta_1 }{s_{\hat \beta_1}}
 \]</span></p>
 <p>where the estimate <span class="math inline">\(s_{\hat \beta_1}\)</span> is the <strong>standard error of <span class="math inline">\(\beta\)</span></strong> which can be computed from:</p>
@@ -1618,8 +1638,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </section>
 <section id="looking-for-multi-collinearity" class="level2" data-number="3.3">
 <h2 data-number="3.3" class="anchored" data-anchor-id="looking-for-multi-collinearity"><span class="header-section-number">3.3</span> Looking for multi-collinearity</h2>
-<p>When adding explanatory variables to a model, one must be very careful not to add variables that explain the same ‘thing’. In other words, we don’t want (nor need) to have two or more variables in the model explain the <strong>same variance</strong>. One popular test for Multi-collinearity is the <strong>Variance Inflation Factor (VIF)</strong> test. The VIF is computed for all regression parameters. For example, VIF for <span class="math inline">\(X_2\)</span> is computed by first regressing <span class="math inline">\(X_1\)</span> against all other predictors (in our example, we would regress <span class="math inline">\(X_1\)</span> against <span class="math inline">\(X_2\)</span>) then taking the resulting <span class="math inline">\(R^2\)</span> and plugging it in the following VIF equation:</p>
-<p><span class="math display">\[
+<p>When adding explanatory variables to a model, one must be very careful not to add variables that explain the same ‘thing’. In other words, we don’t want (nor need) to have two or more variables in the model explain the <strong>same variance</strong>. One popular test for Multi-collinearity is the <strong>Variance Inflation Factor (VIF)</strong> test. The VIF is computed for all regression parameters. For example, VIF for <span class="math inline">\(X_2\)</span> is computed by first regressing <span class="math inline">\(X_1\)</span> against all other predictors (in our example, we would regress <span class="math inline">\(X_1\)</span> against <span class="math inline">\(X_2\)</span>) then taking the resulting <span class="math inline">\(R^2\)</span> and plugging it in the following VIF equation: <span class="math display">\[
 VIF = \frac{1}{1 - R^2_1}
 \]</span></p>
 <p>where the subscript <span class="math inline">\(1\)</span> in <span class="math inline">\(R^2_1\)</span> indicates that the <span class="math inline">\(R^2\)</span> is for the model <code>x1 ~ x2</code>. The VIF for <span class="math inline">\(X_2\)</span> is computed in the same way.</p>
@@ -2127,11 +2146,11 @@ McClave J.T., Dietrich F.H., <em>Statistics</em>, 4th edition, 1988.<br>
 Vik P., <em>Regression, ANOVA, and the General Linear Model: A Statistics Primer</em>, 2013.</p>
 <p><strong>Session Info</strong>:</p>
 <div class="cell-output-display">
-<p><strong>R version 4.2.1 (2022-06-23 ucrt)</strong></p>
+<p><strong>R version 4.2.2 (2022-10-31 ucrt)</strong></p>
 <p><strong>Platform:</strong> x86_64-w64-mingw32/x64 (64-bit)</p>
 <p><strong>attached base packages:</strong> <em>stats</em>, <em>graphics</em>, <em>grDevices</em>, <em>utils</em>, <em>datasets</em>, <em>methods</em> and <em>base</em></p>
-<p><strong>other attached packages:</strong> <em>gplots(v.3.1.3)</em>, <em>scatterplot3d(v.0.3-41)</em>, <em>boot(v.1.3-28)</em>, <em>car(v.3.1-0)</em> and <em>carData(v.3.0-5)</em></p>
-<p><strong>loaded via a namespace (and not attached):</strong> <em>Rcpp(v.1.0.9)</em>, <em>rstudioapi(v.0.14)</em>, <em>Rttf2pt1(v.1.3.8)</em>, <em>knitr(v.1.40)</em>, <em>magrittr(v.2.0.3)</em>, <em>MASS(v.7.3-57)</em>, <em>xtable(v.1.8-4)</em>, <em>rlang(v.1.0.4)</em>, <em>fastmap(v.1.1.0)</em>, <em>stringr(v.1.4.1)</em>, <em>highr(v.0.9)</em>, <em>caTools(v.1.18.2)</em>, <em>tools(v.4.2.1)</em>, <em>xfun(v.0.32)</em>, <em>KernSmooth(v.2.23-20)</em>, <em>cli(v.3.3.0)</em>, <em>extrafontdb(v.1.0)</em>, <em>htmltools(v.0.5.3)</em>, <em>gtools(v.3.9.3)</em>, <em>yaml(v.2.3.5)</em>, <em>abind(v.1.4-5)</em>, <em>digest(v.0.6.29)</em>, <em>bitops(v.1.0-7)</em>, <em>evaluate(v.0.16)</em>, <em>rmarkdown(v.2.16)</em>, <em>stringi(v.1.7.8)</em>, <em>pander(v.0.6.5)</em>, <em>compiler(v.4.2.1)</em>, <em>extrafont(v.0.18)</em> and <em>jsonlite(v.1.8.0)</em></p>
+<p><strong>other attached packages:</strong> <em>gplots(v.3.1.3)</em>, <em>scatterplot3d(v.0.3-43)</em>, <em>boot(v.1.3-28)</em>, <em>car(v.3.1-2)</em> and <em>carData(v.3.0-5)</em></p>
+<p><strong>loaded via a namespace (and not attached):</strong> <em>Rcpp(v.1.0.10)</em>, <em>rstudioapi(v.0.14)</em>, <em>Rttf2pt1(v.1.3.12)</em>, <em>knitr(v.1.42)</em>, <em>MASS(v.7.3-58.1)</em>, <em>xtable(v.1.8-4)</em>, <em>rlang(v.1.0.6)</em>, <em>fastmap(v.1.1.0)</em>, <em>caTools(v.1.18.2)</em>, <em>tools(v.4.2.2)</em>, <em>xfun(v.0.37)</em>, <em>KernSmooth(v.2.23-20)</em>, <em>cli(v.3.6.0)</em>, <em>extrafontdb(v.1.0)</em>, <em>htmltools(v.0.5.4)</em>, <em>gtools(v.3.9.4)</em>, <em>yaml(v.2.3.7)</em>, <em>abind(v.1.4-5)</em>, <em>digest(v.0.6.31)</em>, <em>bitops(v.1.0-7)</em>, <em>evaluate(v.0.20)</em>, <em>rmarkdown(v.2.20)</em>, <em>compiler(v.4.2.2)</em>, <em>pander(v.0.6.5)</em>, <em>extrafont(v.0.19)</em> and <em>jsonlite(v.1.8.4)</em></p>
 </div>
 
 
@@ -2179,7 +2198,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
     button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
     setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
       button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);

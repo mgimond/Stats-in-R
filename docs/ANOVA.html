@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.0.36">
+<meta name="generator" content="quarto-1.2.335">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -11,10 +11,15 @@
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-span.underline{text-decoration: underline;}
-div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -53,7 +58,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -66,7 +71,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -114,6 +119,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-submit-button-title": "Submit"
   }
 }</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-ZTL54L3SJR"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-ZTL54L3SJR', { 'anonymize_ip': true});
+</script>
 
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
@@ -125,34 +139,43 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
-      <a class="navbar-brand" href="./index.html">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Basic stats explained (in R)</span>
-  </a>
+    </a>
+  </div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./CI.html">Confidence intervals</a>
+    <a class="nav-link" href="./CI.html">
+ <span class="menu-text">Confidence intervals</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./z_t_tests.html">Z and T tests</a>
+    <a class="nav-link" href="./z_t_tests.html">
+ <span class="menu-text">Z and T tests</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./F_test.html">F-test: Test for difference in spread</a>
+    <a class="nav-link" href="./F_test.html">
+ <span class="menu-text">F-test: Test for difference in spread</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./ChiSquare_test.html">ChiSquare</a>
+    <a class="nav-link" href="./ChiSquare_test.html">
+ <span class="menu-text">ChiSquare</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./regression.html">Ordinary least squares Regression</a>
+    <a class="nav-link" href="./regression.html">
+ <span class="menu-text">Ordinary least squares Regression</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./ANOVA.html" aria-current="page">Analysis of variance (ANOVA)</a>
+    <a class="nav-link active" href="./ANOVA.html" aria-current="page">
+ <span class="menu-text">Analysis of variance (ANOVA)</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./Logistic.html">Logistic regression</a>
+    <a class="nav-link" href="./Logistic.html">
+ <span class="menu-text">Logistic regression</span></a>
   </li>  
 </ul>
               <div id="quarto-search" class="" title="Search"></div>
@@ -165,35 +188,35 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc">
+        <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"> <span class="header-section-number">1</span> Introduction</a></li>
-  <li><a href="#how-a-one-way-anova-is-calculated" id="toc-how-a-one-way-anova-is-calculated" class="nav-link" data-scroll-target="#how-a-one-way-anova-is-calculated"> <span class="header-section-number">2</span> How a one-way ANOVA is calculated</a>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="toc-section-number">1</span>  Introduction</a></li>
+  <li><a href="#how-a-one-way-anova-is-calculated" id="toc-how-a-one-way-anova-is-calculated" class="nav-link" data-scroll-target="#how-a-one-way-anova-is-calculated"><span class="toc-section-number">2</span>  How a one-way ANOVA is calculated</a>
   <ul class="collapse">
-  <li><a href="#the-variance-ratio-method" id="toc-the-variance-ratio-method" class="nav-link" data-scroll-target="#the-variance-ratio-method"> <span class="header-section-number">2.1</span> The variance-ratio method</a></li>
-  <li><a href="#an-example-in-r" id="toc-an-example-in-r" class="nav-link" data-scroll-target="#an-example-in-r"> <span class="header-section-number">2.2</span> An example in R</a>
+  <li><a href="#the-variance-ratio-method" id="toc-the-variance-ratio-method" class="nav-link" data-scroll-target="#the-variance-ratio-method"><span class="toc-section-number">2.1</span>  The variance-ratio method</a></li>
+  <li><a href="#an-example-in-r" id="toc-an-example-in-r" class="nav-link" data-scroll-target="#an-example-in-r"><span class="toc-section-number">2.2</span>  An example in R</a>
   <ul class="collapse">
-  <li><a href="#computing-anova-the-hard-way" id="toc-computing-anova-the-hard-way" class="nav-link" data-scroll-target="#computing-anova-the-hard-way"> <span class="header-section-number">2.2.1</span> Computing ANOVA the hard way</a></li>
-  <li><a href="#computing-anova-the-easy-way" id="toc-computing-anova-the-easy-way" class="nav-link" data-scroll-target="#computing-anova-the-easy-way"> <span class="header-section-number">2.2.2</span> Computing ANOVA the easy way</a></li>
-  <li><a href="#anova-as-a-regression" id="toc-anova-as-a-regression" class="nav-link" data-scroll-target="#anova-as-a-regression"> <span class="header-section-number">2.2.3</span> ANOVA as a regression</a></li>
+  <li><a href="#computing-anova-the-hard-way" id="toc-computing-anova-the-hard-way" class="nav-link" data-scroll-target="#computing-anova-the-hard-way"><span class="toc-section-number">2.2.1</span>  Computing ANOVA the hard way</a></li>
+  <li><a href="#computing-anova-the-easy-way" id="toc-computing-anova-the-easy-way" class="nav-link" data-scroll-target="#computing-anova-the-easy-way"><span class="toc-section-number">2.2.2</span>  Computing ANOVA the easy way</a></li>
+  <li><a href="#anova-as-a-regression" id="toc-anova-as-a-regression" class="nav-link" data-scroll-target="#anova-as-a-regression"><span class="toc-section-number">2.2.3</span>  ANOVA as a regression</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#assumptions-of-anova" id="toc-assumptions-of-anova" class="nav-link" data-scroll-target="#assumptions-of-anova"> <span class="header-section-number">3</span> Assumptions of ANOVA</a></li>
-  <li><a href="#identifying-which-levels-are-different" id="toc-identifying-which-levels-are-different" class="nav-link" data-scroll-target="#identifying-which-levels-are-different"> <span class="header-section-number">4</span> Identifying which levels are different</a>
+  <li><a href="#assumptions-of-anova" id="toc-assumptions-of-anova" class="nav-link" data-scroll-target="#assumptions-of-anova"><span class="toc-section-number">3</span>  Assumptions of ANOVA</a></li>
+  <li><a href="#identifying-which-levels-are-different" id="toc-identifying-which-levels-are-different" class="nav-link" data-scroll-target="#identifying-which-levels-are-different"><span class="toc-section-number">4</span>  Identifying which levels are different</a>
   <ul class="collapse">
-  <li><a href="#bonferroni" id="toc-bonferroni" class="nav-link" data-scroll-target="#bonferroni"> <span class="header-section-number">4.1</span> Bonferroni</a></li>
-  <li><a href="#tukeys-hsd" id="toc-tukeys-hsd" class="nav-link" data-scroll-target="#tukeys-hsd"> <span class="header-section-number">4.2</span> Tukey’s HSD</a></li>
-  <li><a href="#assumptions-of-the-post-hoc-test" id="toc-assumptions-of-the-post-hoc-test" class="nav-link" data-scroll-target="#assumptions-of-the-post-hoc-test"> <span class="header-section-number">4.3</span> Assumptions of the post hoc test</a></li>
+  <li><a href="#bonferroni" id="toc-bonferroni" class="nav-link" data-scroll-target="#bonferroni"><span class="toc-section-number">4.1</span>  Bonferroni</a></li>
+  <li><a href="#tukeys-hsd" id="toc-tukeys-hsd" class="nav-link" data-scroll-target="#tukeys-hsd"><span class="toc-section-number">4.2</span>  Tukey’s HSD</a></li>
+  <li><a href="#assumptions-of-the-post-hoc-test" id="toc-assumptions-of-the-post-hoc-test" class="nav-link" data-scroll-target="#assumptions-of-the-post-hoc-test"><span class="toc-section-number">4.3</span>  Assumptions of the post hoc test</a></li>
   </ul></li>
-  <li><a href="#another-working-example" id="toc-another-working-example" class="nav-link" data-scroll-target="#another-working-example"> <span class="header-section-number">5</span> Another working example</a></li>
-  <li><a href="#two-way-anova" id="toc-two-way-anova" class="nav-link" data-scroll-target="#two-way-anova"> <span class="header-section-number">6</span> Two-way ANOVA</a>
+  <li><a href="#another-working-example" id="toc-another-working-example" class="nav-link" data-scroll-target="#another-working-example"><span class="toc-section-number">5</span>  Another working example</a></li>
+  <li><a href="#two-way-anova" id="toc-two-way-anova" class="nav-link" data-scroll-target="#two-way-anova"><span class="toc-section-number">6</span>  Two-way ANOVA</a>
   <ul class="collapse">
-  <li><a href="#checking-for-interaction-non-additive-model" id="toc-checking-for-interaction-non-additive-model" class="nav-link" data-scroll-target="#checking-for-interaction-non-additive-model"> <span class="header-section-number">6.1</span> Checking for interaction (non-additive model)</a></li>
-  <li><a href="#extracting-effects-for-each-level" id="toc-extracting-effects-for-each-level" class="nav-link" data-scroll-target="#extracting-effects-for-each-level"> <span class="header-section-number">6.2</span> Extracting effects for each level</a></li>
+  <li><a href="#checking-for-interaction-non-additive-model" id="toc-checking-for-interaction-non-additive-model" class="nav-link" data-scroll-target="#checking-for-interaction-non-additive-model"><span class="toc-section-number">6.1</span>  Checking for interaction (non-additive model)</a></li>
+  <li><a href="#extracting-effects-for-each-level" id="toc-extracting-effects-for-each-level" class="nav-link" data-scroll-target="#extracting-effects-for-each-level"><span class="toc-section-number">6.2</span>  Extracting effects for each level</a></li>
   </ul></li>
-  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"> <span class="header-section-number">7</span> References</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="toc-section-number">7</span>  References</a></li>
   </ul>
 </nav>
     </div>
@@ -210,13 +233,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="quarto-title-meta">
 
     
+  
     
   </div>
   
 
 </header>
 
-<p><em>Last modified on 2022-09-12</em></p>
+<p><em>Last modified on 2023-04-06</em></p>
 <div class="cell">
 
 </div>
@@ -279,8 +303,7 @@ SSR = SSE_{mean} - SSE
 <p><img src="ANOVA_files/figure-html/unnamed-chunk-6-1.png" width="480"></p>
 </div>
 </div>
-<p>The goal is to compare the variability in <span class="math inline">\(SSE\)</span> to that in <span class="math inline">\(SSR\)</span>, however, <span class="math inline">\(SSR\)</span> can take on much larger values than <span class="math inline">\(SSA\)</span> (because <span class="math inline">\(SSR\)</span> is measuring from the group means and not the individual values). To remedy this bias, we compute the <strong>mean squares</strong> from both values by dividing the sum of squares by the <strong>degrees of freedom</strong>. For <span class="math inline">\(SSR\)</span>, this gives us:</p>
-<p><span class="math display">\[
+<p>The goal is to compare the variability in <span class="math inline">\(SSE\)</span> to that in <span class="math inline">\(SSR\)</span>, however, <span class="math inline">\(SSR\)</span> can take on much larger values than <span class="math inline">\(SSA\)</span> (because <span class="math inline">\(SSR\)</span> is measuring from the group means and not the individual values). To remedy this bias, we compute the <strong>mean squares</strong> from both values by dividing the sum of squares by the <strong>degrees of freedom</strong>. For <span class="math inline">\(SSR\)</span>, this gives us: <span class="math display">\[
 MSR = \frac{SSR}{p-1}
 \]</span></p>
 <p>where <span class="math inline">\(MSR\)</span> is the <strong>mean square for treatments</strong> (or <strong>mean square for model</strong>), and <span class="math inline">\(p\)</span> is the number of levels (3 in this example).</p>
@@ -884,7 +907,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
     button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
     setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
       button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);

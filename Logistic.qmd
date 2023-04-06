@@ -34,7 +34,7 @@ We'll be making use of median per-capita income data aggregated at the county le
 
 ```{r}
 # Load dataset
-dat <- read.csv("http://mgimond.github.io/Stats-in-R/Data/Income_and_education.csv", stringsAsFactors = TRUE)
+dat <- read.csv("https://raw.githubusercontent.com/mgimond/Stats-in-R/gh-pages/Data/Income_and_education.csv", stringsAsFactors = TRUE)
 
 # Limit the dataset to the two columns of interest
 df <- select(dat, Coast, Income = Per.capita.income )

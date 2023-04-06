@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.0.36">
+<meta name="generator" content="quarto-1.2.335">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -11,10 +11,15 @@
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-span.underline{text-decoration: underline;}
-div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -53,7 +58,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -66,7 +71,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -114,6 +119,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-submit-button-title": "Submit"
   }
 }</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-ZTL54L3SJR"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-ZTL54L3SJR', { 'anonymize_ip': true});
+</script>
 
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
@@ -125,34 +139,43 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
-      <a class="navbar-brand" href="./index.html">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Basic stats explained (in R)</span>
-  </a>
+    </a>
+  </div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./CI.html">Confidence intervals</a>
+    <a class="nav-link" href="./CI.html">
+ <span class="menu-text">Confidence intervals</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./z_t_tests.html" aria-current="page">Z and T tests</a>
+    <a class="nav-link active" href="./z_t_tests.html" aria-current="page">
+ <span class="menu-text">Z and T tests</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./F_test.html">F-test: Test for difference in spread</a>
+    <a class="nav-link" href="./F_test.html">
+ <span class="menu-text">F-test: Test for difference in spread</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./ChiSquare_test.html">ChiSquare</a>
+    <a class="nav-link" href="./ChiSquare_test.html">
+ <span class="menu-text">ChiSquare</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./regression.html">Ordinary least squares Regression</a>
+    <a class="nav-link" href="./regression.html">
+ <span class="menu-text">Ordinary least squares Regression</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./ANOVA.html">Analysis of variance (ANOVA)</a>
+    <a class="nav-link" href="./ANOVA.html">
+ <span class="menu-text">Analysis of variance (ANOVA)</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./Logistic.html">Logistic regression</a>
+    <a class="nav-link" href="./Logistic.html">
+ <span class="menu-text">Logistic regression</span></a>
   </li>  
 </ul>
               <div id="quarto-search" class="" title="Search"></div>
@@ -165,45 +188,45 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc">
+        <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#tests-of-significance-single-sample-inference" id="toc-tests-of-significance-single-sample-inference" class="nav-link active" data-scroll-target="#tests-of-significance-single-sample-inference"> <span class="header-section-number">1</span> Tests of Significance (single sample inference)</a>
+  <li><a href="#tests-of-significance-single-sample-inference" id="toc-tests-of-significance-single-sample-inference" class="nav-link active" data-scroll-target="#tests-of-significance-single-sample-inference"><span class="toc-section-number">1</span>  Tests of Significance (single sample inference)</a>
   <ul class="collapse">
-  <li><a href="#the-null-and-the-alternative-hypotheses" id="toc-the-null-and-the-alternative-hypotheses" class="nav-link" data-scroll-target="#the-null-and-the-alternative-hypotheses"> <span class="header-section-number">1.1</span> The null and the alternative hypotheses</a></li>
-  <li><a href="#test-statistics" id="toc-test-statistics" class="nav-link" data-scroll-target="#test-statistics"> <span class="header-section-number">1.2</span> Test statistics</a></li>
-  <li><a href="#z-tests" id="toc-z-tests" class="nav-link" data-scroll-target="#z-tests"> <span class="header-section-number">1.3</span> <span class="math inline">\(z\)</span>-tests</a></li>
-  <li><a href="#t-tests" id="toc-t-tests" class="nav-link" data-scroll-target="#t-tests"> <span class="header-section-number">1.4</span> <span class="math inline">\(t\)</span>-tests</a></li>
-  <li><a href="#follow-up-examples" id="toc-follow-up-examples" class="nav-link" data-scroll-target="#follow-up-examples"> <span class="header-section-number">1.5</span> Follow-up examples</a>
+  <li><a href="#the-null-and-the-alternative-hypotheses" id="toc-the-null-and-the-alternative-hypotheses" class="nav-link" data-scroll-target="#the-null-and-the-alternative-hypotheses"><span class="toc-section-number">1.1</span>  The null and the alternative hypotheses</a></li>
+  <li><a href="#test-statistics" id="toc-test-statistics" class="nav-link" data-scroll-target="#test-statistics"><span class="toc-section-number">1.2</span>  Test statistics</a></li>
+  <li><a href="#z-tests" id="toc-z-tests" class="nav-link" data-scroll-target="#z-tests"><span class="toc-section-number">1.3</span>  <span class="math inline">\(z\)</span>-tests</a></li>
+  <li><a href="#t-tests" id="toc-t-tests" class="nav-link" data-scroll-target="#t-tests"><span class="toc-section-number">1.4</span>  <span class="math inline">\(t\)</span>-tests</a></li>
+  <li><a href="#follow-up-examples" id="toc-follow-up-examples" class="nav-link" data-scroll-target="#follow-up-examples"><span class="toc-section-number">1.5</span>  Follow-up examples</a>
   <ul class="collapse">
-  <li><a href="#problem-1" id="toc-problem-1" class="nav-link" data-scroll-target="#problem-1"> <span class="header-section-number">1.5.1</span> Problem 1</a></li>
-  <li><a href="#solution-to-problem-1" id="toc-solution-to-problem-1" class="nav-link" data-scroll-target="#solution-to-problem-1"> <span class="header-section-number">1.5.2</span> Solution to problem 1</a></li>
-  <li><a href="#problem-2" id="toc-problem-2" class="nav-link" data-scroll-target="#problem-2"> <span class="header-section-number">1.5.3</span> Problem 2</a></li>
-  <li><a href="#solution-to-problem-2" id="toc-solution-to-problem-2" class="nav-link" data-scroll-target="#solution-to-problem-2"> <span class="header-section-number">1.5.4</span> Solution to problem 2</a></li>
+  <li><a href="#problem-1" id="toc-problem-1" class="nav-link" data-scroll-target="#problem-1"><span class="toc-section-number">1.5.1</span>  Problem 1</a></li>
+  <li><a href="#solution-to-problem-1" id="toc-solution-to-problem-1" class="nav-link" data-scroll-target="#solution-to-problem-1"><span class="toc-section-number">1.5.2</span>  Solution to problem 1</a></li>
+  <li><a href="#problem-2" id="toc-problem-2" class="nav-link" data-scroll-target="#problem-2"><span class="toc-section-number">1.5.3</span>  Problem 2</a></li>
+  <li><a href="#solution-to-problem-2" id="toc-solution-to-problem-2" class="nav-link" data-scroll-target="#solution-to-problem-2"><span class="toc-section-number">1.5.4</span>  Solution to problem 2</a></li>
   </ul></li>
-  <li><a href="#using-the-built-in-t.test-function" id="toc-using-the-built-in-t.test-function" class="nav-link" data-scroll-target="#using-the-built-in-t.test-function"> <span class="header-section-number">1.6</span> Using the built in <strong>t.test</strong> function</a></li>
+  <li><a href="#using-the-built-in-t.test-function" id="toc-using-the-built-in-t.test-function" class="nav-link" data-scroll-target="#using-the-built-in-t.test-function"><span class="toc-section-number">1.6</span>  Using the built in <strong>t.test</strong> function</a></li>
   </ul></li>
-  <li><a href="#tests-of-significance-two-independent-samples-comparison" id="toc-tests-of-significance-two-independent-samples-comparison" class="nav-link" data-scroll-target="#tests-of-significance-two-independent-samples-comparison"> <span class="header-section-number">2</span> Tests of Significance (two independent samples comparison)</a>
+  <li><a href="#tests-of-significance-two-independent-samples-comparison" id="toc-tests-of-significance-two-independent-samples-comparison" class="nav-link" data-scroll-target="#tests-of-significance-two-independent-samples-comparison"><span class="toc-section-number">2</span>  Tests of Significance (two independent samples comparison)</a>
   <ul class="collapse">
-  <li><a href="#z-test-with-two-samples-large-sample-sizes" id="toc-z-test-with-two-samples-large-sample-sizes" class="nav-link" data-scroll-target="#z-test-with-two-samples-large-sample-sizes"> <span class="header-section-number">2.1</span> <span class="math inline">\(z\)</span> test with two samples (large sample sizes)</a>
+  <li><a href="#z-test-with-two-samples-large-sample-sizes" id="toc-z-test-with-two-samples-large-sample-sizes" class="nav-link" data-scroll-target="#z-test-with-two-samples-large-sample-sizes"><span class="toc-section-number">2.1</span>  <span class="math inline">\(z\)</span> test with two samples (large sample sizes)</a>
   <ul class="collapse">
-  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example"> <span class="header-section-number">2.1.1</span> Example</a></li>
-  <li><a href="#solution" id="toc-solution" class="nav-link" data-scroll-target="#solution"> <span class="header-section-number">2.1.2</span> Solution</a></li>
+  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example"><span class="toc-section-number">2.1.1</span>  Example</a></li>
+  <li><a href="#solution" id="toc-solution" class="nav-link" data-scroll-target="#solution"><span class="toc-section-number">2.1.2</span>  Solution</a></li>
   </ul></li>
-  <li><a href="#t-test-with-two-samples-small-sample-sizes" id="toc-t-test-with-two-samples-small-sample-sizes" class="nav-link" data-scroll-target="#t-test-with-two-samples-small-sample-sizes"> <span class="header-section-number">2.2</span> <span class="math inline">\(t\)</span> test with two samples (small sample sizes )</a>
+  <li><a href="#t-test-with-two-samples-small-sample-sizes" id="toc-t-test-with-two-samples-small-sample-sizes" class="nav-link" data-scroll-target="#t-test-with-two-samples-small-sample-sizes"><span class="toc-section-number">2.2</span>  <span class="math inline">\(t\)</span> test with two samples (small sample sizes )</a>
   <ul class="collapse">
-  <li><a href="#example-1" id="toc-example-1" class="nav-link" data-scroll-target="#example-1"> <span class="header-section-number">2.2.1</span> Example</a></li>
-  <li><a href="#solution-1" id="toc-solution-1" class="nav-link" data-scroll-target="#solution-1"> <span class="header-section-number">2.2.2</span> Solution</a></li>
+  <li><a href="#example-1" id="toc-example-1" class="nav-link" data-scroll-target="#example-1"><span class="toc-section-number">2.2.1</span>  Example</a></li>
+  <li><a href="#solution-1" id="toc-solution-1" class="nav-link" data-scroll-target="#solution-1"><span class="toc-section-number">2.2.2</span>  Solution</a></li>
   </ul></li>
-  <li><a href="#notes-on-z-and-t-tests" id="toc-notes-on-z-and-t-tests" class="nav-link" data-scroll-target="#notes-on-z-and-t-tests"> <span class="header-section-number">2.3</span> Notes on z and t tests</a>
+  <li><a href="#notes-on-z-and-t-tests" id="toc-notes-on-z-and-t-tests" class="nav-link" data-scroll-target="#notes-on-z-and-t-tests"><span class="toc-section-number">2.3</span>  Notes on z and t tests</a>
   <ul class="collapse">
-  <li><a href="#assumption-of-equal-variance" id="toc-assumption-of-equal-variance" class="nav-link" data-scroll-target="#assumption-of-equal-variance"> <span class="header-section-number">2.3.1</span> Assumption of equal variance</a></li>
-  <li><a href="#population-distribution-and-small-sample-sizes" id="toc-population-distribution-and-small-sample-sizes" class="nav-link" data-scroll-target="#population-distribution-and-small-sample-sizes"> <span class="header-section-number">2.3.2</span> Population distribution and small sample sizes</a></li>
-  <li><a href="#tests-of-paired-samples-paired-t-test" id="toc-tests-of-paired-samples-paired-t-test" class="nav-link" data-scroll-target="#tests-of-paired-samples-paired-t-test"> <span class="header-section-number">2.3.3</span> Tests of paired samples (paired t-test)</a></li>
+  <li><a href="#assumption-of-equal-variance" id="toc-assumption-of-equal-variance" class="nav-link" data-scroll-target="#assumption-of-equal-variance"><span class="toc-section-number">2.3.1</span>  Assumption of equal variance</a></li>
+  <li><a href="#population-distribution-and-small-sample-sizes" id="toc-population-distribution-and-small-sample-sizes" class="nav-link" data-scroll-target="#population-distribution-and-small-sample-sizes"><span class="toc-section-number">2.3.2</span>  Population distribution and small sample sizes</a></li>
+  <li><a href="#tests-of-paired-samples-paired-t-test" id="toc-tests-of-paired-samples-paired-t-test" class="nav-link" data-scroll-target="#tests-of-paired-samples-paired-t-test"><span class="toc-section-number">2.3.3</span>  Tests of paired samples (paired t-test)</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"> <span class="header-section-number">3</span> References</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="toc-section-number">3</span>  References</a></li>
   </ul>
 </nav>
     </div>
@@ -220,13 +243,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="quarto-title-meta">
 
     
+  
     
   </div>
   
 
 </header>
 
-<p><em>Last modified on 2022-09-12</em></p>
+<p><em>Last modified on 2023-04-06</em></p>
 <div class="cell">
 
 </div>
@@ -485,12 +509,9 @@ mean of x
 <p>Up to now, we have focused on inferences about single samples. We will now focus on comparing <em>two</em> independent samples using test statistics. The approach is very much the same except that we are no longer comparing a sample statistic to an external standard but to another sample statistic.</p>
 <section id="z-test-with-two-samples-large-sample-sizes" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="z-test-with-two-samples-large-sample-sizes"><span class="header-section-number">2.1</span> <span class="math inline">\(z\)</span> test with two samples (large sample sizes)</h2>
-<p>If the sample sizes in both samples are large (usually more than 30), then a <span class="math inline">\(z\)</span> test is appropriate. The <span class="math inline">\(z\)</span> statistic is computed as follows:</p>
-<p><span class="math display">\[
+<p>If the sample sizes in both samples are large (usually more than 30), then a <span class="math inline">\(z\)</span> test is appropriate. The <span class="math inline">\(z\)</span> statistic is computed as follows: <span class="math display">\[
 z = \frac{observed\; difference - expected\; difference}{SE\; for\; difference}
-\]</span></p>
-<p>The standard error for the difference of the two samples is:</p>
-<p><span class="math display">\[
+\]</span> The standard error for the difference of the two samples is: <span class="math display">\[
 SE = \sqrt{SE_{sample\; 1}^2 + SE_{sample\; 2}^2}
 \]</span></p>
 <section id="example" class="level3" data-number="2.1.1">
@@ -500,22 +521,15 @@ SE = \sqrt{SE_{sample\; 1}^2 + SE_{sample\; 2}^2}
 </section>
 <section id="solution" class="level3" data-number="2.1.2">
 <h3 data-number="2.1.2" class="anchored" data-anchor-id="solution"><span class="header-section-number">2.1.2</span> Solution</h3>
-<p>The standard error for each sample can be computed as follows:</p>
-<p><span class="math display">\[
+<p>The standard error for each sample can be computed as follows: <span class="math display">\[
 SE_{1990} = \frac{SD_{1990}}{\sqrt{sample\; size}}=\frac{40}{\sqrt{1000}} = 1.26
-\]</span></p>
-<p><span class="math display">\[
+\]</span> <span class="math display">\[
 SE_{2004} = \frac{SD_{2000}}{\sqrt{sample\; size}}=\frac{37}{\sqrt{1000}} = 1.17
-\]</span></p>
-<p>The standard error for the difference can be computed as follows:</p>
-<p><span class="math display">\[
+\]</span> The standard error for the difference can be computed as follows: <span class="math display">\[
 SE = \sqrt{SE_{1990}^2 + SE_{2004}^2} = \sqrt{1.26^2 + 1.17^2} = 1.72
-\]</span></p>
-<p>Finally, we can compute <span class="math inline">\(z\)</span> as follows (keeping in mind that the <em>expected</em> difference between both years is our null hypothesis, i.e.&nbsp;no difference, 0):</p>
-<p><span class="math display">\[
+\]</span> Finally, we can compute <span class="math inline">\(z\)</span> as follows (keeping in mind that the <em>expected</em> difference between both years is our null hypothesis, i.e.&nbsp;no difference, 0): <span class="math display">\[
 z = \frac{(score_{2004} - score_{1990}) - (expected\; difference)}{SE\; of\; difference}=\frac{(285-290) - 0}{1.72} = -2.9
-\]</span></p>
-<p>So the difference is <strong>2.9</strong> <span class="math inline">\(SE\)</span>’s below what would be expected if <span class="math inline">\(Ho\)</span> (i.e.&nbsp;no difference between years) was true. Looking up the <span class="math inline">\(P\)</span> value for an <span class="math inline">\(SE\)</span> of 2.9 on a normal curve is <strong>0.002</strong>. Put differently, if their was truly no difference in reading scores between both years, then the odds of getting a <span class="math inline">\(z\)</span> score as extreme as the one we just computed is 0.1%. If we had defined an <span class="math inline">\(\alpha\)</span> confidence value of 5% or even 1%, we could conclude that the difference between both years is real.</p>
+\]</span> So the difference is <strong>2.9</strong> <span class="math inline">\(SE\)</span>’s below what would be expected if <span class="math inline">\(Ho\)</span> (i.e.&nbsp;no difference between years) was true. Looking up the <span class="math inline">\(P\)</span> value for an <span class="math inline">\(SE\)</span> of 2.9 on a normal curve is <strong>0.002</strong>. Put differently, if their was truly no difference in reading scores between both years, then the odds of getting a <span class="math inline">\(z\)</span> score as extreme as the one we just computed is 0.1%. If we had defined an <span class="math inline">\(\alpha\)</span> confidence value of 5% or even 1%, we could conclude that the difference between both years is real.</p>
 <p>The following figure illustrates the result.</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -544,8 +558,7 @@ z = \frac{(score_{2004} - score_{1990}) - (expected\; difference)}{SE\; of\; dif
 <li>uncensored.</li>
 </ul>
 <p>Many times, the aforementioned criteria are not known and may have to be assumed if theory allows.</p>
-<p>If the assumption of equal variances is met, the standard error can be pooled from both sample’s standard errors.</p>
-<p><span class="math display">\[
+<p>If the assumption of equal variances is met, the standard error can be pooled from both sample’s standard errors. <span class="math display">\[
 SE_{pooled} = \sqrt{\frac{(n_1 - 1)SD_1^2+(n_2 - 1)SD_2^2}{n_1 + n_2 - 2}}
 \]</span></p>
 <p>Subscripts <span class="math inline">\(1\)</span> and <span class="math inline">\(2\)</span> denote samples 1 and 2. Note that we are using <span class="math inline">\(SD_1\)</span> and <span class="math inline">\(SD_2\)</span> in this equation as opposed to <span class="math inline">\(SE_1\)</span> and <span class="math inline">\(SE_2\)</span>. The test statistic <span class="math inline">\(t\)</span> is therefore computed as follows:</p>
@@ -604,12 +617,10 @@ t = \frac{(observed\; difference - expected\; difference) - hypothesized\; diffe
 <h3 data-number="2.2.2" class="anchored" data-anchor-id="solution-1"><span class="header-section-number">2.2.2</span> Solution</h3>
 <p>You will setup this problem as follows: the null hypothesis, <span class="math inline">\(H_o\)</span>, states that the concentrations between both sites is the same; the alternative hypothesis, <span class="math inline">\(H_a\)</span>, states that the contaminated site has a concentration greater than the background.</p>
 <p>We will reference the contaminated site with the <span class="math inline">\(1\)</span> subscript and the background site with the subscript <span class="math inline">\(2\)</span>. The means and standard deviations are <span class="math inline">\(\mu_1 = 579.2\)</span>, <span class="math inline">\(\mu_2 = 565\)</span>, <span class="math inline">\(SD_1 = 13.6\)</span> and <span class="math inline">\(SD_2 = 15.1\)</span>.</p>
-<p>The pooled standard error of the mean is therefore:</p>
-<p><span class="math display">\[
+<p>The pooled standard error of the mean is therefore: <span class="math display">\[
 SE_{pooled} = \sqrt{\frac{(6 - 1)13.6^2+(8 - 1)15.1^2}{6 + 8 - 2}}=14.5
 \]</span></p>
-<p>and <span class="math inline">\(t\)</span> is:</p>
-<p><span class="math display">\[
+<p>and <span class="math inline">\(t\)</span> is: <span class="math display">\[
 t = \frac{(579.2-565) - 0)}{14.5\sqrt{1/6 + 1/8}} = 1.8
 \]</span></p>
 <p>One <span class="math inline">\(SE\)</span> is <span class="math inline">\(14.5\sqrt{1/6 + 1/8}=\)</span> <strong>7.8</strong> ppm, therefore our observed difference of <strong>14.2</strong> ppm (computed from 579.2 - 565) is <strong>1.8</strong> <span class="math inline">\(SE\)</span> from the expected difference of 0 (recall that for a <span class="math inline">\(t\)</span>-test <span class="math inline">\(SE\)</span> equals <span class="math inline">\(SE_{pooled}\sqrt{1/n_1 + 1/n_2}\)</span>). Looking up the <span class="math inline">\(P\)</span> value on a Student curve gives us a probability of <strong>0.048</strong> (i.e.&nbsp;there is a 4.8% chance that, assuming there is no difference in concentrations between sites, the difference between means would be greater than that observed by chance variation alone).</p>
@@ -794,11 +805,11 @@ McClave J.T., Dietrich F.H., <em>Statistics</em>, 4th edition, 1988.</p>
 <hr>
 <p><strong>Session Info</strong>:</p>
 <div class="cell-output-display">
-<p><strong>R version 4.2.1 (2022-06-23 ucrt)</strong></p>
+<p><strong>R version 4.2.2 (2022-10-31 ucrt)</strong></p>
 <p><strong>Platform:</strong> x86_64-w64-mingw32/x64 (64-bit)</p>
 <p><strong>attached base packages:</strong> <em>stats</em>, <em>graphics</em>, <em>grDevices</em>, <em>utils</em>, <em>datasets</em>, <em>methods</em> and <em>base</em></p>
-<p><strong>other attached packages:</strong> extrafont(v.0.18)</p>
-<p><strong>loaded via a namespace (and not attached):</strong> <em>Rcpp(v.1.0.9)</em>, <em>digest(v.0.6.29)</em>, <em>Rttf2pt1(v.1.3.8)</em>, <em>jsonlite(v.1.8.0)</em>, <em>magrittr(v.2.0.3)</em>, <em>evaluate(v.0.16)</em>, <em>rlang(v.1.0.4)</em>, <em>stringi(v.1.7.8)</em>, <em>cli(v.3.3.0)</em>, <em>rstudioapi(v.0.14)</em>, <em>extrafontdb(v.1.0)</em>, <em>rmarkdown(v.2.16)</em>, <em>tools(v.4.2.1)</em>, <em>pander(v.0.6.5)</em>, <em>stringr(v.1.4.1)</em>, <em>xfun(v.0.32)</em>, <em>yaml(v.2.3.5)</em>, <em>fastmap(v.1.1.0)</em>, <em>compiler(v.4.2.1)</em>, <em>htmltools(v.0.5.3)</em> and <em>knitr(v.1.40)</em></p>
+<p><strong>other attached packages:</strong> extrafont(v.0.19)</p>
+<p><strong>loaded via a namespace (and not attached):</strong> <em>Rcpp(v.1.0.10)</em>, <em>digest(v.0.6.31)</em>, <em>Rttf2pt1(v.1.3.12)</em>, <em>jsonlite(v.1.8.4)</em>, <em>evaluate(v.0.20)</em>, <em>rlang(v.1.0.6)</em>, <em>cli(v.3.6.0)</em>, <em>rstudioapi(v.0.14)</em>, <em>extrafontdb(v.1.0)</em>, <em>rmarkdown(v.2.20)</em>, <em>tools(v.4.2.2)</em>, <em>pander(v.0.6.5)</em>, <em>xfun(v.0.37)</em>, <em>yaml(v.2.3.7)</em>, <em>fastmap(v.1.1.0)</em>, <em>compiler(v.4.2.2)</em>, <em>htmltools(v.0.5.4)</em> and <em>knitr(v.1.42)</em></p>
 </div>
 
 
@@ -846,7 +857,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
     button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
     setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
       button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.0.36">
+<meta name="generator" content="quarto-1.2.335">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -11,10 +11,15 @@
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-span.underline{text-decoration: underline;}
-div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
 </style>
 
 
@@ -51,6 +56,15 @@ ul.task-list{list-style: none;}
     "search-submit-button-title": "Submit"
   }
 }</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-ZTL54L3SJR"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-ZTL54L3SJR', { 'anonymize_ip': true});
+</script>
 
 
 </head>
@@ -61,34 +75,43 @@ ul.task-list{list-style: none;}
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
-      <a class="navbar-brand" href="./index.html">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Basic stats explained (in R)</span>
-  </a>
+    </a>
+  </div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./CI.html">Confidence intervals</a>
+    <a class="nav-link" href="./CI.html">
+ <span class="menu-text">Confidence intervals</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./z_t_tests.html">Z and T tests</a>
+    <a class="nav-link" href="./z_t_tests.html">
+ <span class="menu-text">Z and T tests</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./F_test.html">F-test: Test for difference in spread</a>
+    <a class="nav-link" href="./F_test.html">
+ <span class="menu-text">F-test: Test for difference in spread</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./ChiSquare_test.html">ChiSquare</a>
+    <a class="nav-link" href="./ChiSquare_test.html">
+ <span class="menu-text">ChiSquare</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./regression.html">Ordinary least squares Regression</a>
+    <a class="nav-link" href="./regression.html">
+ <span class="menu-text">Ordinary least squares Regression</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./ANOVA.html">Analysis of variance (ANOVA)</a>
+    <a class="nav-link" href="./ANOVA.html">
+ <span class="menu-text">Analysis of variance (ANOVA)</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./Logistic.html">Logistic regression</a>
+    <a class="nav-link" href="./Logistic.html">
+ <span class="menu-text">Logistic regression</span></a>
   </li>  
 </ul>
               <div id="quarto-search" class="" title="Search"></div>
@@ -116,6 +139,7 @@ ul.task-list{list-style: none;}
 <div class="quarto-title-meta">
 
     
+  
     
   </div>
   
@@ -176,7 +200,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
     button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
     setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
       button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
